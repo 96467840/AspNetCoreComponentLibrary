@@ -1,13 +1,24 @@
 ﻿{
-  "version": "1.0.0-*",
+  "Microsof.NETCore.App": {
+    "version": "1.0.1",
+    "type": "platform"
+  },
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0"
+    "Microsoft.AspNetCore.Mvc": "1.1.2"
+  },
+
+  "tools": {
+    "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview4-final"
   },
 
   "frameworks": {
     "netstandard1.6": {
       "imports": "dnxcore50"
     }
+  },
+
+  "buildOptions": {
+    "embed": "Views/**/*.cshtml"
   }
 }

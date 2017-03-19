@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class Class1
+    public class TestVM
     {
-        public Class1()
-        {
-        }
+        public string Text { get; set; }
     }
 }

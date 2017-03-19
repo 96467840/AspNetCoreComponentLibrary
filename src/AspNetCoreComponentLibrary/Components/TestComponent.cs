@@ -8,11 +8,10 @@ namespace AspNetCoreComponentLibrary
 {
     public class TestComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(string text)
         {
-            var vm = new TestVM() { Text = "Hello from component" };
+            var vm = new TestVM() { Text = text };
             return View(vm);
-
         }
     }
 }

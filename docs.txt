@@ -1,0 +1,14 @@
+компоненты 
+https://blogs.msdn.microsoft.com/laurieatkinson/2016/10/01/build-a-reusable-view-component-in-asp-net-core/
+https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-components
+
+создание nuget пакета https://docs.microsoft.com/en-us/nuget/guides/create-net-standard-packages-vs2015
+
+	установка NuGet.CommandLine в консоли диспетчера пакетов: (это НИЧЕГО не дает)
+	Install-Package NuGet.CommandLine
+
+	установка nuget http://nuget.codeplex.com/releases (тоже фигня)
+
+	установка nuget-cli https://docs.microsoft.com/en-us/nuget/guides/install-nuget#nuget-cli (https://dist.nuget.org/index.html)
+
+

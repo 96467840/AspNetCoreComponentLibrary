@@ -1,0 +1,19 @@
+﻿@model AspNetCoreComponentLibrary.BreadcrumbVM
+
+@if (Model.Items.Count <= 1)
+{
+    return;
+}
+@{
+    var last = Model.Items.Last();
+}
+<ol class="@Model.Class">
+    @for (var i = 0; i < Model.Items.Count - 1; i++)
+    {
+        var item = Model.Items[i];
+
+        <li class="@item.liClass"><a class="@item.aClass" href="@item.Href">@item.Title</a></li>
+    }
+
+    <li class="active @last.liClass">@last.Title</li>
+</ol>

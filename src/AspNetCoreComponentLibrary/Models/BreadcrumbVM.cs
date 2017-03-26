@@ -20,7 +20,7 @@ namespace AspNetCoreComponentLibrary
 
     }
 
-    public class BreadcrumbVM : BaseVM
+    public class BreadcrumbVM
     {
         public List<BreadcrumbItem> Items { get; set; }
         public string Class { get; set; }

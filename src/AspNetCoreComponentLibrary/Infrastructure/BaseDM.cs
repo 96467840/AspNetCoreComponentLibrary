@@ -7,7 +7,7 @@ namespace AspNetCoreComponentLibrary
 {
     public abstract class BaseDM
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
 
         public abstract void FromDB();
 

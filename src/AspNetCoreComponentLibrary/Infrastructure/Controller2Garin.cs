@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,12 @@ namespace AspNetCoreComponentLibrary
 {
     public class Controller2Garin: Controller
     {
+        public IStorage Storage;
+
+        public Controller2Garin(IStorage storage)
+        {
+            Storage = storage;
+        }
 
     }
 }

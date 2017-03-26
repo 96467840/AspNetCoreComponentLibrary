@@ -7,5 +7,6 @@ namespace AspNetCoreComponentLibrary
 {
     public class BaseIM
     {
+
     }
 }

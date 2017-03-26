@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,9 @@ namespace AspNetCoreComponentLibrary
     {
         public BreadcrumbVM Breadcrumb { get; set; }
 
-        public PageVM()
+        public List<Site> Sites { get; set; }
+
+        public PageVM(Controller2Garin controler):base(controler)
         {
             Breadcrumb = new BreadcrumbVM(new List<BreadcrumbItem>());
         }
@@ -23,8 +26,16 @@ namespace AspNetCoreComponentLibrary
 
         public IActionResult ToActionResult(Controller2Garin controler)
         {
-            var vm = new PageVM();
-
+            var vm = new PageVM(controler);
+            try
+            {
+                var storage = controler.Storage;
+                vm.Sites = storage.GetRepository<ISiteRepository>().All().ToList();
+            }
+            catch (Exception e)
+            {
+                vm.Error = e.ToString();
+            }
             return controler.View(vm);
         }
     }

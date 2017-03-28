@@ -14,4 +14,14 @@ namespace AspNetCoreComponentLibrary
             throw new NotImplementedException();
         }
     }
+
+    /*public class User : BaseDM
+    {
+        public string Name { get; set; }
+
+        public override void FromDB()
+        {
+            throw new NotImplementedException();
+        }
+    }*/
 }

@@ -4,8 +4,14 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary.Abstractions
 {
-    public interface IRepository
+    public interface IRepositorySetStorageContext
     {
-        void SetStorageContext(IStorageContext storageContext);
+        void SetStorageContext(IStorageContext storageContext, IStorage storage);
+    }
+
+    public interface IRepository<K, T> where K : struct where T : BaseDM<K>
+    {
+        IEnumerable<T> AllFromDB();
+        K? Save(T item);
     }
 }

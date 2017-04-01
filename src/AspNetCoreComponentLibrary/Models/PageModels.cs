@@ -11,7 +11,7 @@ namespace AspNetCoreComponentLibrary
     {
         public BreadcrumbVM Breadcrumb { get; set; }
 
-        public List<Site> Sites { get; set; }
+        public List<Sites> Sites { get; set; }
 
         public PageVM(Controller2Garin controler):base(controler)
         {
@@ -30,11 +30,13 @@ namespace AspNetCoreComponentLibrary
             try
             {
                 var storage = controler.Storage;
-                vm.Sites = storage.GetRepository<ISiteRepository>().All().ToList();
+                var rep = storage.GetRepository<ISiteRepository>();
+                var newid = rep.Save(new Sites { Id = 3, Name = "Supper Site " + DateTime.Now });
+                vm.Sites = rep.AllFromDB().ToList();
             }
             catch (Exception e)
             {
-                vm.Error = e.ToString();
+                vm.Error = e;
             }
             return controler.View(vm);
         }

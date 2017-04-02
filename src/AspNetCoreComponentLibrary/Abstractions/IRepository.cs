@@ -13,6 +13,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
     public interface IRepository<K, T> : IEnumerable<T> where K : struct where T : BaseDM<K>
     {
         IQueryable<T> StartQuery();
+        //IEnumerable<T> StartQuery();
 
         K Save(T item);
         void Block(K id);

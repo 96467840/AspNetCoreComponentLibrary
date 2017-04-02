@@ -31,8 +31,10 @@ namespace AspNetCoreComponentLibrary
             {
                 var storage = controler.Storage;
                 var rep = storage.GetRepository<ISiteRepository>();
-                var newid = rep.Save(new Sites { Id = 3, Name = "Supper Site " + DateTime.Now });
-                vm.Sites = rep.AllFromDB().ToList();
+                var newid = rep.Save(new Sites { Name = "Supper Site " + DateTime.Now });
+
+                //vm.Sites = rep.AllFromDB().ToList();
+                vm.Sites = rep.ToList();
             }
             catch (Exception e)
             {

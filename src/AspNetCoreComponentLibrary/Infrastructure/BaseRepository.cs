@@ -20,12 +20,26 @@ namespace AspNetCoreComponentLibrary
             Storage = storage;
         }
 
-        public abstract K? Save(T item);
+        public abstract void SetBlock(K id, bool value);
+
+        public void Block(K id) { SetBlock(id, true); }
+        public void UnBlock(K id) { SetBlock(id, false); }
+
+        public abstract void LoadFromDB();
+
+        public abstract K Save(T item);
+
+        protected void CheckColl()
+        {
+            if (Coll == null) LoadFromDB();
+            if (Coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
+        }
 
         public T this[K? index]
         {
             get
             {
+                CheckColl();
                 if (index == null) return default(T);
                 if (!Coll.ContainsKey(index.Value)) return default(T);
                 return Coll[index.Value];
@@ -34,17 +48,20 @@ namespace AspNetCoreComponentLibrary
 
         public bool Contains(K? index)
         {
+            CheckColl();
             if (index == null) return false;
             return Coll.ContainsKey(index.Value);
         }
 
         public void Clear()
         {
+            CheckColl();
             Coll.Clear();
         }
 
         public void RemoveFromCache(K? index)
         {
+            CheckColl();
             try
             {
                 var item = this[index];
@@ -56,6 +73,7 @@ namespace AspNetCoreComponentLibrary
 
         public void AddToCache(K index, T item)
         {
+            CheckColl();
             if (Coll.ContainsKey(index)) Coll[index] = item;
             else Coll.Add(index, item);
         }

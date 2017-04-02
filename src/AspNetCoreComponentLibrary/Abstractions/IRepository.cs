@@ -9,9 +9,9 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void SetStorageContext(IStorageContext storageContext, IStorage storage);
     }
 
-    public interface IRepository<K, T> where K : struct where T : BaseDM<K>
+    public interface IRepository<K, T> : IEnumerable<T> where K : struct where T : BaseDM<K>
     {
         IEnumerable<T> AllFromDB();
-        K? Save(T item);
+        K Save(T item);
     }
 }

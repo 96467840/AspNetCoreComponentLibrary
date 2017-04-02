@@ -9,8 +9,6 @@ namespace AspNetCoreComponentLibrary.Abstractions
     {
         T GetRepository<T>() where T : IRepositorySetStorageContext;
 
-        int Save();
-
-        //Task<int> SaveAsync();
+        void Save();
     }
 }

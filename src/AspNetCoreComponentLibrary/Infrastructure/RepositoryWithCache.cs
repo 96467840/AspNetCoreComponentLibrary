@@ -7,27 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class BaseRepository<K, T> : IEnumerable<T> where K : struct
+    public abstract class RepositoryWithCache<K, T> : Repository<K, T>, IEnumerable<T> where K : struct
     {
-        protected IStorageContext StorageContext;
-        protected IStorage Storage { get; set; }
-
         protected static Dictionary<K, T> Coll { get; set; }
 
-        public void SetStorageContext(IStorageContext storageContext, IStorage storage)
-        {
-            StorageContext = storageContext;
-            Storage = storage;
-        }
-
-        public abstract void SetBlock(K id, bool value);
-
-        public void Block(K id) { SetBlock(id, true); }
-        public void UnBlock(K id) { SetBlock(id, false); }
-
         public abstract void LoadFromDB();
-
-        public abstract K Save(T item);
 
         protected void CheckColl()
         {
@@ -77,7 +61,6 @@ namespace AspNetCoreComponentLibrary
             if (Coll.ContainsKey(index)) Coll[index] = item;
             else Coll.Add(index, item);
         }
-
 
         #region [   IEnumerable<T>   ]
 

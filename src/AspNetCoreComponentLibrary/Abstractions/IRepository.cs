@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AspNetCoreComponentLibrary.Abstractions
@@ -11,7 +12,11 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
     public interface IRepository<K, T> : IEnumerable<T> where K : struct where T : BaseDM<K>
     {
-        IEnumerable<T> AllFromDB();
+        IQueryable<T> StartQuery();
+
         K Save(T item);
+        void Block(K id);
+        void UnBlock(K id);
+        void Remove(K id);
     }
 }

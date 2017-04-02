@@ -33,8 +33,8 @@ namespace AspNetCoreComponentLibrary
                 var rep = storage.GetRepository<ISiteRepository>();
                 var newid = rep.Save(new Sites { Name = "Supper Site " + DateTime.Now });
 
-                //vm.Sites = rep.AllFromDB().ToList();
-                vm.Sites = rep.ToList();
+                vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
+                //vm.Sites = rep.Where(i=>i.Id>10).OrderByDescending(i=>i.Id).ToList();
             }
             catch (Exception e)
             {

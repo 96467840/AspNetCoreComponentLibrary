@@ -9,7 +9,7 @@ namespace AspNetCoreComponentLibrary
     public class Sites : BaseDM<long>
     {
         public string Name { get; set; }
-        public string Created { get; set; }
+        public DateTime Created { get; set; }
 
         //public Sites(IStorage storage) : base(storage) { }
 

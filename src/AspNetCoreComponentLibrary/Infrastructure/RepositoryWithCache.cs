@@ -42,7 +42,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public new K Save(T item)
+        public new T Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
             if (item.Id.HasValue)
@@ -58,7 +58,7 @@ namespace AspNetCoreComponentLibrary
             CheckColl();
             if (item.Id.HasValue) Coll[item.Id.Value] = item;
 
-            return item.Id.Value;
+            return item;
         }
 
         public new void Remove(K id)

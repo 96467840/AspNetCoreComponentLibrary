@@ -15,7 +15,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
         IQueryable<T> StartQuery();
         //IEnumerable<T> StartQuery();
 
-        K Save(T item);
+        T Save(T item);
         void Block(K id);
         void UnBlock(K id);
         void Remove(K id);

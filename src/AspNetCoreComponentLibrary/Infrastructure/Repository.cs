@@ -34,7 +34,7 @@ namespace AspNetCoreComponentLibrary
             return dbSet.AsNoTracking();
         }
 
-        public K Save(T item)
+        public T Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
             if (item.Id.HasValue)
@@ -47,7 +47,7 @@ namespace AspNetCoreComponentLibrary
             }
             Storage.Save();
 
-            return item.Id.Value;
+            return item;
         }
 
         public void Remove(K id)

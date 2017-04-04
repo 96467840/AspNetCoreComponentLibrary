@@ -34,7 +34,7 @@ namespace AspNetCoreComponentLibrary
                 Logger.LogInformation("Begin '{page}' in lang '{lang}'", page, lang);
                 var storage = controller.Storage;
                 var rep = storage.GetRepository<ISiteRepository>();
-                //var newid = rep.Save(new Sites { Name = "Supper Site " + DateTime.Now });
+                var newitem = rep.Save(new Sites { Name = "Supper Site " + DateTime.Now });
 
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
                 vm.Sites = rep.StartQuery().Where(i => i.Id > 10).OrderByDescending(i => i.Id).ToList();

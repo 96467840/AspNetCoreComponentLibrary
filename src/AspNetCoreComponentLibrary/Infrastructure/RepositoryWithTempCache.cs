@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreComponentLibrary.Abstractions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,39 @@ namespace AspNetCoreComponentLibrary
             var now = DateTime.Now;
             foreach (var item in coll.Where(i=>i.Value.Time<now)) {
                 RemoveFromCache(item.Key);
+            }
+        }
+
+        public new T Save(T item)
+        {
+            if (item == null) throw new ArgumentNullException();
+            if (item.Id.HasValue)
+            {
+                dbSet.Update(item);
+            }
+            else
+            {
+                dbSet.Add(item);
+            }
+            Storage.Save();
+
+            //CheckColl();
+            if (item.Id.HasValue) AddToCache(item.Id.Value, item);
+
+            return item;
+        }
+
+        public new void SetBlock(K id, bool value)
+        {
+            if (typeof(T) is IBlockable)
+            {
+                T item = (T)Activator.CreateInstance(typeof(T));
+                item.Id = id;
+                ((IBlockable)item).IsBlocked = value;
+                dbSet.Update(item);
+                Storage.Save();
+
+                AddToCache(id, item);
             }
         }
 

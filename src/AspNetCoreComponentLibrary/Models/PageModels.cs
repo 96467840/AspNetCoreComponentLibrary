@@ -36,9 +36,12 @@ namespace AspNetCoreComponentLibrary
                 var sites = storage.GetRepository<ISiteRepository>();
                 var newitem = sites.Save(new Sites { Name = "Supper Site " + DateTime.Now });
 
-                var site = sites[1];
+                var site = sites[2];
+                site.Name = "New name 2 " + DateTime.Now;
+                sites.Save(site);
+
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
-                vm.Sites = sites.StartQuery().Where(i => i.Id > 10).OrderByDescending(i => i.Id).ToList();
+                vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
 
                 GC.Collect();
                 Logger.LogInformation("Memory used after full collection:   {0:N0}", GC.GetTotalMemory(true));

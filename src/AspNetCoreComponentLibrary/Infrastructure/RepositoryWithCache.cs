@@ -10,25 +10,24 @@ namespace AspNetCoreComponentLibrary
 {
     public abstract class RepositoryWithCache<K, T> : Repository<K, T>/*, IEnumerable<T>*/ where K : struct where T : BaseDM<K>
     {
-        protected static Dictionary<K, T> Coll { get; set; }
+        protected static Dictionary<K, T> coll;
 
-        //public abstract void LoadFromDB();
         public void LoadFromDB()
         {
             //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            Coll = this.dbSet.ToDictionary(i => i.Id.Value, i => i);
+            coll = this.dbSet.ToDictionary(i => i.Id.Value, i => i);
         }
 
         protected void CheckColl()
         {
-            if (Coll == null) LoadFromDB();
-            if (Coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
+            if (coll == null) LoadFromDB();
+            if (coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
         }
 
         public new IQueryable<T> StartQuery()
         {
             CheckColl();
-            return Coll.Values.AsQueryable();
+            return coll.Values.AsQueryable();
         }
 
         public new T this[K? index]
@@ -37,8 +36,8 @@ namespace AspNetCoreComponentLibrary
             {
                 CheckColl();
                 if (index == null) return default(T);
-                if (!Coll.ContainsKey(index.Value)) return default(T);
-                return Coll[index.Value];
+                if (!coll.ContainsKey(index.Value)) return default(T);
+                return coll[index.Value];
             }
         }
 
@@ -56,7 +55,7 @@ namespace AspNetCoreComponentLibrary
             Storage.Save();
 
             CheckColl();
-            if (item.Id.HasValue) Coll[item.Id.Value] = item;
+            if (item.Id.HasValue) coll[item.Id.Value] = item;
 
             return item;
         }
@@ -81,20 +80,20 @@ namespace AspNetCoreComponentLibrary
                 Storage.Save();
 
                 CheckColl();
-                Coll[id] = item;
+                coll[id] = item;
             }
         }
         public bool Contains(K? index)
         {
             CheckColl();
             if (index == null) return false;
-            return Coll.ContainsKey(index.Value);
+            return coll.ContainsKey(index.Value);
         }
 
         public void Clear()
         {
             CheckColl();
-            Coll.Clear();
+            coll.Clear();
         }
 
         public void RemoveFromCache(K? index)
@@ -104,7 +103,7 @@ namespace AspNetCoreComponentLibrary
             {
                 var item = this[index];
                 if (item == null) return;
-                Coll.Remove(index.Value);
+                coll.Remove(index.Value);
             }
             catch { }
         }
@@ -112,8 +111,8 @@ namespace AspNetCoreComponentLibrary
         public void AddToCache(K index, T item)
         {
             CheckColl();
-            if (Coll.ContainsKey(index)) Coll[index] = item;
-            else Coll.Add(index, item);
+            if (coll.ContainsKey(index)) coll[index] = item;
+            else coll.Add(index, item);
         }
 
         /*

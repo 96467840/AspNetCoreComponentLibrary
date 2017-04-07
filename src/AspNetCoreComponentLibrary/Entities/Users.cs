@@ -6,7 +6,12 @@ namespace AspNetCoreComponentLibrary
 {
     public class Users : BaseDM<long>
     {
-        public string Created { get; set; }
+        public Users()
+        {
+            UserSites = new HashSet<UserSites>();
+        }
+
+        public DateTime Created { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -17,5 +22,7 @@ namespace AspNetCoreComponentLibrary
         public string FbId { get; set; }
         public string FbToken { get; set; }
         public string FbExpires { get; set; }
+
+        public virtual ICollection<UserSites> UserSites { get; set; }
     }
 }

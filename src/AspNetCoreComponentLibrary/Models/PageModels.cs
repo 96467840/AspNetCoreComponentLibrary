@@ -37,9 +37,11 @@ namespace AspNetCoreComponentLibrary
                 var newitem = sites.Save(new Sites { Name = "Supper Site " + DateTime.Now });
 
                 var site = sites[2];
-                site.Name = "New name 2 " + DateTime.Now;
-                sites.Save(site);
-
+                if (site != null)
+                {
+                    site.Name = "New name 2 " + DateTime.Now;
+                    sites.Save(site);
+                }
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
                 vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
 

@@ -7,7 +7,9 @@ namespace AspNetCoreComponentLibrary.Abstractions
 {
     public interface IStorage
     {
-        T GetRepository<T>() where T : IRepositorySetStorageContext;
+        T GetRepository<T>(bool SiteStorage) where T : IRepositorySetStorageContext;
+
+        void ConnectToSiteDB(long siteid);
 
         void Save();
     }

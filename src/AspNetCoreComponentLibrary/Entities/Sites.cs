@@ -10,12 +10,12 @@ namespace AspNetCoreComponentLibrary
     {
         public Sites()
         {
-            Menus = new HashSet<Menus>();
-            UserSites = new HashSet<UserSites>();
+            //Menus = new HashSet<Menus>();
+            //UserSites = new HashSet<UserSites>();
         }
 
-        public bool? IsDefault { get; set; }
-        public bool? IsVisible { get; set; }
+        public bool IsDefault { get; set; }
+        public bool IsVisible { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }
         public string Url { get; set; }
@@ -25,7 +25,7 @@ namespace AspNetCoreComponentLibrary
         public string ContactsShort { get; set; }
         public string YandexMetrika { get; set; }
         public string GoogleanAlytics { get; set; }
-        public bool? Share42 { get; set; }
+        public bool Share42 { get; set; }
         public bool IsDeleted { get; set; }
         public string VkAppId { get; set; }
         public string VkAppSecret { get; set; }
@@ -40,10 +40,10 @@ namespace AspNetCoreComponentLibrary
         public long? OrderPageId { get; set; }
         public long? E404pageId { get; set; }
 
-        public virtual ICollection<Menus> Menus { get; set; }
+        //public virtual ICollection<Menus> Menus { get; set; }
         public virtual ICollection<UserSites> UserSites { get; set; }
-        public virtual Menus E404page { get; set; }
-        public virtual Menus OrderPage { get; set; }
+        //public virtual Menus E404page { get; set; }
+        //public virtual Menus OrderPage { get; set; }
     }
 
 }

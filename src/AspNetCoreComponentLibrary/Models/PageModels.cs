@@ -33,7 +33,8 @@ namespace AspNetCoreComponentLibrary
             {
                 Logger.LogInformation("Begin '{page}' in lang '{lang}'", page, lang);
                 var storage = controller.Storage;
-                var sites = storage.GetRepository<ISiteRepository>();
+                var sites = controller.Sites;//storage.GetRepository<ISiteRepository>(false);
+                var menus = controller.Menus;// storage.GetRepository<IMenuRepository>(true);
                 var newitem = sites.Save(new Sites { Name = "Supper Site " + DateTime.Now });
 
                 var site = sites[2];

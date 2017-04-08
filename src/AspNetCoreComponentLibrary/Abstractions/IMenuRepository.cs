@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary.Abstractions
 {
-    interface IMenuRepository : IRepositorySetStorageContext, IRepository<long, Menus>
+    public interface IMenuRepository : IRepositorySetStorageContext, IRepository<long, Menus>
     {
     }
 }

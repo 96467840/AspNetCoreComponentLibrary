@@ -17,7 +17,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         T this[K? index] { get; }
 
-        T Save(T item);
+        void Save(T item);
         void Block(K id);
         void UnBlock(K id);
         void Remove(K id);

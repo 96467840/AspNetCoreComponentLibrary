@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class MenuRepositoryProto : Repository<long, Menus>, IMenuRepository
+    public class MenuRepositoryProto : Repository<long, Menus>//, IMenuRepository
     {
     }
 }

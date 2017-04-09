@@ -1,5 +1,6 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,30 @@ namespace AspNetCoreComponentLibrary
 
         public IMenuRepository Menus { get; set; }
 
-        protected void ResolveCurrentSite()
+
+        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
+        {
+            LoggerFactory = loggerFactory;
+            Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+            Storage = storage;
+        }
+
+        protected void ResolveCurrentSite(ActionExecutingContext context)
         {
             // найти сайт
-            var host = this.Request.Host.Host.ToLower();
+            var host = context.HttpContext.Request.Host.Host.ToLower();
             if (host.StartsWith("www."))
             {
                 host = Regex.Replace(host, "^www.", "");
                 // тут мона и редирект сделать
             }
+
+            if (!Sites.StartQuery().Any())
+            {
+                context.Result = new RedirectResult(Url.RouteUrl("Setup"));
+                return;
+            }
+
             Site = Sites.StartQuery().FirstOrDefault(i=>i.Hosts == host);
             if (Site == null)
             {
@@ -40,29 +56,31 @@ namespace AspNetCoreComponentLibrary
 
             if (Site == null)
             {
-                throw new HttpException(404, "Сайт не найден.");
+                //throw new HttpException(404, "Сайт не найден.");
+                context.Result = NotFound("Сайт не найден.");
+                return;
             }
 
             // проверить права доступа
-            if (!Site.IsVisible) throw new HttpException(404, "Сайт не доступен.");
+            if (!Site.IsVisible) {
+                //throw new HttpException(404, "Сайт не доступен.");
+                context.Result = NotFound("Сайт не доступен.");
+                return;
+            }
 
             // для начала мы должны определить текущий сайт
             Storage.ConnectToSiteDB(Site.Id.Value);
         }
 
-        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            LoggerFactory = loggerFactory;
-            Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
-            Storage = storage;
-
             Sites = Storage.GetRepository<ISiteRepository>(false);
             Users = Storage.GetRepository<IUserRepository>(false);
 
-            ResolveCurrentSite();
+            ResolveCurrentSite(context);
+            if (context.Result != null) return;
 
             Menus = Storage.GetRepository<IMenuRepository>(true);
-
         }
 
     }

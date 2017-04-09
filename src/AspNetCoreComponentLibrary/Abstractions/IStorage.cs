@@ -12,5 +12,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void ConnectToSiteDB(long siteid);
 
         void Save();
+
+        void UpdateDBs();
     }
 }

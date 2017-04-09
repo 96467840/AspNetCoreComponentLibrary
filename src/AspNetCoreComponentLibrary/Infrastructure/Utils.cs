@@ -101,5 +101,11 @@ namespace AspNetCoreComponentLibrary
             content.WriteTo(writer, HtmlEncoder.Create());
             return writer.ToString();
         }
+
+        public static string[] Explode(this string s, string separator)
+        {
+            if (s == null) return new string[] { };
+            return s.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+        }
     }
 }

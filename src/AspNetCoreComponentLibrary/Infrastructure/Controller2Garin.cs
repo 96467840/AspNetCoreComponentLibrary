@@ -31,7 +31,7 @@ namespace AspNetCoreComponentLibrary
                 host = Regex.Replace(host, "^www.", "");
                 // тут мона и редирект сделать
             }
-            Site = Sites.StartQuery().FirstOrDefault(i=>i.Url == host);
+            Site = Sites.StartQuery().FirstOrDefault(i=>i.Hosts == host);
             if (Site == null)
             {
                 // поиск по альтернативному имени

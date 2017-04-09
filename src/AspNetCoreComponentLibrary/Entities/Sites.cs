@@ -11,14 +11,25 @@ namespace AspNetCoreComponentLibrary
         public Sites()
         {
             //Menus = new HashSet<Menus>();
-            //UserSites = new HashSet<UserSites>();
+            UserSites = new HashSet<UserSites>();
         }
 
         public bool IsDefault { get; set; }
         public bool IsVisible { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }
-        public string Url { get; set; }
+        public string Hosts { get; set; }
+
+        private List<string> _ListHosts;
+        public List<string> ListHosts
+        {
+            get
+            {
+                if (_ListHosts != null) return _ListHosts;
+                _ListHosts = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                return _ListHosts;
+            }
+        }
         public string Description { get; set; }
         public string Layout { get; set; }
         public string Contacts { get; set; }

@@ -14,7 +14,7 @@ namespace AspNetCoreComponentLibrary
         public string Site { get; set; }
         [Required]
         public string Host { get; set; }
-        [Required]
+        [Required(ErrorMessage = "First name cannot be longer than 50 characters.")]
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
@@ -57,7 +57,7 @@ namespace AspNetCoreComponentLibrary
 
                 }
             }
-            return controller.View();
+            return controller.View(vm);
         }
     }
 

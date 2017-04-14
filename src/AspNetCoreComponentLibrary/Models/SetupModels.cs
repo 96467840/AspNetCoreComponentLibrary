@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace AspNetCoreComponentLibrary
@@ -12,34 +13,49 @@ namespace AspNetCoreComponentLibrary
     public class SetupIM
     {
         public string Site { get; set; }
+
         [Required]
         public string Host { get; set; }
+
         [Required(ErrorMessage = "First name cannot be longer than 50 characters.")]
         public string Email { get; set; }
+
         [Required]
         public string Password { get; set; }
+
+        public string Back { get; set; }
 
         public IActionResult ToActionResult(Controller controller, IStorage Storage, ILoggerFactory loggerFactory)
         {
             var Logger = loggerFactory.CreateLogger(this.GetType().FullName);
+            var Sites = Storage.GetRepository<ISiteRepository>(false);
+
+            if (Sites.StartQuery().Any())
+            {
+                return new RedirectResult(Utils.CheckBackUrl(controller.HttpContext, Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
+            }
+
             var vm = new SetupVM() { Input = this };
-            if (controller.Request.Method.ToLower() == "post")
+            if (controller.Request.Method.ToLower() == "post") // сохранение данных
             {
                 if (controller.ModelState.IsValid)
                 {
                     Logger.LogInformation("Input valid");
-                    var Sites = Storage.GetRepository<ISiteRepository>(false);
                     var Users = Storage.GetRepository<IUserRepository>(false);
 
                     try
                     {
                         // сохраняем данные
-                        var site = new Sites() { Name = Site, Hosts = Host };
-                        Sites.Save(site);
-                        var user = new Users() { Email = Email, Password = Utils.CryptPassword(Password) };
-                        Users.Save(user);
+                        var site = new Sites() { Name = Site, Hosts = Host.ToLower(), IsVisible = true };
+                        var user = new Users() { Email = Email.ToLower(), Password = Utils.CryptPassword(Password) };
 
                         var us = new UserSites() { User = user, Site = site, IsAdmin = true };
+
+                        site.UserSites.Add(us);
+                        user.UserSites.Add(us);
+
+                        Sites.Save(site);
+                        Users.Save(user);
 
                     }
                     catch (DbUpdateException ex)
@@ -53,9 +69,14 @@ namespace AspNetCoreComponentLibrary
                 }
                 else
                 {
+                    controller.ModelState.AddModelError("", "Input wrong");
                     Logger.LogInformation("Input wrong");
 
                 }
+            }
+            else // чтение, инициализация данных
+            {
+                Host = controller.HttpContext.Request.Host.Host.ToLower();
             }
             return controller.View(vm);
         }

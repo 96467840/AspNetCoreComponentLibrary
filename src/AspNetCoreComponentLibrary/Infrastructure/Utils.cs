@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
@@ -16,6 +22,21 @@ namespace AspNetCoreComponentLibrary
         public static string CryptPassword(string source)
         {
             return source;
+        }
+
+        // проверяем урл возврата чтобы не было левых урлов тока наши домены и поддомены 
+        public static bool CheckBackUrl(HttpContext httpContext, ISiteRepository sites, string backurl)
+        {
+            var reg = new Regex("^https?://([^/:]+).*$"); // извлечь доменное имя
+            var host = reg.Replace(backurl, "$1");
+            foreach (var site in sites.StartQuery())
+            {
+                if (site.Hosts == host) return true;
+                // проверка по альтернативным доменам
+                // ...
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -111,6 +132,51 @@ namespace AspNetCoreComponentLibrary
         {
             if (s == null) return new string[] { };
             return s.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string SendGet(this string url, Encoding encoding = null, string login = null, string pass = null, int? timeout = 60)
+        {
+            using (var client = login != null && pass != null ? new HttpClient(new HttpClientHandler { Credentials = new NetworkCredential(login, pass) }) : new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromSeconds(timeout ?? 60);
+                client.DefaultRequestHeaders.UserAgent.Clear();
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
+                if (encoding == null || encoding == Encoding.UTF8)
+                {
+                    return client.GetStringAsync(url).GetAwaiter().GetResult();
+                }
+                using (var os = client.GetStreamAsync(url).GetAwaiter().GetResult())
+                using (var or = new StreamReader(os, encoding ?? Encoding.UTF8))
+                {
+                    return or.ReadToEnd();
+                }
+            }
+        }
+
+        public static string SendPost(this string url, HttpContent data, Encoding encoding = null, string login = null, string pass = null, int? timeout = 60)
+        {
+            using (var client = login != null && pass != null ? new HttpClient(new HttpClientHandler { Credentials = new NetworkCredential(login, pass) }) : new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromSeconds(timeout ?? 60);
+                client.DefaultRequestHeaders.UserAgent.Clear();
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
+
+                var res = client.PostAsync(url, data).GetAwaiter().GetResult();
+                if (encoding == null || encoding == Encoding.UTF8)
+                {
+                    return res.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                }
+                using (var os = res.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                using (var or = new StreamReader(os, encoding ?? Encoding.UTF8))
+                {
+                    return or.ReadToEnd();
+                }
+            }
+        }
+
+        public static string SendPost(this string url, IDictionary<string, string> post, Encoding encoding = null, string login = null, string pass = null, int? timeout = 60)
+        {
+            return SendPost(url, new FormUrlEncodedContent(post), encoding, login, pass, timeout);
         }
     }
 }

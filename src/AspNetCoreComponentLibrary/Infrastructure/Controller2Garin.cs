@@ -41,6 +41,7 @@ namespace AspNetCoreComponentLibrary
                 // тут мона и редирект сделать
             }
 
+            // на установку идем тока если БД пустая
             if (!Sites.StartQuery().Any())
             {
                 context.Result = new RedirectResult(Url.RouteUrl("Setup"));

@@ -31,7 +31,10 @@ namespace AspNetCoreComponentLibrary
             if (string.IsNullOrWhiteSpace(backurl)) return false;
 
             // локальные пути без указания домена считаем разрешенными
+            if (Regex.IsMatch(backurl, @"^\w+://") || Regex.IsMatch(backurl, "^//"))
             {
+                var reg = new Regex(@"^(\w+:)?//([^/:]+).*$"); // извлечь доменное имя
+                var host = reg.Replace(backurl, "$2");
                 foreach (var site in sites.StartQuery())
                 {
                     if (site.Hosts == host) return true;

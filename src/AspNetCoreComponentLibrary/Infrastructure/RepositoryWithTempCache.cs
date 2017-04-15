@@ -17,7 +17,7 @@ namespace AspNetCoreComponentLibrary
         protected static ConcurrentDictionary<K, CacheItem<T>> coll = new ConcurrentDictionary<K, CacheItem<T>>();
 
         // время жизни кеша в секундах
-        protected int TimeToLife = 3600;
+        protected virtual int TimeToLife { get { return 3600; } }
 
         public void RemoveOldRecords()
         {
@@ -27,38 +27,39 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public new void Save(T item)
+        public override void Save(T item)
         {
-            if (item == null) throw new ArgumentNullException();
+            if (item == null) throw new ArgumentNullException(nameof(item));
             if (item.Id.HasValue)
             {
-                dbSet.Update(item);
+                DbSet.Update(item);
             }
             else
             {
-                dbSet.Add(item);
+                DbSet.Add(item);
             }
             Storage.Save();
 
             //CheckColl();
             if (item.Id.HasValue) AddToCache(item.Id.Value, item);
+            AfterSave(item);
         }
 
-        public new void SetBlock(K id, bool value)
+        protected override void SetBlock(K id, bool value)
         {
             if (typeof(T) is IBlockable)
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
-                dbSet.Update(item);
+                DbSet.Update(item);
                 Storage.Save();
 
                 AddToCache(id, item);
             }
         }
 
-        public new T this[K? index]
+        public override T this[K? index]
         {
             get
             {
@@ -66,7 +67,7 @@ namespace AspNetCoreComponentLibrary
 
                 if (coll.ContainsKey(index.Value)) return coll[index.Value].Item;
 
-                var item = dbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
+                var item = DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
                 // если юзера мы не нашли то мы все равно засунем результат в кеш чтобы 2 раза не искать в БД
                 //if (item == null) { }
                 AddToCache(index.Value, item);

@@ -15,7 +15,7 @@ namespace AspNetCoreComponentLibrary
         public void LoadFromDB()
         {
             //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            coll = this.dbSet.ToDictionary(i => i.Id.Value, i => i);
+            coll = this.DbSet.ToDictionary(i => i.Id.Value, i => i);
         }
 
         protected void CheckColl()
@@ -24,13 +24,13 @@ namespace AspNetCoreComponentLibrary
             if (coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
         }
 
-        public new IQueryable<T> StartQuery()
+        public override IQueryable<T> StartQuery()
         {
             CheckColl();
             return coll.Values.AsQueryable();
         }
 
-        public new T this[K? index]
+        public override T this[K? index]
         {
             get
             {
@@ -41,40 +41,41 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public new void Save(T item)
+        public override void Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
             if (item.Id.HasValue)
             {
-                dbSet.Update(item);
+                DbSet.Update(item);
             }
             else
             {
-                dbSet.Add(item);
+                DbSet.Add(item);
             }
             Storage.Save();
 
             CheckColl();
             if (item.Id.HasValue) coll[item.Id.Value] = item;
+            AfterSave(item);
         }
 
-        public new void Remove(K id)
+        public override void Remove(K id)
         {
             var item = this[id]; // CheckColl() here
             if (item == null) return;
-            dbSet.Remove(item);
+            DbSet.Remove(item);
             Storage.Save();
             RemoveFromCache(id);
         }
 
-        public new void SetBlock(K id, bool value)
+        protected override void SetBlock(K id, bool value)
         {
             if (typeof(T) is IBlockable)
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
-                dbSet.Update(item);
+                DbSet.Update(item);
                 Storage.Save();
 
                 CheckColl();

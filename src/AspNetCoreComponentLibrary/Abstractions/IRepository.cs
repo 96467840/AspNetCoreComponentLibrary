@@ -11,7 +11,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory);
     }
 
-    public interface IRepository<K, T> where K : struct where T : BaseDM<K>
+    public interface IRepository<K, T> where K : struct, IComparable<K> where T : BaseDM<K>
     {
         IQueryable<T> StartQuery();
         //IEnumerable<T> StartQuery();

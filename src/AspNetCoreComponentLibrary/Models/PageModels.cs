@@ -36,8 +36,8 @@ namespace AspNetCoreComponentLibrary
                 var sites = controller.Sites;//storage.GetRepository<ISiteRepository>(false);
                 var menus = controller.Menus;// storage.GetRepository<IMenuRepository>(true);
 
-                var newitem = new Sites { Name = "Supper Site " + DateTime.Now };
-                sites.Save(newitem);
+                //var newitem = new Sites { Name = "Supper Site " + DateTime.Now };
+                //sites.Save(newitem);
 
                 var site = sites[2];
                 if (site != null)

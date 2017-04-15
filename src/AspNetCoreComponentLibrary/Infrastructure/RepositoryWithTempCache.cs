@@ -67,7 +67,8 @@ namespace AspNetCoreComponentLibrary
 
                 if (coll.ContainsKey(index.Value)) return coll[index.Value].Item;
 
-                var item = DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
+                //var item = DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
+                var item = DbSet.FirstOrDefault(i => i.Id.Equals(index));
                 // если юзера мы не нашли то мы все равно засунем результат в кеш чтобы 2 раза не искать в БД
                 //if (item == null) { }
                 AddToCache(index.Value, item);
@@ -83,8 +84,7 @@ namespace AspNetCoreComponentLibrary
                 //var item = this[index];
                 //if (item == null) return;
 
-                CacheItem<T> tmp;
-                coll.TryRemove(index.Value, out tmp);
+                coll.TryRemove(index.Value, out CacheItem<T> tmp);
             }
             catch { }
         }

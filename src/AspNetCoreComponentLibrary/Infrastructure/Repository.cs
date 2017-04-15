@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class Repository<K, T> where K : struct where T : BaseDM<K>
+    public abstract class Repository<K, T> where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
     {
         /*protected DbSet<T> _dbSet = null;
         protected DbSet<T> DbSet
@@ -58,7 +58,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         public virtual void AfterSave(T item) {
-            Logger.LogInformation("Repository AfterSave for {0}", item.Id);
+            //Logger.LogInformation("Repository AfterSave for {0}", item.Id);
         }
 
         public virtual void Remove(K id)
@@ -89,8 +89,9 @@ namespace AspNetCoreComponentLibrary
             get
             {
                 if (index == null) return default(T);
-                return DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
-                //return dbSet.FirstOrDefault(i => i.Id == index);
+                //return DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
+                //if (index.Value.CompareTo(index.Value)>=0) { }
+                return DbSet.FirstOrDefault(i => i.Id.Equals(index));
             }
         }
     }

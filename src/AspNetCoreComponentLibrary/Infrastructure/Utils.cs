@@ -27,16 +27,21 @@ namespace AspNetCoreComponentLibrary
         // проверяем урл возврата чтобы не было левых урлов тока наши домены и поддомены 
         public static bool CheckBackUrl(HttpContext httpContext, ISiteRepository sites, string backurl)
         {
-            var reg = new Regex("^https?://([^/:]+).*$"); // извлечь доменное имя
-            var host = reg.Replace(backurl, "$1");
-            foreach (var site in sites.StartQuery())
-            {
-                if (site.Hosts == host) return true;
-                // проверка по альтернативным доменам
-                // ...
-            }
+            // пустая строка или нул считается неправильной (чтобы не проверять дополнительно на верхнем уровне и пойти по альтернативной ветке)
+            if (string.IsNullOrWhiteSpace(backurl)) return false;
 
-            return false;
+            // локальные пути без указания домена считаем разрешенными
+            {
+                foreach (var site in sites.StartQuery())
+                {
+                    if (site.Hosts == host) return true;
+                    // проверка по альтернативным доменам
+                    // ...
+                }
+
+                return false;
+            }
+            return true;
         }
 
         /// <summary>

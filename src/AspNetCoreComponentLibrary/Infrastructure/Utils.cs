@@ -40,6 +40,43 @@ namespace AspNetCoreComponentLibrary
         }
 
         /// <summary>
+        /// Дополняем source элементами из additional с перезаписью одинаковых ключей
+        /// </summary>
+        public static IDictionary<string, T> Extend<T>(this IDictionary<string, T> source, IDictionary<string, T> additional)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            foreach (var kvp in additional)
+            {
+                source[kvp.Key] = kvp.Value;
+            }
+
+            return source;
+        }
+
+        /// <summary>
+        /// Создаем новый справочник из source с дополнением элементами из additional с перезаписью одинаковых ключей. 
+        /// </summary>
+        public static IDictionary<string, T> ExtendNew<T>(this IDictionary<string, T> source, IDictionary<string, T> additional)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            var eoColl = new Dictionary<string, T>();
+            foreach (var kvp in source)
+            {
+                eoColl[kvp.Key] = kvp.Value;
+            }
+            foreach (var kvp in additional)
+            {
+                eoColl[kvp.Key] = kvp.Value;
+            }
+
+            return eoColl;
+        }
+
+        /// <summary>
         /// Determines whether the specified HTTP request is an AJAX request.
         /// </summary>
         /// 

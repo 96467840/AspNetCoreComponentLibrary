@@ -25,7 +25,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         // проверяем урл возврата чтобы не было левых урлов тока наши домены и поддомены 
-        public static bool CheckBackUrl(HttpContext httpContext, ISiteRepository sites, string backurl)
+        public static bool CheckBackUrl(ISiteRepository sites, string backurl)
         {
             // пустая строка или нул считается неправильной (чтобы не проверять дополнительно на верхнем уровне и пойти по альтернативной ветке)
             if (string.IsNullOrWhiteSpace(backurl)) return false;
@@ -35,12 +35,8 @@ namespace AspNetCoreComponentLibrary
             {
                 var reg = new Regex(@"^(\w+:)?//([^/:]+).*$"); // извлечь доменное имя
                 var host = reg.Replace(backurl, "$2");
-                foreach (var site in sites.StartQuery())
-                {
-                    if (site.Hosts == host) return true;
-                    // проверка по альтернативным доменам
-                    // ...
-                }
+
+                if (sites.StartQuery().Any(i => i.TestHost(host))) return true;
 
                 return false;
             }

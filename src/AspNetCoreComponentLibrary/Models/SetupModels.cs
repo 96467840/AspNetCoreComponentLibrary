@@ -32,7 +32,7 @@ namespace AspNetCoreComponentLibrary
 
             if (Sites.StartQuery().Any())
             {
-                return new RedirectResult(Utils.CheckBackUrl(controller.HttpContext, Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
+                return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
             }
 
             var vm = new SetupVM() { Input = this };

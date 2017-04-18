@@ -6,8 +6,8 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    //public class SiteRepositoryProto : RepositoryWithCache<long, Sites>//, ISiteRepository
-    public class SiteRepositoryProto : Repository<long, Sites>//, ISiteRepository
+    public class SiteRepositoryProto : RepositoryWithCache<long, Sites>//, ISiteRepository
+    //public class SiteRepositoryProto : Repository<long, Sites>//, ISiteRepository
     {
         
     }

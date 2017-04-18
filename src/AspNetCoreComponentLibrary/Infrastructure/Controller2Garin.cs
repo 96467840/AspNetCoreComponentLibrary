@@ -48,13 +48,7 @@ namespace AspNetCoreComponentLibrary
                 return;
             }
 
-            Site = Sites.StartQuery().FirstOrDefault(i=>i.Hosts == host);
-            if (Site == null)
-            {
-                // поиск по альтернативному имени
-                // попозжа ...
-            }
-
+            Site = Sites.StartQuery().FirstOrDefault(i=>i.TestHost(host));
             if (Site == null)
             {
                 //throw new HttpException(404, "Сайт не найден.");

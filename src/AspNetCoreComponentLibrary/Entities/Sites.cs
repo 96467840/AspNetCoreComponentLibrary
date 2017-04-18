@@ -10,7 +10,6 @@ namespace AspNetCoreComponentLibrary
     {
         public Sites()
         {
-            //Menus = new HashSet<Menus>();
             UserSites = new HashSet<UserSites>();
         }
 
@@ -19,17 +18,6 @@ namespace AspNetCoreComponentLibrary
         public string Name { get; set; }
         public DateTime Created { get; set; }
         public string Hosts { get; set; }
-
-        private List<string> _ListHosts;
-        public List<string> ListHosts
-        {
-            get
-            {
-                if (_ListHosts != null) return _ListHosts;
-                _ListHosts = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                return _ListHosts;
-            }
-        }
         public string Description { get; set; }
         public string Layout { get; set; }
         public string Contacts { get; set; }
@@ -51,10 +39,52 @@ namespace AspNetCoreComponentLibrary
         public long? OrderPageId { get; set; }
         public long? E404pageId { get; set; }
 
-        //public virtual ICollection<Menus> Menus { get; set; }
         public virtual ICollection<UserSites> UserSites { get; set; }
-        //public virtual Menus E404page { get; set; }
-        //public virtual Menus OrderPage { get; set; }
+
+        #region Fill List of Hosts
+        // не очень удачное решение. удачно если репозиторий сайтов будет в кешах. если без кешей, то кабздец
+        // но тут в любом случае без кешей будет жопа, так как возможны "*"
+        // в целях оптимизации * разрешены тока вначале и тока в виде полного поддомена "*.example.com"
+        private List<string> _ListHosts;
+        private List<string> _ListHostsWithAsteriks;
+        private void _fillHosts()
+        {
+            var tmp = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(i => !string.IsNullOrWhiteSpace(i));
+
+            _ListHosts = tmp.Where(i => i.IndexOf("*") < 0).Select(i => i.Trim()).ToList();
+            _ListHostsWithAsteriks = tmp.Where(i => i.IndexOf("*") == 0).Select(i => i.Trim().TrimStart(new[] { '*' })).ToList();
+        }
+        public List<string> ListHosts
+        {
+            get
+            {
+                if (_ListHosts != null) return _ListHosts;
+
+                _fillHosts();
+
+                return _ListHosts;
+            }
+        }
+        public List<string> ListHostsWithAsteriks
+        {
+            get
+            {
+                if (_ListHostsWithAsteriks != null) return _ListHostsWithAsteriks;
+
+                _fillHosts();
+
+                return _ListHostsWithAsteriks;
+            }
+        }
+        # endregion
+
+        public bool TestHost(string host) {
+            if (ListHosts.Any(i => i == host)) return true;
+            if (ListHostsWithAsteriks.Any(i => host.EndsWith(host))) return true;
+            return false;
+        }
+
     }
 
 }

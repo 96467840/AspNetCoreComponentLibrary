@@ -44,6 +44,8 @@ namespace AspNetCoreComponentLibrary
         public override void Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
+            if (!BeforeSave(item)) return;
+            var isnew = !item.Id.HasValue;
             if (item.Id.HasValue)
             {
                 DbSet.Update(item);
@@ -56,7 +58,7 @@ namespace AspNetCoreComponentLibrary
 
             CheckColl();
             if (item.Id.HasValue) coll[item.Id.Value] = item;
-            AfterSave(item);
+            AfterSave(item, isnew);
         }
 
         public override void Remove(K id)

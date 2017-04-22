@@ -31,11 +31,19 @@ namespace AspNetCoreComponentLibrary
 
         public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory)
         {
-            StorageContext = storageContext;
-            Storage = storage;
-            LoggerFactory = loggerFactory;
-            Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
-            DbSet = (StorageContext as DbContext).Set<T>();
+            try
+            {
+                StorageContext = storageContext;
+                Storage = storage;
+                LoggerFactory = loggerFactory;
+                Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+                //if (StorageContext == null) Logger.LogCritical("AAAAAAAAAAAAAAAAAAA!!!!!!!!!");
+                DbSet = (StorageContext as DbContext).Set<T>();
+            }
+            catch (Exception e)
+            {
+                Logger.LogCritical(e.ToString());
+            }
         }
 
         public virtual IQueryable<T> StartQuery() {
@@ -45,6 +53,11 @@ namespace AspNetCoreComponentLibrary
         public virtual void Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
+
+            if (!BeforeSave(item)) return;
+
+            var isnew = !item.Id.HasValue;
+
             if (item.Id.HasValue)
             {
                 DbSet.Update(item);
@@ -54,11 +67,17 @@ namespace AspNetCoreComponentLibrary
                 DbSet.Add(item);
             }
             Storage.Save();
-            AfterSave(item);
+            AfterSave(item, isnew);
         }
 
-        public virtual void AfterSave(T item) {
-            //Logger.LogInformation("Repository AfterSave for {0}", item.Id);
+        public virtual bool BeforeSave(T item)
+        {
+            Logger.LogTrace("Repository BeforeSave for {0}", item.Id);
+            return true;
+        }
+
+        public virtual void AfterSave(T item, bool isnew) {
+            Logger.LogTrace("Repository AfterSave for {0}", item.Id);
         }
 
         public virtual void Remove(K id)

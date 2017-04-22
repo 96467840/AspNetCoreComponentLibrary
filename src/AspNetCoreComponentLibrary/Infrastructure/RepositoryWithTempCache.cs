@@ -30,6 +30,10 @@ namespace AspNetCoreComponentLibrary
         public override void Save(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
+
+            if (!BeforeSave(item)) return;
+            var isnew = !item.Id.HasValue;
+
             if (item.Id.HasValue)
             {
                 DbSet.Update(item);
@@ -42,7 +46,7 @@ namespace AspNetCoreComponentLibrary
 
             //CheckColl();
             if (item.Id.HasValue) AddToCache(item.Id.Value, item);
-            AfterSave(item);
+            AfterSave(item, isnew);
         }
 
         protected override void SetBlock(K id, bool value)

@@ -54,9 +54,10 @@ namespace AspNetCoreComponentLibrary
                         site.UserSites.Add(us);
                         user.UserSites.Add(us);
 
-                        Sites.Save(site);
+                        Sites.Save(site); // БД для тока что созданного сайта будет создана автоматически после сохранения сайта
                         Users.Save(user);
 
+                        return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
                     }
                     catch (DbUpdateException ex)
                     {

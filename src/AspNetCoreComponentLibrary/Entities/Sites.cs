@@ -49,11 +49,11 @@ namespace AspNetCoreComponentLibrary
         private List<string> _ListHostsWithAsteriks;
         private void _fillHosts()
         {
-            var tmp = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(i => !string.IsNullOrWhiteSpace(i));
+            var all = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => i.Trim());
 
-            _ListHosts = tmp.Where(i => i.IndexOf("*") < 0).Select(i => i.Trim()).ToList();
-            _ListHostsWithAsteriks = tmp.Where(i => i.Trim().IndexOf("*") == 0).Select(i => i.Trim().TrimStart(new[] { '*' })).ToList();
+            _ListHosts = all.Where(i => i.IndexOf("*") < 0).ToList();
+            _ListHostsWithAsteriks = all.Where(i => i.IndexOf("*") == 0).Select(i => i.TrimStart(new[] { '*' })).ToList();
         }
         public List<string> ListHosts
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class News : BaseDM<long>, IBlockable
+    public partial class News : BaseDM<long>, IBlockable
     {
         public long SiteId { get; set; }
         public string Name { get; set; }

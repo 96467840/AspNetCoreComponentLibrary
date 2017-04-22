@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class Sites : BaseDM<long>
+    public partial class Sites : BaseDM<long>
     {
         public Sites()
         {
@@ -53,7 +53,7 @@ namespace AspNetCoreComponentLibrary
                     .Where(i => !string.IsNullOrWhiteSpace(i));
 
             _ListHosts = tmp.Where(i => i.IndexOf("*") < 0).Select(i => i.Trim()).ToList();
-            _ListHostsWithAsteriks = tmp.Where(i => i.IndexOf("*") == 0).Select(i => i.Trim().TrimStart(new[] { '*' })).ToList();
+            _ListHostsWithAsteriks = tmp.Where(i => i.Trim().IndexOf("*") == 0).Select(i => i.Trim().TrimStart(new[] { '*' })).ToList();
         }
         public List<string> ListHosts
         {
@@ -81,7 +81,7 @@ namespace AspNetCoreComponentLibrary
 
         public bool TestHost(string host) {
             if (ListHosts.Any(i => i == host)) return true;
-            if (ListHostsWithAsteriks.Any(i => host.EndsWith(host))) return true;
+            if (ListHostsWithAsteriks.Any(i => host.EndsWith(i))) return true;
             return false;
         }
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class Users : BaseDM<long>
+    public partial class Users : BaseDM<long>
     {
         public Users()
         {

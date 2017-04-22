@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class UserSites
+    public partial class UserSites
     {
         public long UserId { get; set; }
         public long SiteId { get; set; }

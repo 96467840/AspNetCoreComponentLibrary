@@ -39,7 +39,9 @@ namespace AspNetCoreComponentLibrary
                 //var newitem = new Sites { Name = "Supper Site " + DateTime.Now };
                 //sites.Save(newitem);
 
-                var site = sites[2];
+                var site = sites[1];
+
+                site = sites[2];
                 if (site != null)
                 {
                     site.Name = "New name 2 " + DateTime.Now;

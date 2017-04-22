@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreComponentLibrary
 {
-    class ControllerEditable : Controller2Garin
+    class ControllerEditable<K, T> : Controller2Garin where T : BaseDM<K> where K : struct
     {
         public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory) : base(storage, loggerFactory)
         {

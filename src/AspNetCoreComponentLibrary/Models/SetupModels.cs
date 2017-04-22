@@ -28,7 +28,7 @@ namespace AspNetCoreComponentLibrary
         public IActionResult ToActionResult(Controller controller, IStorage Storage, ILoggerFactory loggerFactory)
         {
             var Logger = loggerFactory.CreateLogger(this.GetType().FullName);
-            var Sites = Storage.GetRepository<ISiteRepository>(false);
+            var Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
 
             if (Sites.StartQuery().Any())
             {
@@ -36,12 +36,12 @@ namespace AspNetCoreComponentLibrary
             }
 
             var vm = new SetupVM() { Input = this };
-            if (controller.Request.Method.ToLower() == "post") // сохранение данных
+            if ( "POST".EqualsIC(controller.Request.Method) ) // сохранение данных
             {
                 if (controller.ModelState.IsValid)
                 {
                     Logger.LogInformation("Input valid");
-                    var Users = Storage.GetRepository<IUserRepository>(false);
+                    var Users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
 
                     try
                     {

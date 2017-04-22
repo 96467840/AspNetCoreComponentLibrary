@@ -5,9 +5,15 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary.Abstractions
 {
+    public enum EnumDB
+    {
+        UserSites = 1,
+        Content = 2
+    }
+
     public interface IStorage
     {
-        T GetRepository<T>(bool SiteStorage) where T : IRepositorySetStorageContext;
+        T GetRepository<T>(EnumDB db) where T : IRepositorySetStorageContext;
 
         IStorageContext GetContextForSite(long siteid);
 

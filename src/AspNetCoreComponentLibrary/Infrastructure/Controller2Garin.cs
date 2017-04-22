@@ -69,13 +69,13 @@ namespace AspNetCoreComponentLibrary
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            Sites = Storage.GetRepository<ISiteRepository>(false);
-            Users = Storage.GetRepository<IUserRepository>(false);
+            Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
+            Users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
 
             ResolveCurrentSite(context);
             if (context.Result != null) return;
 
-            Menus = Storage.GetRepository<IMenuRepository>(true);
+            Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
         }
 
     }

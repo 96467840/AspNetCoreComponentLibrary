@@ -19,6 +19,16 @@ namespace AspNetCoreComponentLibrary
 {
     public static class Utils
     {
+        public static bool EqualsIC(this string arg1, string arg2) {
+            if (arg1 == null)
+                throw new ArgumentNullException(nameof(arg1));
+
+            // однозначно
+            if (arg2 == null) return false;
+
+            return string.Equals(arg1, arg2, StringComparison.OrdinalIgnoreCase);
+        }
+
         public static string CryptPassword(string source)
         {
             return source;

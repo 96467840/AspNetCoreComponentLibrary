@@ -4,9 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreComponentLibrary
 {
+    /// <summary>
+    /// Пропускаем только по шаблону \w\w(-\w\w)?
+    /// </summary>
+    public class CultureRouteConstraint : IRouteConstraint
+    {
+        public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
+        {
+            var culture = (values[routeKey] ?? "").ToString();
+            return culture.TestCulture();
+        }
+    }
+
     public class RouteConfig
     {
         //public string Name { get; set; }
@@ -37,10 +50,10 @@ namespace AspNetCoreComponentLibrary
             var defaults = new Dictionary<string, RouteConfig> {
                 { "Setup",         new RouteConfig(0,      "setup", new { controller = "Setup", action = "Index" })},
 
-                { "Admin.Culture", new RouteConfig(10000,  "{culture}/admin/{controller}/{action}/", new { action = "List" })},
+                { "Admin.Culture", new RouteConfig(10000,  "{culture}/admin/{controller}/{action}/", new { action = "List" }, new { culture = new CultureRouteConstraint() })},
                 { "Admin" ,        new RouteConfig(10001,  "admin/{controller}/{action}/", new { action = "List" })},
 
-                { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},
+                { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" }, new { culture = new CultureRouteConstraint() })},
                 { "Page",          new RouteConfig(100001, "{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},
             };
 

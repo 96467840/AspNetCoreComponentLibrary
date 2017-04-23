@@ -1,7 +1,9 @@
 ﻿
 @{
-    ViewData["Title"] = "List";
+    //ViewData["Title"] = "List";
+    Layout = "_LayoutAdmin";
 }
 
 <h2>Edit</h2>
 
+<a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>

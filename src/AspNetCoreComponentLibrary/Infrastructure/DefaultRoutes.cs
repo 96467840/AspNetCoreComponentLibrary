@@ -40,8 +40,8 @@ namespace AspNetCoreComponentLibrary
                 { "Admin.Culture", new RouteConfig(10000,  "{culture}/admin/{controller}/{action}/", new { action = "List" })},
                 { "Admin" ,        new RouteConfig(10001,  "admin/{controller}/{action}/", new { action = "List" })},
 
-                { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index" })},
-                { "Page",          new RouteConfig(100001, "{page?}/{*path}", new { controller = "Home", action = "Index" })},
+                { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},
+                { "Page",          new RouteConfig(100001, "{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},
             };
 
             if (replace != null)

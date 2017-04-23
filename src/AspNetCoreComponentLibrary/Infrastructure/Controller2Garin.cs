@@ -63,6 +63,7 @@ namespace AspNetCoreComponentLibrary
                 return;
             }
 
+            //Logger.LogDebug("Connect to Content DB {0}", Site.Id.Value);
             // для начала мы должны определить текущий сайт
             Storage.ConnectToSiteDB(Site.Id.Value);
         }

@@ -7,6 +7,6 @@ namespace AspNetCoreComponentLibrary
 {
     public class BaseIM
     {
-
+        public string Culture { get; set; }
     }
 }

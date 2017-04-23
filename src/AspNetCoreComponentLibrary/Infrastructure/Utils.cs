@@ -111,7 +111,7 @@ namespace AspNetCoreComponentLibrary
         /// приводим object к Dictionary<string, object>
         /// </summary>
         // скопипизжено http://stackoverflow.com/questions/4943817/mapping-object-to-dictionary-and-vice-versa
-        public static IDictionary<string, object> AsDictionary(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+        public static Dictionary<string, object> AsDictionary(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
         {
             return source.GetType().GetProperties(bindingAttr).ToDictionary
             (
@@ -155,6 +155,8 @@ namespace AspNetCoreComponentLibrary
         /// </summary>
         public static string GetRouteName(this RouteData routeData)
         {
+            return routeData.DataTokens["Name"] as string;
+            /*
             // пиздец костылище но как эт сделать привильно я хз
             string name = null;
             foreach (var r in routeData.Routers)
@@ -166,7 +168,7 @@ namespace AspNetCoreComponentLibrary
                     break;
                 }
             }
-            return name;
+            return name;/**/
         }
 
         /// <summary>

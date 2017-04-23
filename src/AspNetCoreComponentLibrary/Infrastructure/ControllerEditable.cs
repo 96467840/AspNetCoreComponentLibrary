@@ -4,19 +4,27 @@ using System.Text;
 using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AspNetCoreComponentLibrary
 {
-    class ControllerEditable<K, T, R> : Controller2Garin where T : BaseDM<K> where K : struct where R:IRepositorySetStorageContext
+    public class ControllerEditable<K, T, R> : Controller2Garin where T : BaseDM<K> where K : struct where R:IRepositorySetStorageContext
     {
         //public T Item { get; set; }
-        protected R Repository { get; set; }
+        public R Repository { get; set; }
 
         // по умолчанию все сущности храним в БД контента сайта (кроме самого сайта и юзеров)
         protected virtual EnumDB DB { get { return EnumDB.Content; } }
 
         public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory) : base(storage, loggerFactory)
         {
+            // здесь еще нет конекта к БД
+            //Repository = Storage.GetRepository<R>(DB);
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
             Repository = Storage.GetRepository<R>(DB);
         }
 

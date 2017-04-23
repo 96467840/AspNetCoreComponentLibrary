@@ -12,7 +12,7 @@ namespace AspNetCoreComponentLibrary
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
             var vm = new EditVM<K, T>(controller) { Input = this};
 
-            return controller.View(vm);
+            return controller.View("Admin/Edit", vm);
         }
     }
 

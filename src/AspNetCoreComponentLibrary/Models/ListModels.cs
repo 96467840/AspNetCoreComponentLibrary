@@ -7,12 +7,14 @@ namespace AspNetCoreComponentLibrary
 {
     public class ListIM<K, T> where T : BaseDM<K> where K : struct
     {
+        public int? Offset { get; set; }
+
         public virtual IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
             var vm = new ListVM<K, T>(controller) { Input = this };
 
-            return controller.View(vm);
+            return controller.View("Admin/List", vm);
         }
     }
 

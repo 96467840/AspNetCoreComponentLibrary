@@ -22,8 +22,7 @@ namespace AspNetCoreComponentLibrary
 
     public class PageIM : BaseIM
     {
-        public string lang { get; set; }
-        public string page { get; set; }
+        public string Page { get; set; }
         
         public IActionResult ToActionResult(Controller2Garin controller)
         {
@@ -31,7 +30,7 @@ namespace AspNetCoreComponentLibrary
             var vm = new PageVM(controller);
             try
             {
-                Logger.LogInformation("Begin '{page}' in lang '{lang}'", page, lang);
+                Logger.LogInformation("Begin '{page}' in lang '{Culture}'", Page, Culture);
                 var storage = controller.Storage;
                 var sites = controller.Sites;//storage.GetRepository<ISiteRepository>(false);
                 var menus = controller.Menus;// storage.GetRepository<IMenuRepository>(true);

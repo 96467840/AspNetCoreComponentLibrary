@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class RepositoryWithCache<K, T> : Repository<K, T>/*, IEnumerable<T>*/ where K : struct where T : BaseDM<K>
+    public abstract class RepositoryWithCache<K, T> : Repository<K, T>/*, IEnumerable<T>*/ /*where K : struct*/ where T : BaseDM<K>
     {
         protected static Dictionary<K, T> coll;
 
         public void LoadFromDB()
         {
             //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            coll = this.DbSet.ToDictionary(i => i.Id.Value, i => i);
+            coll = this.DbSet.ToDictionary(i => i.Id, i => i);
         }
 
         protected void CheckColl()
@@ -30,14 +30,14 @@ namespace AspNetCoreComponentLibrary
             return coll.Values.AsQueryable();
         }
 
-        public override T this[K? index]
+        public override T this[K index]
         {
             get
             {
                 CheckColl();
-                if (index == null) return default(T);
-                if (!coll.ContainsKey(index.Value)) return default(T);
-                return coll[index.Value];
+                //if (index == null) return default(T);
+                if (!coll.ContainsKey(index)) return default(T);
+                return coll[index];
             }
         }
 
@@ -45,8 +45,8 @@ namespace AspNetCoreComponentLibrary
         {
             if (item == null) throw new ArgumentNullException();
             if (!BeforeSave(item)) return;
-            var isnew = !item.Id.HasValue;
-            if (item.Id.HasValue)
+            var isnew = Utils.CheckDefault<K>(item.Id);// !item.Id.HasValue;
+            if (!isnew)
             {
                 DbSet.Update(item);
             }
@@ -57,7 +57,9 @@ namespace AspNetCoreComponentLibrary
             Storage.Save();
 
             CheckColl();
-            if (item.Id.HasValue) coll[item.Id.Value] = item;
+            //if (item.Id.HasValue) 
+            AddToCache(item.Id, item);
+
             AfterSave(item, isnew);
         }
 
@@ -80,15 +82,14 @@ namespace AspNetCoreComponentLibrary
                 DbSet.Update(item);
                 Storage.Save();
 
-                CheckColl();
-                coll[id] = item;
+                AddToCache(id, item);
             }
         }
-        public bool Contains(K? index)
+        public bool Contains(K index)
         {
             CheckColl();
             if (index == null) return false;
-            return coll.ContainsKey(index.Value);
+            return coll.ContainsKey(index);
         }
 
         public void Clear()
@@ -97,14 +98,14 @@ namespace AspNetCoreComponentLibrary
             coll.Clear();
         }
 
-        public void RemoveFromCache(K? index)
+        public void RemoveFromCache(K index)
         {
             CheckColl();
             try
             {
                 var item = this[index];
                 if (item == null) return;
-                coll.Remove(index.Value);
+                coll.Remove(index);
             }
             catch { }
         }
@@ -116,20 +117,5 @@ namespace AspNetCoreComponentLibrary
             else coll.Add(index, item);
         }
 
-        /*
-        #region [   IEnumerable<T>   ]
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Coll.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
-        /**/
     }
 }

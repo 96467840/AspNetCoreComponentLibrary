@@ -10,13 +10,12 @@ namespace AspNetCoreComponentLibrary
 {
     public class PageVM: BaseVM
     {
-        public BreadcrumbVM Breadcrumb { get; set; }
-
+        
         public List<Sites> Sites { get; set; }
 
         public PageVM(Controller2Garin controler):base(controler)
         {
-            Breadcrumb = new BreadcrumbVM(new List<BreadcrumbItem>());
+            
         }
     }
 

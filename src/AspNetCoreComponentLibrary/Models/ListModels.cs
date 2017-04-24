@@ -5,7 +5,11 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class ListIM<K, T> where T : BaseDM<K> where K : struct
+    public interface IListVM: IAdminVM
+    {
+    }
+
+    public class ListIM<K, T> where T : BaseDM<K>/* where K : struct*/
     {
         public int? Offset { get; set; }
 
@@ -18,7 +22,7 @@ namespace AspNetCoreComponentLibrary
         }
     }
 
-    public class ListVM<K, T> : BaseVM where T : BaseDM<K> where K : struct
+    public class ListVM<K, T> : AdminVM, IListVM where T : BaseDM<K> /*where K : struct*/
     {
         public ListIM<K, T> Input { get; set; }
 

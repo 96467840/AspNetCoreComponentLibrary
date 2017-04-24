@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class Repository<K, T> where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
+    public abstract class Repository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
     {
         /*protected DbSet<T> _dbSet = null;
         protected DbSet<T> DbSet
@@ -56,9 +56,9 @@ namespace AspNetCoreComponentLibrary
 
             if (!BeforeSave(item)) return;
 
-            var isnew = !item.Id.HasValue;
+            var isnew = Utils.CheckDefault<K>(item.Id);// !item.Id.HasValue;
 
-            if (item.Id.HasValue)
+            if (!isnew)
             {
                 DbSet.Update(item);
             }
@@ -103,11 +103,13 @@ namespace AspNetCoreComponentLibrary
         public void Block(K id) { SetBlock(id, true); }
         public void UnBlock(K id) { SetBlock(id, false); }
 
-        public virtual T this[K? index]
+        public virtual T this[K index]
         {
             get
             {
-                if (index == null) return default(T);
+                // так как теперь K у нас может быть или строкой или числом то сравнение индекса с нулом глупо
+                //if (index == null) return default(T);
+
                 //return DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
                 //if (index.Value.CompareTo(index.Value)>=0) { }
                 return DbSet.FirstOrDefault(i => i.Id.Equals(index));

@@ -12,7 +12,7 @@ namespace AspNetCoreComponentLibrary
         public T Item { get; set; }
     }
 
-    public class RepositoryWithTempCache<K,T> : Repository<K, T> where K : struct where T : BaseDM<K>
+    public class RepositoryWithTempCache<K, T> : Repository<K, T> /*where K : struct*/ where T : BaseDM<K>
     {
         protected static ConcurrentDictionary<K, CacheItem<T>> coll = new ConcurrentDictionary<K, CacheItem<T>>();
 
@@ -22,7 +22,7 @@ namespace AspNetCoreComponentLibrary
         public void RemoveOldRecords()
         {
             var now = DateTime.Now;
-            foreach (var item in coll.Where(i=>i.Value.Time<now)) {
+            foreach (var item in coll.Where(i => i.Value.Time < now)) {
                 RemoveFromCache(item.Key);
             }
         }
@@ -32,9 +32,9 @@ namespace AspNetCoreComponentLibrary
             if (item == null) throw new ArgumentNullException(nameof(item));
 
             if (!BeforeSave(item)) return;
-            var isnew = !item.Id.HasValue;
+            var isnew = !Utils.CheckDefault<K>(item.Id);// !item.Id.HasValue;
 
-            if (item.Id.HasValue)
+            if (!isnew)
             {
                 DbSet.Update(item);
             }
@@ -45,7 +45,7 @@ namespace AspNetCoreComponentLibrary
             Storage.Save();
 
             //CheckColl();
-            if (item.Id.HasValue) AddToCache(item.Id.Value, item);
+            AddToCache(item.Id, item);
             AfterSave(item, isnew);
         }
 
@@ -63,38 +63,43 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public override T this[K? index]
+        public override T this[K index]
         {
             get
             {
                 if (index == null) return default(T);
 
-                if (coll.ContainsKey(index.Value)) return coll[index.Value].Item;
+                if (coll.ContainsKey(index)) return coll[index].Item;
 
                 //var item = DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
                 var item = DbSet.FirstOrDefault(i => i.Id.Equals(index));
                 // если юзера мы не нашли то мы все равно засунем результат в кеш чтобы 2 раза не искать в БД
                 //if (item == null) { }
-                AddToCache(index.Value, item);
+                AddToCache(index, item);
 
                 return item;
             }
         }
 
-        public void RemoveFromCache(K? index)
+        public void RemoveFromCache(K index)
         {
             try
             {
                 //var item = this[index];
                 //if (item == null) return;
 
-                coll.TryRemove(index.Value, out CacheItem<T> tmp);
+                coll.TryRemove(index, out CacheItem<T> tmp);
             }
             catch { }
         }
 
+        public virtual void BeforeAddToCache(T item)
+        {
+        }
+
         public void AddToCache(K index, T item)
         {
+            BeforeAddToCache(item);
             //if (Coll.ContainsKey(index)) Coll[index] = item;
             //else Coll.Add(index, item);
 

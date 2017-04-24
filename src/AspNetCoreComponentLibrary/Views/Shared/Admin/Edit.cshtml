@@ -1,9 +1,16 @@
-﻿
+﻿@model IEditVM
 @{
-    //ViewData["Title"] = "List";
     Layout = "_LayoutAdmin";
 }
 
-<h2>Edit</h2>
+@await Component.InvokeAsync(nameof(BreadcrumbComponent), new { vm = Model.Breadcrumb })
 
-<a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
+<h1>Edit</h1>
+
+
+
+@* -------------------------------------------------------------------------------------------- *@
+@section navbar
+{
+    @Html.Partial("Admin/_NavBar")
+}

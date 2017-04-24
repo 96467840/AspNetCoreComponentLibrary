@@ -5,7 +5,13 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class EditIM<K, T> where T : BaseDM<K> where K : struct
+    public interface IEditVM : IAdminVM
+    {
+
+    }
+
+
+    public class EditIM<K, T> where T : BaseDM<K>/* where K : struct*/
     {
         public virtual IActionResult ToActionResult(Controller2Garin controller)
         {
@@ -16,7 +22,7 @@ namespace AspNetCoreComponentLibrary
         }
     }
 
-    public class EditVM<K, T> : BaseVM where T : BaseDM<K> where K : struct
+    public class EditVM<K, T> : AdminVM where T : BaseDM<K>/* where K : struct*/
     {
         public EditIM<K, T> Input { get; set; }
 

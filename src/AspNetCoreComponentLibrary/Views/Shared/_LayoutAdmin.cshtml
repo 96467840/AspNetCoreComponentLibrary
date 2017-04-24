@@ -7,10 +7,26 @@
     @RenderSection("styles", required: false)
 </head>
 <body>
-    @Html.Partial("Admin/_NavBar")
+    @RenderSection("navbar", required: false)
+
     <div class="container body-content">
-        @RenderBody()
-        @Html.Partial("Admin/_Footer")    
+        @if (IsSectionDefined("left"))
+        {
+            <div class="row">
+                <div class="col-md-2">
+                    @RenderSection("left", required: false)
+                </div>
+                <div class="col-md-10">
+                    @RenderBody()
+                </div>
+            </div>
+        }
+        else
+        {
+            @RenderBody()
+        }
+
+        @Html.Partial("Admin/_Footer")
     </div>
 
     @Html.Partial("Admin/_Scripts")

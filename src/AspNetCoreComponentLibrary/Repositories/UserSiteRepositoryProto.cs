@@ -1,13 +1,11 @@
-﻿using AspNetCoreComponentLibrary.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class BaseDM<K>
+    public class UserSiteRepositoryProto : RepositoryForRelations<UserSites>
     {
-        public K Id { get; set; }
     }
 }

@@ -11,17 +11,32 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory);
     }
 
-    public interface IRepository<K, T> where K : struct where T : BaseDM<K>
+    public interface IRepository<K, T> where T : BaseDM<K>
     {
         IQueryable<T> StartQuery();
         //IEnumerable<T> StartQuery();
 
-        T this[K? index] { get; }
+        T this[K index] { get; }
 
         void Save(T item);
         void AfterSave(T item, bool isnew);
         void Block(K id);
         void UnBlock(K id);
         void Remove(K id);
+    }
+
+    // реопзиторий для связей (нет ключа, сохранение идет автоматически при изменении основной сущности, функции сохранения оставим)
+    // сохранение оставить сложно так как нет ключа - нет проверки на новое старое
+    public interface IRepository<T> where T : class
+    {
+        IQueryable<T> StartQuery();
+
+        //T this[string index] { get; }
+
+        //void Save(T item);
+        //void AfterSave(T item, bool isnew);
+        //void Block(string id);
+        //void UnBlock(string id);
+        //void Remove(string id);
     }
 }

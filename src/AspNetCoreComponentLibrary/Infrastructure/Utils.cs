@@ -19,6 +19,13 @@ namespace AspNetCoreComponentLibrary
 {
     public static class Utils
     {
+        // see here http://stackoverflow.com/questions/1895761/test-for-equality-to-the-default-value
+        // проверка на значение по умолчанию
+        public static bool CheckDefault<K>(K item)
+        {
+            return EqualityComparer<K>.Default.Equals(item, default(K));
+        }
+
         public static bool EqualsIC(this string arg1, string arg2) {
             if (arg1 == null)
                 throw new ArgumentNullException(nameof(arg1));

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public partial class UserSites
+    public partial class UserSites //: BaseDM<string>
     {
         public long UserId { get; set; }
         public long SiteId { get; set; }

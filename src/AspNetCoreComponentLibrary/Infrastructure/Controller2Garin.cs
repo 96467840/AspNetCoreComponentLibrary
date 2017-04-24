@@ -20,15 +20,26 @@ namespace AspNetCoreComponentLibrary
         public IUserRepository Users { get; set; }
 
         public Sites Site { get; set; }
+        public Users SessionUser { get; set; }
 
         public IMenuRepository Menus { get; set; }
-
 
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
         {
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
             Storage = storage;
+        }
+
+        protected void LoadSessionUser()
+        {
+            Logger.LogTrace("LoadSessionUser");
+            long id = 1;
+            SessionUser = Users[id];
+            Logger.LogInformation("user {0} have {1} relations with sites.", id, SessionUser.UserSites.Count);
+
+            // вот так делать нельзя! так мы пойдем по БД. права будем грузить при загрузке юзера
+            //var tmp = SessionUser.UserSites.Where(i=>i.SiteId == 1);
         }
 
         protected void ResolveCurrentSite(ActionExecutingContext context)
@@ -65,13 +76,16 @@ namespace AspNetCoreComponentLibrary
 
             //Logger.LogDebug("Connect to Content DB {0}", Site.Id.Value);
             // для начала мы должны определить текущий сайт
-            Storage.ConnectToSiteDB(Site.Id.Value);
+            Storage.ConnectToSiteDB(Site.Id);
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
             Users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
+
+            LoadSessionUser();
+            if (context.Result != null) return;
 
             ResolveCurrentSite(context);
             if (context.Result != null) return;

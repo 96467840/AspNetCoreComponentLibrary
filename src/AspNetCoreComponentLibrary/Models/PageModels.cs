@@ -45,6 +45,9 @@ namespace AspNetCoreComponentLibrary
                 {
                     site.Name = "New name 2 " + DateTime.Now;
                     sites.Save(site);
+                    storage.Save();
+
+                    sites.AddToCache(site.Id);
                 }
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
                 vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();

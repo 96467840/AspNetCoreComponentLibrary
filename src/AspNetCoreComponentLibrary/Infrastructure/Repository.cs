@@ -8,20 +8,8 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class Repository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
+    public abstract class Repository<K, T>: IRepository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
     {
-        /*protected DbSet<T> _dbSet = null;
-        protected DbSet<T> DbSet
-        {
-            get
-            {
-                //(Storage as Storage)._logger.LogInformation("try get dbSet...");
-                if (_dbSet != null) return _dbSet;
-                _dbSet = (StorageContext as DbContext).Set<T>();
-                return _dbSet;
-            }
-        }/**/
-
         protected DbSet<T> DbSet { get; set; }
 
         protected IStorageContext StorageContext;
@@ -56,7 +44,7 @@ namespace AspNetCoreComponentLibrary
 
             if (!BeforeSave(item)) return;
 
-            var isnew = Utils.CheckDefault<K>(item.Id);// !item.Id.HasValue;
+            var isnew = Utils.CheckDefault(item.Id);
 
             if (!isnew)
             {
@@ -66,8 +54,6 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(item);
             }
-            Storage.Save();
-            AfterSave(item, isnew);
         }
 
         public virtual bool BeforeSave(T item)
@@ -78,14 +64,13 @@ namespace AspNetCoreComponentLibrary
 
         public virtual void AfterSave(T item, bool isnew) {
             Logger.LogTrace("Repository AfterSave for {0}", item.Id);
-        }
+        }/**/
 
-        public virtual void Remove(K id)
+        public virtual void Remove(T item)
         {
-            var item = this[id];
-            if (item == null) return;
+            //var item = this[id];
+            //if (item == null) return;
             DbSet.Remove(item);
-            Storage.Save();
         }
 
         protected virtual void SetBlock(K id, bool value)
@@ -96,24 +81,29 @@ namespace AspNetCoreComponentLibrary
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
                 DbSet.Update(item);
-                Storage.Save();
             }
         }
 
         public void Block(K id) { SetBlock(id, true); }
         public void UnBlock(K id) { SetBlock(id, false); }
 
+        public virtual void AddToCache(K id) { }
+        public virtual void RemoveFromCache(K id) { }
+
         public virtual T this[K index]
         {
             get
             {
-                // так как теперь K у нас может быть или строкой или числом то сравнение индекса с нулом глупо
-                //if (index == null) return default(T);
-
-                //return DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
-                //if (index.Value.CompareTo(index.Value)>=0) { }
-                return DbSet.FirstOrDefault(i => i.Id.Equals(index));
+                return GetSingleFromDB(index);
             }
+        }
+
+        public virtual T GetSingleFromDB(K index)
+        {
+            return DbSet
+                // очень важно!
+                .AsNoTracking()
+                .FirstOrDefault(i => i.Id.Equals(index));
         }
     }
 }

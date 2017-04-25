@@ -15,10 +15,10 @@ namespace AspNetCoreComponentLibrary
         // эта инфа нам будет нужна тока для одной страницы и запрашивать ее будем довольно редко
         // для конкретного юзера мы сделаем сохранение прав в кеш, так как юзеры у нас будут во временном кеше
         //
-        // очень плохое решение см UserRepositoryProto (там делал сранения вариантов)
+        // очень плохое решение см UserRepositoryProto (там делал сранения вариантов) 
         /*public List<UserSites> GetUserRights(long siteid)
         {
-            return DbSet.Where(i => i.Id == siteid).SelectMany(i => i.UserSites).ToList();
+            return DbSet.AsNoTracking().Where(i => i.Id == siteid).SelectMany(i => i.UserSites).ToList();
         }/**/
     }
 }

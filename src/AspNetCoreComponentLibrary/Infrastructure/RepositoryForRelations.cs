@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class RepositoryForRelations<T> where T: class
+    public abstract class RepositoryForRelations<T> : IRepository<T> where T: class
     {
         protected DbSet<T> DbSet { get; set; }
         protected IStorageContext StorageContext;
@@ -36,6 +36,21 @@ namespace AspNetCoreComponentLibrary
         public virtual IQueryable<T> StartQuery()
         {
             return DbSet.AsNoTracking();
+        }
+
+        public virtual void Save(T item)
+        {
+            if (item == null) throw new ArgumentNullException();
+            
+            DbSet.Add(item);
+
+        }/**/
+
+        public virtual void Remove(T item)
+        {
+            //var item = this[id];
+            //if (item == null) return;
+            DbSet.Remove(item);
         }
 
     }

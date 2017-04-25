@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class RepositoryWithCache<K, T> : Repository<K, T>/*, IEnumerable<T>*/ /*where K : struct*/ where T : BaseDM<K>
+    public abstract class RepositoryWithCache<K, T> : Repository<K, T> where T : BaseDM<K>
     {
         protected static Dictionary<K, T> coll;
 
-        public void LoadFromDB()
+        public virtual void LoadFromDB()
         {
             //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            coll = this.DbSet
+            coll = DbSet
                 // очень важный момент!
                 .AsNoTracking()
                 .ToDictionary(i => i.Id, i => i);
@@ -39,7 +39,6 @@ namespace AspNetCoreComponentLibrary
             get
             {
                 CheckColl();
-                //if (index == null) return default(T);
                 if (!coll.ContainsKey(index)) return default(T);
                 return coll[index];
             }
@@ -49,7 +48,7 @@ namespace AspNetCoreComponentLibrary
         {
             if (item == null) throw new ArgumentNullException();
             if (!BeforeSave(item)) return;
-            var isnew = Utils.CheckDefault<K>(item.Id);// !item.Id.HasValue;
+            var isnew = Utils.CheckDefault(item.Id);
             if (!isnew)
             {
                 DbSet.Update(item);
@@ -58,23 +57,16 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(item);
             }
-            Storage.Save();
-
+            
             CheckColl();
-            //if (item.Id.HasValue) 
-            AddToCache(item.Id, item);
-
-            AfterSave(item, isnew);
         }
 
-        public override void Remove(K id)
+        /*public override void Remove(T item)
         {
-            var item = this[id]; // CheckColl() here
-            if (item == null) return;
+            //var item = this[id]; // CheckColl() here
+            //if (item == null) return;
             DbSet.Remove(item);
-            Storage.Save();
-            RemoveFromCache(id);
-        }
+        }*/
 
         protected override void SetBlock(K id, bool value)
         {
@@ -84,9 +76,6 @@ namespace AspNetCoreComponentLibrary
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
                 DbSet.Update(item);
-                Storage.Save();
-
-                AddToCache(id, item);
             }
         }
         public bool Contains(K index)
@@ -102,7 +91,7 @@ namespace AspNetCoreComponentLibrary
             coll.Clear();
         }
 
-        public void RemoveFromCache(K index)
+        public override void RemoveFromCache(K index)
         {
             CheckColl();
             try
@@ -114,12 +103,16 @@ namespace AspNetCoreComponentLibrary
             catch { }
         }
 
-        public void AddToCache(K index, T item)
+        public override void AddToCache(K index)
         {
             CheckColl();
-            if (coll.ContainsKey(index)) coll[index] = item;
-            else coll.Add(index, item);
+
+            var newitem = GetSingleFromDB(index);
+
+            if (coll.ContainsKey(index)) coll[index] = newitem;
+            else coll.Add(index, newitem);
         }
+
 
     }
 }

@@ -13,6 +13,11 @@ namespace AspNetCoreComponentLibrary
         protected override int TimeToLife { get { return 6400; } }
 
         // имхо так вроде как около дела. Но так валится сохранение сайта если идет в одном запросе с этим запросом
+        // повтрение краха: 1. грузим юзера SessionUser = Users[id]; (при первом получении юзера мы грузим из БД и его связи в BeforeAddToCache)
+        // 2. получаем сайт любого(!) юзера site = sites[2];
+        // 3. меняем что в сайте и сохраняем sites.Save(site);
+        // 4. огребаем крэш. Будет произведена попытка сохранения полученных записей связей также, что приводит к нарушению уникальности
+        // чтобы избежать такого сценария следим при загрузке в кеш чтобы всегда было .AsNoTracking()
         public override void BeforeAddToCache(Users item)
         {
             if (item != null)
@@ -52,7 +57,7 @@ namespace AspNetCoreComponentLibrary
             }
         }/**/
 
-        // еще хуже. join 2 таблиц (в первом варианте джойн подзапроса хоть)
+        // еще хуже. join 2 таблиц (в предидущем варианте джойн подзапроса хоть)
         /*
             SELECT "i.UserSites"."UserId", "i.UserSites"."SiteId", "i.UserSites"."IsAdmin", "i.UserSites"."Rights"
             FROM "Users" AS "i"

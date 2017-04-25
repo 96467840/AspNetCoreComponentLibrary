@@ -1,4 +1,5 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -72,7 +73,10 @@ namespace AspNetCoreComponentLibrary
                 if (coll.ContainsKey(index)) return coll[index].Item;
 
                 //var item = DbSet.FirstOrDefault(i => i.Id.ToString() == index.ToString());
-                var item = DbSet.FirstOrDefault(i => i.Id.Equals(index));
+                var item = DbSet
+                    // очень важный момент!
+                    .AsNoTracking()
+                    .FirstOrDefault(i => i.Id.Equals(index));
                 // если юзера мы не нашли то мы все равно засунем результат в кеш чтобы 2 раза не искать в БД
                 //if (item == null) { }
                 AddToCache(index, item);

@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -15,7 +16,10 @@ namespace AspNetCoreComponentLibrary
         public void LoadFromDB()
         {
             //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            coll = this.DbSet.ToDictionary(i => i.Id, i => i);
+            coll = this.DbSet
+                // очень важный момент!
+                .AsNoTracking()
+                .ToDictionary(i => i.Id, i => i);
         }
 
         protected void CheckColl()

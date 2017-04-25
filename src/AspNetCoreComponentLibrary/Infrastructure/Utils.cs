@@ -189,7 +189,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         /// <summary>
-        /// Пропускаем только по шаблону \w\w(-\w\w)?
+        /// Пропускаем только по шаблону [a-z][a-z](\-[a-z][a-z])?
         /// </summary>
         public static bool TestCulture(this string culture)
         {

@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Http;
 namespace AspNetCoreComponentLibrary
 {
     /// <summary>
-    /// Пропускаем только по шаблону \w\w(-\w\w)?
+    /// Пропускаем только по шаблону [a-z][a-z](\-[a-z][a-z])? 
+    /// Сделано не регуляркой для оптимизации
     /// </summary>
     public class CultureRouteConstraint : IRouteConstraint
     {
@@ -44,14 +45,16 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// Регистрация стандартных правил маршрутизации с возможностью переопределения правил. Удалить правило нельзя, но его можно убрать в самый конец (priority > 100 000)
         /// Свои админские контролеры располагать до priority = 10 000 (на этом уровне определен универсальный админский маршрут)
+        /// Если нужно передать dataTokens, то обязательно передайте в нем в Name имя маршрута (всегда без постфикса ".Culture")
         /// </summary>
         public static void Register(IRouteBuilder routes, IApplicationBuilder app, Dictionary<string, RouteConfig> replace = null)
         {
             var defaults = new Dictionary<string, RouteConfig> {
                 { "Setup",         new RouteConfig(0,      "setup", new { controller = "Setup", action = "Index" })},
 
-                { "Admin.Culture", new RouteConfig(10000,  "{culture}/admin/{controller}/{action}/", new { action = "List" }, new { culture = new CultureRouteConstraint() })},
-                { "Admin" ,        new RouteConfig(10001,  "admin/{controller}/{action}/", new { action = "List" })},
+                // чтобы не было конфликта с именем страницы (и шаблоном культуры) используем /a/ (имя страницы обязательно должно иметь длину больше 2 и отличаться от шаблона культуры)
+                { "Admin.Culture", new RouteConfig(10000,  "{culture}/a/{controller}/{action}/", new { action = "List" }, new { culture = new CultureRouteConstraint() })},
+                { "Admin" ,        new RouteConfig(10001,  "a/{controller}/{action}/", new { action = "List" })},
 
                 { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" }, new { culture = new CultureRouteConstraint() })},
                 { "Page",          new RouteConfig(100001, "{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},

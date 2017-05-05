@@ -46,21 +46,26 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
+        // вот за что не навижу ормы. если мы попытаемся вызвать Save с объектом из кеша, 
+        // и у нас произойдет ошибка (причем именно при ошибке), то он сцуко связи втянет в кеш
+        // чтобы это предотвратить объект надо клонировать или как-то убрать связи (убрать связи нельзя, так как генерируется код с этими связями)
         public override void Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
-            if (!BeforeSave(item)) return;
-            var isnew = Utils.CheckDefault(item.Id);
+
+            var clone = item.CloneJson();
+            if (!BeforeSave(clone)) return;
+            var isnew = Utils.CheckDefault(clone.Id);
             if (!isnew)
             {
-                DbSet.Update(item);
+                DbSet.Update(clone);
             }
             else
             {
-                DbSet.Add(item);
+                DbSet.Add(clone);
             }
             
-            CheckColl();
+            //CheckColl();
         }
 
         public override void AfterSave(T item, bool isnew)
@@ -94,10 +99,9 @@ namespace AspNetCoreComponentLibrary
             return coll.ContainsKey(index);
         }
 
-        public void Clear()
+        public override void ClearCache()
         {
-            CheckColl();
-            coll.Clear();
+            coll = null;
         }
 
         protected void RemoveFromCache(K index)

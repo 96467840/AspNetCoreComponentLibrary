@@ -44,18 +44,20 @@ namespace AspNetCoreComponentLibrary
 
         public override void Save(T item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (item == null) throw new ArgumentNullException();
 
-            if (!BeforeSave(item)) return;
-            var isnew = !Utils.CheckDefault(item.Id);
+            var clone = item.CloneJson();
+
+            if (!BeforeSave(clone)) return;
+            var isnew = !Utils.CheckDefault(clone.Id);
 
             if (!isnew)
             {
-                DbSet.Update(item);
+                DbSet.Update(clone);
             }
             else
             {
-                DbSet.Add(item);
+                DbSet.Add(clone);
             }
         }
 
@@ -119,5 +121,11 @@ namespace AspNetCoreComponentLibrary
                 return existingVal;
             });
         }
+
+        public override void ClearCache()
+        {
+            coll.Clear();
+        }
+
     }
 }

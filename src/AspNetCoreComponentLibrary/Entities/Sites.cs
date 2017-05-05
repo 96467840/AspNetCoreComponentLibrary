@@ -11,7 +11,7 @@ namespace AspNetCoreComponentLibrary
         public Sites()
         {
             UserSites = new HashSet<UserSites>();
-        }
+        }/**/
 
         public bool IsDefault { get; set; }
         public bool IsVisible { get; set; }
@@ -49,6 +49,12 @@ namespace AspNetCoreComponentLibrary
         private List<string> _ListHostsWithAsteriks;
         private void _fillHosts()
         {
+            if (string.IsNullOrWhiteSpace(Hosts))
+            {
+                _ListHosts = new List<string>();
+                _ListHostsWithAsteriks = new List<string>();
+                return;
+            }
             var all = Hosts.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                     .Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => i.Trim());
 

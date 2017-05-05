@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -93,5 +94,12 @@ namespace AspNetCoreComponentLibrary
             Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
         }
 
+        public IActionResult ClearCache()
+        {
+            Sites.ClearCache();
+            Users.ClearCache();
+            Menus.ClearCache();
+            return Utils.ContentResult("Ok");
+        }
     }
 }

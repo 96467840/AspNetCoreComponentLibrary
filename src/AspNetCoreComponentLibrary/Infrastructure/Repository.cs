@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class Repository<K, T>: IRepository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
+    public abstract class Repository<K, T> : IRepository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
     {
         protected DbSet<T> DbSet { get; set; }
 
@@ -37,7 +37,8 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public virtual IQueryable<T> StartQuery() {
+        public virtual IQueryable<T> StartQuery()
+        {
             return DbSet.AsNoTracking();
         }
 
@@ -65,7 +66,8 @@ namespace AspNetCoreComponentLibrary
             return true;
         }
 
-        public virtual void AfterSave(T item, bool isnew) {
+        public virtual void AfterSave(T item, bool isnew)
+        {
             Logger.LogTrace("Repository AfterSave for {0}", item.Id);
         }/**/
 
@@ -109,5 +111,8 @@ namespace AspNetCoreComponentLibrary
                     .FirstOrDefault(i => i.Id.Equals(index));
             }
         }
+
+        public virtual void ClearCache() { }
+
     }
 }

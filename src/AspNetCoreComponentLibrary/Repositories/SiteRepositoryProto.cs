@@ -10,15 +10,17 @@ namespace AspNetCoreComponentLibrary
     public class SiteRepositoryProto : RepositoryWithCache<long, Sites>//, ISiteRepository
     //public class SiteRepositoryProto : Repository<long, Sites>//, ISiteRepository
     {
-
         // делаем запрос по БД чтобы вытащить список юзеров для конкретного сайта
         // эта инфа нам будет нужна тока для одной страницы и запрашивать ее будем довольно редко
         // для конкретного юзера мы сделаем сохранение прав в кеш, так как юзеры у нас будут во временном кеше
-        //
-        // очень плохое решение см UserRepositoryProto (там делал сранения вариантов) 
-        /*public List<UserSites> GetUserRights(long siteid)
+        public List<UserSites> GetUserRights(long siteid)
         {
-            return DbSet.AsNoTracking().Where(i => i.Id == siteid).SelectMany(i => i.UserSites).ToList();
+            var usRep = Storage.GetRepository<IUserSiteRepository>(EnumDB.UserSites);
+            using (new BLog(LoggerMEF, "GetUserRights", GetType().FullName))
+            {
+                return usRep.StartQuery().Where(i => i.SiteId == siteid).ToList();
+            }
+
         }/**/
     }
 }

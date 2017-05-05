@@ -16,6 +16,7 @@ namespace AspNetCoreComponentLibrary
         protected IStorage Storage { get; set; }
         protected ILoggerFactory LoggerFactory;
         protected ILogger Logger;
+        protected ILogger LoggerMEF;
 
         public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory)
         {
@@ -25,6 +26,8 @@ namespace AspNetCoreComponentLibrary
                 Storage = storage;
                 LoggerFactory = loggerFactory;
                 Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+                // для красоты в логах EntityFrameworkCore
+                LoggerMEF = LoggerFactory.CreateLogger(Utils.MEFNameSpace);
                 //if (StorageContext == null) Logger.LogCritical("AAAAAAAAAAAAAAAAAAA!!!!!!!!!");
                 DbSet = (StorageContext as DbContext).Set<T>();
             }
@@ -68,8 +71,6 @@ namespace AspNetCoreComponentLibrary
 
         public virtual void Remove(T item)
         {
-            //var item = this[id];
-            //if (item == null) return;
             DbSet.Remove(item);
         }
 
@@ -87,8 +88,8 @@ namespace AspNetCoreComponentLibrary
         public void Block(K id) { SetBlock(id, true); }
         public void UnBlock(K id) { SetBlock(id, false); }
 
-        public virtual void AddToCache(K id) { }
-        public virtual void RemoveFromCache(K id) { }
+        //public virtual void AddToCache(K id) { }
+        //public virtual void RemoveFromCache(K id) { }
 
         public virtual T this[K index]
         {
@@ -100,10 +101,13 @@ namespace AspNetCoreComponentLibrary
 
         public virtual T GetSingleFromDB(K index)
         {
-            return DbSet
-                // очень важно!
-                .AsNoTracking()
-                .FirstOrDefault(i => i.Id.Equals(index));
+            using (new BLog(LoggerMEF, "GetSingleFromDB", GetType().FullName))
+            {
+                return DbSet
+                    // очень важно!
+                    .AsNoTracking()
+                    .FirstOrDefault(i => i.Id.Equals(index));
+            }
         }
     }
 }

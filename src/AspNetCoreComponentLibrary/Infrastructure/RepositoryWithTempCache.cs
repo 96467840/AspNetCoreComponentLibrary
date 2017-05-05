@@ -1,5 +1,6 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,6 +28,19 @@ namespace AspNetCoreComponentLibrary
                 RemoveFromCache(item.Key);
             }
         }
+
+        public override void Remove(T item)
+        {
+            RemoveFromCache(item.Id);
+            DbSet.Remove(item);
+        }
+
+        public override void AfterSave(T item, bool isnew)
+        {
+            base.AfterSave(item, isnew);
+            Logger.LogTrace("RepositoryWithCache AfterSave for {0}", item.Id);
+            AddToCache(item.Id);
+        }/**/
 
         public override void Save(T item)
         {
@@ -73,7 +87,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public override void RemoveFromCache(K index)
+        private void RemoveFromCache(K index)
         {
             try
             {
@@ -82,11 +96,11 @@ namespace AspNetCoreComponentLibrary
             catch { }
         }
 
-        public virtual void BeforeAddToCache(T item)
+        protected virtual void BeforeAddToCache(T item)
         {
         }/**/
 
-        public override void AddToCache(K index)
+        protected void AddToCache(K index)
         {
             // item ни в коем случае нельзя помещать в кеш (трэкинг включен после сохранения)
             var newitem = GetSingleFromDB(index);

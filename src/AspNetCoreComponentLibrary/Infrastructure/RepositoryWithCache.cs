@@ -15,11 +15,13 @@ namespace AspNetCoreComponentLibrary
 
         public virtual void LoadFromDB()
         {
-            //(Storage as Storage)._logger.LogInformation("LoadFromDB");
-            coll = DbSet
-                // очень важный момент!
-                .AsNoTracking()
-                .ToDictionary(i => i.Id, i => i);
+            using (new BLog(LoggerMEF, "LoadFromDB", GetType().FullName))
+            {
+                coll = DbSet
+                    // очень важный момент!
+                    .AsNoTracking()
+                    .ToDictionary(i => i.Id, i => i);
+            }
         }
 
         protected void CheckColl()
@@ -61,12 +63,18 @@ namespace AspNetCoreComponentLibrary
             CheckColl();
         }
 
-        /*public override void Remove(T item)
+        public override void AfterSave(T item, bool isnew)
         {
-            //var item = this[id]; // CheckColl() here
-            //if (item == null) return;
+            base.AfterSave(item, isnew);
+            Logger.LogTrace("RepositoryWithCache AfterSave for {0}", item.Id);
+            AddToCache(item.Id);
+        }/**/
+
+        public override void Remove(T item)
+        {
+            RemoveFromCache(item.Id);
             DbSet.Remove(item);
-        }*/
+        }
 
         protected override void SetBlock(K id, bool value)
         {
@@ -78,6 +86,7 @@ namespace AspNetCoreComponentLibrary
                 DbSet.Update(item);
             }
         }
+
         public bool Contains(K index)
         {
             CheckColl();
@@ -91,7 +100,7 @@ namespace AspNetCoreComponentLibrary
             coll.Clear();
         }
 
-        public override void RemoveFromCache(K index)
+        protected void RemoveFromCache(K index)
         {
             CheckColl();
             try
@@ -103,11 +112,17 @@ namespace AspNetCoreComponentLibrary
             catch { }
         }
 
-        public override void AddToCache(K index)
+        protected virtual void BeforeAddToCache(T item)
+        {
+        }/**/
+
+        protected void AddToCache(K index)
         {
             CheckColl();
 
             var newitem = GetSingleFromDB(index);
+
+            BeforeAddToCache(newitem);
 
             if (coll.ContainsKey(index)) coll[index] = newitem;
             else coll.Add(index, newitem);

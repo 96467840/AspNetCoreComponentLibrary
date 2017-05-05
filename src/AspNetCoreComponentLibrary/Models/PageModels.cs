@@ -26,6 +26,7 @@ namespace AspNetCoreComponentLibrary
         public IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
+            //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
             var vm = new PageVM(controller);
             try
             {
@@ -47,11 +48,13 @@ namespace AspNetCoreComponentLibrary
                     sites.Save(site);
                     storage.Save();
 
-                    sites.AddToCache(site.Id);
+                    sites.AfterSave(site, false);
                 }
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
-                vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
-
+                //using (new BLog(LoggerMEF, "Load sites", GetType().FullName))
+                {
+                    vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
+                }
                 GC.Collect();
                 Logger.LogInformation("Memory used after full collection:   {0:N0}", GC.GetTotalMemory(true));
             }

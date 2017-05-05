@@ -15,6 +15,7 @@ namespace AspNetCoreComponentLibrary
         protected IStorage Storage { get; set; }
         protected ILoggerFactory LoggerFactory;
         protected ILogger Logger;
+        protected ILogger LoggerMEF;
 
         public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory)
         {
@@ -24,6 +25,10 @@ namespace AspNetCoreComponentLibrary
                 Storage = storage;
                 LoggerFactory = loggerFactory;
                 Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+
+                // для красоты в логах EntityFrameworkCore
+                LoggerMEF = LoggerFactory.CreateLogger(Utils.MEFNameSpace);
+
                 //if (StorageContext == null) Logger.LogCritical("AAAAAAAAAAAAAAAAAAA!!!!!!!!!");
                 DbSet = (StorageContext as DbContext).Set<T>();
             }
@@ -53,5 +58,16 @@ namespace AspNetCoreComponentLibrary
             DbSet.Remove(item);
         }
 
+        public void Save(List<T> items)
+        {
+            if (items == null || !items.Any()) return;
+            DbSet.AddRange(items);
+        }
+
+        public void Remove(List<T> items)
+        {
+            if (items == null || !items.Any()) return;
+            DbSet.RemoveRange(items);
+        }
     }
 }

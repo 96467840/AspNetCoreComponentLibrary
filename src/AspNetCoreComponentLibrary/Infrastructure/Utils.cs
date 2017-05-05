@@ -19,6 +19,8 @@ namespace AspNetCoreComponentLibrary
 {
     public static class Utils
     {
+        public static string MEFNameSpace = "Microsoft.EntityFrameworkCore.Our";
+
         // see here http://stackoverflow.com/questions/1895761/test-for-equality-to-the-default-value
         // проверка на значение по умолчанию
         public static bool CheckDefault<K>(K item)

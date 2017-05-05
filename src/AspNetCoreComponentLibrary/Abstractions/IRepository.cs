@@ -26,22 +26,21 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void Remove(T item);
 
         // в репозитории без кеширования ничего тут не делают
-        void RemoveFromCache(K id);
-        void AddToCache(K index); // всегда превытаскиваем сущность из БД
+        // надо перенести логику этих функций в Remove и AfterSave. Функции оставим тока сделаем их приватными
+        //void RemoveFromCache(K id);
+        //void AddToCache(K index); // всегда превытаскиваем сущность из БД
     }
 
-    // реопзиторий для связей (нет ключа, сохранение идет автоматически при изменении основной сущности, функции сохранения оставим)
-    // сохранение оставить сложно так как нет ключа - нет проверки на новое старое
+    // репозиторий для связей (нет ключа)
     public interface IRepository<T> where T : class
     {
         IQueryable<T> StartQuery();
 
-        //T this[string index] { get; }
-
         void Save(T item);
-        //void AfterSave(T item, bool isnew);
-        //void Block(string id);
-        //void UnBlock(string id);
         void Remove(T item);
+
+        // для массовых операций
+        void Save(List<T> items);
+        void Remove(List<T> items);
     }
 }

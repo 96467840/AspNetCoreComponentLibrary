@@ -28,6 +28,7 @@ namespace AspNetCoreComponentLibrary
         public IActionResult ToActionResult(Controller controller, IStorage Storage, ILoggerFactory loggerFactory)
         {
             var Logger = loggerFactory.CreateLogger(this.GetType().FullName);
+            //var LoggerMEF = loggerFactory.CreateLogger(Utils.MEFNameSpace);
             var Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
 
             if (Sites.StartQuery().Any())
@@ -61,9 +62,6 @@ namespace AspNetCoreComponentLibrary
 
                         Users.AfterSave(user, true);
                         Sites.AfterSave(site, true);
-
-                        Users.AddToCache(user.Id);
-                        Sites.AddToCache(site.Id);
 
                         return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
                     }

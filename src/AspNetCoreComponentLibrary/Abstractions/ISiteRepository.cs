@@ -7,6 +7,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 {
     public interface ISiteRepository : IRepositorySetStorageContext, IRepository<long, Sites>
     {
+        List<UserSites> GetUserRights(long siteid);
 
     }/**/
 }

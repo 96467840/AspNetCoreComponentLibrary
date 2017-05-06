@@ -96,15 +96,22 @@ namespace AspNetCoreComponentLibrary
 
         public IActionResult ClearCache()
         {
+            var hash = new Dictionary<string, bool>();
             foreach (var t in this.GetType().GetProperties())
             {
+                // чтбы 2 раза не проверять один и тот же тип
+                var key = t.PropertyType.Name;
+                if (hash.ContainsKey(key)) continue;
+                hash[key] = true;
+
                 var ii = t.PropertyType.GetInterfaces();
                 // наши репозитории всегда реализуют как минимум 2 интерфейса и один из них IRepositorySetStorageContext
                 if (ii.Contains(typeof(IRepositorySetStorageContext)))
                 {
+
                     foreach (var inter in ii)
                     {
-                        var meths = inter.GetMethods();
+                        //var meths = inter.GetMethods();
                         var clearcache = inter.GetMethod("ClearCache");
                         if (clearcache != null)
                         {

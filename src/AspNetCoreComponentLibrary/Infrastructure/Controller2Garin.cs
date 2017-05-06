@@ -96,10 +96,28 @@ namespace AspNetCoreComponentLibrary
 
         public IActionResult ClearCache()
         {
-            Sites.ClearCache();
-            Users.ClearCache();
-            Menus.ClearCache();
-            return Utils.ContentResult("Ok");
+            foreach (var t in this.GetType().GetProperties())
+            {
+                var ii = t.PropertyType.GetInterfaces();
+                // наши репозитории всегда реализуют как минимум 2 интерфейса и один из них IRepositorySetStorageContext
+                if (ii.Contains(typeof(IRepositorySetStorageContext)))
+                {
+                    foreach (var inter in ii)
+                    {
+                        var meths = inter.GetMethods();
+                        var clearcache = inter.GetMethod("ClearCache");
+                        if (clearcache != null)
+                        {
+                            clearcache.Invoke(t.GetValue(this), new object[] { });
+                            break;
+                        }
+                    }/**/
+                }
+            }
+            //Sites.ClearCache();
+            //Users.ClearCache();
+            //Menus.ClearCache();
+            return Utils.ContentResult("ClearCache Ok");
         }
     }
 }

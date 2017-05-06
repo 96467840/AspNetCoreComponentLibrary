@@ -10,7 +10,7 @@ namespace AspNetCoreComponentLibrary
 {
     public class PageVM: BaseVM
     {
-        
+        public PageIM Input { get; set; }
         public List<Sites> Sites { get; set; }
 
         public PageVM(Controller2Garin controler):base(controler)
@@ -22,12 +22,12 @@ namespace AspNetCoreComponentLibrary
     public class PageIM : BaseIM
     {
         public string Page { get; set; }
-        
+
         public IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
             //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
-            var vm = new PageVM(controller);
+            var vm = new PageVM(controller) { Input = this };
             try
             {
                 Logger.LogInformation("Begin '{page}' in lang '{Culture}'", Page, Culture);

@@ -101,6 +101,7 @@ namespace AspNetCoreComponentLibrary
 
         public override void ClearCache()
         {
+            Logger.LogTrace("RepositoryWithCache ClearCache {0}", this.GetType().FullName);
             coll = null;
         }
 

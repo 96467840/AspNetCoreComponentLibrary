@@ -112,7 +112,10 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public virtual void ClearCache() { }
+        public virtual void ClearCache()
+        {
+            Logger.LogTrace("Repository ClearCache {0}", this.GetType().FullName);
+        }
 
     }
 }

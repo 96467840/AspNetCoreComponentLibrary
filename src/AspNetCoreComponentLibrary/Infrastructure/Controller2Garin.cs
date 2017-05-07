@@ -17,12 +17,15 @@ namespace AspNetCoreComponentLibrary
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
 
+        [RepositorySettings(MenuName = "sites.name", Priority = 10)]
         public ISiteRepository Sites { get; set; }
+        [RepositorySettings(MenuName = "users.name", Priority = -1)]
         public IUserRepository Users { get; set; }
 
         public Sites Site { get; set; }
         public Users SessionUser { get; set; }
 
+        [RepositorySettings(MenuName = "menus.name", Priority = 20)]
         public IMenuRepository Menus { get; set; }
 
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
@@ -99,7 +102,7 @@ namespace AspNetCoreComponentLibrary
             var hash = new Dictionary<string, bool>();
             foreach (var t in this.GetType().GetProperties())
             {
-                // чтбы 2 раза не проверять один и тот же тип
+                // чтбы 2 раза не проверять один и тот же тип (и заодно не вызывать 2 раза очистку кеша)
                 var key = t.PropertyType.Name;
                 if (hash.ContainsKey(key)) continue;
                 hash[key] = true;
@@ -108,14 +111,13 @@ namespace AspNetCoreComponentLibrary
                 // наши репозитории всегда реализуют как минимум 2 интерфейса и один из них IRepositorySetStorageContext
                 if (ii.Contains(typeof(IRepositorySetStorageContext)))
                 {
-
                     foreach (var inter in ii)
                     {
                         //var meths = inter.GetMethods();
                         var clearcache = inter.GetMethod("ClearCache");
                         if (clearcache != null)
                         {
-                            clearcache.Invoke(t.GetValue(this), new object[] { });
+                            clearcache.Invoke(t.GetValue(this), null);
                             break;
                         }
                     }/**/

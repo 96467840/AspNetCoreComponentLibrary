@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
+    // ---------------- View Model
     public class PageVM: BaseVM
     {
         public PageIM Input { get; set; }
@@ -19,6 +20,7 @@ namespace AspNetCoreComponentLibrary
         }
     }
 
+    // ---------------- Input Model
     public class PageIM : BaseIM
     {
         public string Page { get; set; }

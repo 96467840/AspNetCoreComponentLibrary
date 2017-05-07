@@ -5,10 +5,22 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
+
+    // ---------------- View Model
     public interface IListVM: IAdminVM
     {
     }
 
+    public class ListVM<K, T> : AdminVM, IListVM where T : BaseDM<K> /*where K : struct*/
+    {
+        public ListIM<K, T> Input { get; set; }
+
+        public ListVM(Controller2Garin controller) : base(controller)
+        {
+        }
+    }
+
+    // ---------------- Input Model
     public class ListIM<K, T> where T : BaseDM<K>/* where K : struct*/
     {
         public int? Offset { get; set; }
@@ -23,12 +35,4 @@ namespace AspNetCoreComponentLibrary
         }
     }
 
-    public class ListVM<K, T> : AdminVM, IListVM where T : BaseDM<K> /*where K : struct*/
-    {
-        public ListIM<K, T> Input { get; set; }
-
-        public ListVM(Controller2Garin controller) : base(controller)
-        {
-        }
-    }
 }

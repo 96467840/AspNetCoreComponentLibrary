@@ -10,6 +10,15 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
+    // ---------------- View Model
+    public class SetupVM
+    {
+        public SetupIM Input { get; set; }
+        public Exception Error { get; set; }
+
+    }
+
+    // ---------------- Input Model
     public class SetupIM
     {
         public string Site { get; set; }
@@ -87,12 +96,5 @@ namespace AspNetCoreComponentLibrary
             }
             return controller.View(vm);
         }
-    }
-
-    public class SetupVM
-    {
-        public SetupIM Input { get; set; }
-        public Exception Error { get; set; }
-
     }
 }

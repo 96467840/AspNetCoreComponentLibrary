@@ -17,15 +17,21 @@ namespace AspNetCoreComponentLibrary
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
 
-        [RepositorySettings(MenuName = "sites.name", Priority = 10)]
+        [RepositorySettings]
         public ISiteRepository Sites { get; set; }
-        [RepositorySettings(MenuName = "users.name", Priority = -1)]
+        [RepositorySettings]
         public IUserRepository Users { get; set; }
 
         public Sites Site { get; set; }
         public Users SessionUser { get; set; }
+        /// <summary>
+        /// Запрашиваемый язык
+        /// </summary>
+        public string Culture { get; set; }
 
-        [RepositorySettings(MenuName = "menus.name", Priority = 20)]
+        //public BaseIM Input { get; set; }
+
+        [RepositorySettings]
         public IMenuRepository Menus { get; set; }
 
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
@@ -33,9 +39,22 @@ namespace AspNetCoreComponentLibrary
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
             Storage = storage;
+            Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
         }
 
-        protected void LoadSessionUser()
+        /// <summary>
+        /// Проверка и установка запрашиваемого языка
+        /// </summary>
+        /// <param name="cultureFromGet"></param>
+        [NonAction]
+        public virtual void SetCulture(string cultureFromGet)
+        {
+            Logger.LogTrace("SetCulture {0}", cultureFromGet);
+            Culture = cultureFromGet;
+        }
+
+        [NonAction]
+        protected virtual void LoadSessionUser()
         {
             Logger.LogTrace("LoadSessionUser");
             long id = 1;
@@ -46,6 +65,7 @@ namespace AspNetCoreComponentLibrary
             //var tmp = SessionUser.UserSites.Where(i=>i.SiteId == 1);
         }
 
+        [NonAction]
         protected void ResolveCurrentSite(ActionExecutingContext context)
         {
             // найти сайт
@@ -83,6 +103,7 @@ namespace AspNetCoreComponentLibrary
             Storage.ConnectToSiteDB(Site.Id);
         }
 
+        //[NonAction]
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
@@ -93,6 +114,10 @@ namespace AspNetCoreComponentLibrary
 
             ResolveCurrentSite(context);
             if (context.Result != null) return;
+
+            BaseIM inputModel = context.ActionArguments.ContainsKey("input") ? (BaseIM)context.ActionArguments["input"] : null;
+            if (inputModel != null)
+                SetCulture(inputModel.Culture);
 
             Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
         }

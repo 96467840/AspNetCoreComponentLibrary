@@ -21,7 +21,7 @@ namespace AspNetCoreComponentLibrary
     }
 
     // ---------------- Input Model
-    public class ListIM<K, T> where T : BaseDM<K>/* where K : struct*/
+    public class ListIM<K, T> : BaseIM where T : BaseDM<K>/* where K : struct*/
     {
         public int? Offset { get; set; }
 
@@ -29,6 +29,7 @@ namespace AspNetCoreComponentLibrary
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
             //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
+
             var vm = new ListVM<K, T>(controller) { Input = this };
 
             return controller.View("Admin/List", vm);

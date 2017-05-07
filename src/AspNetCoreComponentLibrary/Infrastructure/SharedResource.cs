@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 namespace AspNetCoreComponentLibrary
 {
     /// <summary>
-    /// Настройка репозитория для админки
+    /// класс для локализации
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class RepositorySettingsAttribute : Attribute
+    public class SharedResource
     {
     }
 }

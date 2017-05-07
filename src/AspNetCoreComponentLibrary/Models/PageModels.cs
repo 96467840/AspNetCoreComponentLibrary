@@ -33,6 +33,7 @@ namespace AspNetCoreComponentLibrary
             try
             {
                 Logger.LogInformation("Begin '{page}' in lang '{Culture}'", Page, Culture);
+
                 var storage = controller.Storage;
                 var sites = controller.Sites;//storage.GetRepository<ISiteRepository>(false);
                 var menus = controller.Menus;// storage.GetRepository<IMenuRepository>(true);

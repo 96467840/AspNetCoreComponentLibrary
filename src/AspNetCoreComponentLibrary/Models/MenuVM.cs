@@ -12,6 +12,7 @@ namespace AspNetCoreComponentLibrary
         public string liClass { get; set; }
         public string aClass { get; set; }
         public bool IsBlank { get; set; }
+        public int Priority { get; set; }
 
         public MenuItem(string href, string title, string liclass=null, string aclass=null, bool isBlank = false)
         {
@@ -31,5 +32,11 @@ namespace AspNetCoreComponentLibrary
             Items = items;
             Class = @class;
         }
+
+        public void SortMenu()
+        {
+            Items = Items.OrderBy(i => i.Priority).ToList();
+        }
+
     }
 }

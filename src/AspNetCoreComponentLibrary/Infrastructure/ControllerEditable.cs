@@ -21,7 +21,7 @@ namespace AspNetCoreComponentLibrary
 
         public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory) : base(storage, loggerFactory)
         {
-            Logger.LogTrace("Сonstructor");
+            Logger.LogTrace("Сonstructor ControllerEditable {0}", this.GetType().FullName);
             // здесь еще нет конекта к БД
             //Repository = Storage.GetRepository<R>(DB);
         }

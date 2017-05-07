@@ -21,13 +21,14 @@ namespace AspNetCoreComponentLibrary
     }
 
     // ---------------- Input Model
-    public class EditIM<K, T> where T : BaseDM<K>/* where K : struct*/
+    public class EditIM<K, T> : BaseIM where T : BaseDM<K>/* where K : struct*/
     {
         public virtual IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
             //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
-            var vm = new EditVM<K, T>(controller) { Input = this};
+
+            var vm = new EditVM<K, T>(controller) { Input = this };
 
             return controller.View("Admin/Edit", vm);
         }

@@ -157,7 +157,7 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// возвращаем свойство объекта в виде строки, если оно есть
         /// </summary>
-        public static string GetValue(this object Object, string Name)
+        public static string GetObjectValue(this object Object, string Name)
         {
             var propertyInfo = Object.GetType().GetProperty(Name);
             if (propertyInfo != null)

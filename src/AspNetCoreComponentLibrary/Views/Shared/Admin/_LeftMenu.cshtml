@@ -1,1 +1,22 @@
-﻿<div>left menu</div>
+﻿@model MenuVM
+
+@{
+    if (Model == null) { return; }
+}
+<ol class="@Model.Class">
+    @for (var i = 0; i < Model.Items.Count; i++)
+    {
+        var item = Model.Items[i];
+
+        <li class="@item.liClass">
+            @if (item.IsBlank)
+            {
+                <a class="@item.aClass" target="_blank" href="@item.Href">@item.Title</a>
+            }
+            else
+            {
+                <a class="@item.aClass" href="@item.Href">@item.Title</a>
+            }
+        </li>
+    }
+</ol>

@@ -29,13 +29,15 @@ namespace AspNetCoreComponentLibrary
                 routeName += ".Culture";
             }
             
-            return url.RouteUrl(routeName, routeValues);
+            var res = url.RouteUrl(routeName, routeValues);
+            return res;
         }
 
         public static string RouteUrlWithCulture(this IUrlHelper url, string routeName, object routeValues)
         {
             if (routeValues != null) return url.RouteUrlWithCulture(routeName, routeValues.AsDictionary());
-            return url.RouteUrlWithCulture(routeName, (Dictionary<string, object>)null);
+            Dictionary<string, object> rv = null;
+            return url.RouteUrlWithCulture(routeName, rv);
         }
     }
 }

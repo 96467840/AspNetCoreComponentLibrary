@@ -21,15 +21,22 @@ namespace AspNetCoreComponentLibrary
     // ---------------- Input Model
     public class SetupIM
     {
+        [Display(Name = "Site name")]
         public string Site { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Host field is required.")]
+        [Display(Name = "Host")]
         public string Host { get; set; }
 
-        [Required(ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [Required(ErrorMessage = "The Email field is required.")]
+        [EmailAddress(ErrorMessage = "The Email field is not a valid e-mail address.")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Password field is required.")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         public string Back { get; set; }

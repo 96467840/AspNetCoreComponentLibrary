@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace AspNetCoreComponentLibrary
 {
     /// <summary>
-    /// Пропускаем только по шаблону [a-z][a-z](\-[a-z][a-z])? 
+    /// Пропускаем только по шаблону [a-z][a-z](\-[A-Z][A-Z])? 
     /// Сделано не регуляркой для оптимизации
     /// </summary>
     public class CultureRouteConstraint : IRouteConstraint

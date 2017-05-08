@@ -224,11 +224,11 @@ namespace AspNetCoreComponentLibrary
 
             var c = culture.Trim();
             var len = c.Length;
-            if (len == 2) return Regex.IsMatch(c, "[a-z][a-z]");
+            if (len == 2) return Regex.IsMatch(c, "[a-z][a-z]", RegexOptions.IgnoreCase);
 
             if (len == 5 && c.IndexOf("-") == 2)
             {
-                return Regex.IsMatch(c, @"[a-z][a-z]\-[A-Z][A-Z]");
+                return Regex.IsMatch(c, @"[a-z][a-z]\-[A-Z][A-Z]", RegexOptions.IgnoreCase);
             }
 
             return false;

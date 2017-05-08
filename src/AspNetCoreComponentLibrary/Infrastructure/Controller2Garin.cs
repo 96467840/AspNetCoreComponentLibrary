@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
@@ -50,7 +52,36 @@ namespace AspNetCoreComponentLibrary
         public virtual void SetCulture(string cultureFromGet)
         {
             Logger.LogTrace("SetCulture {0}", cultureFromGet);
-            Culture = cultureFromGet;
+
+            // проверить cultureFromGet!
+
+            // для начала примитивная (наша) проверка
+            if (!cultureFromGet.TestCulture()) return;
+
+            // так как культура идет с пути, а пути в низком регистре, то надо привести в норм вид
+            cultureFromGet = cultureFromGet.ToLower();
+            if (cultureFromGet.Length > 2)
+            {
+                // мы прошли проверку TestCulture и значит елси больше 2 букв то етсь 1 дефис
+                var tmp = cultureFromGet.Explode("-");
+                cultureFromGet = tmp[0] + "-" + tmp[1].ToUpper();
+            }
+
+            try
+            {
+                var cultureInfo = new CultureInfo(cultureFromGet);
+                CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+                CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+                CultureInfo.CurrentCulture = cultureInfo;
+                CultureInfo.CurrentUICulture = cultureInfo;
+
+                Culture = cultureFromGet;
+            }
+            catch (Exception e)
+            {
+                Logger.LogInformation("Cann't set culture to {0}: {1}", cultureFromGet, e);
+            }
         }
 
         [NonAction]

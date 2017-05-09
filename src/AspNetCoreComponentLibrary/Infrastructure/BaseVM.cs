@@ -10,6 +10,8 @@ namespace AspNetCoreComponentLibrary
         Controller2Garin Controller { get; set; }
         Exception Error { get; set; }
         MenuVM Breadcrumb { get; set; }
+        Sites Site { get; }
+        Users SessionUser { get; }
     }
 
     public class BaseVM: IBaseVM
@@ -17,6 +19,8 @@ namespace AspNetCoreComponentLibrary
         public Controller2Garin Controller { get; set; }
         public Exception Error { get; set; }
         public MenuVM Breadcrumb { get; set; }
+        public Sites Site { get { return Controller?.Site; }  }
+        public Users SessionUser { get { return Controller?.SessionUser; }  }
 
         public BaseVM(Controller2Garin controller)
         {

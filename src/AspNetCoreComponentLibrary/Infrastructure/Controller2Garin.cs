@@ -49,6 +49,7 @@ namespace AspNetCoreComponentLibrary
             var type = typeof(SharedResource);
             var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
             //_localizer = factory.Create(type);
+            SharedLocalizer = LocalizerFactory.Create(type);
             //SharedLocalizer = LocalizerFactory.Create("SharedResource", ""); //assemblyName);
 
             Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);

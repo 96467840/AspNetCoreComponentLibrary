@@ -90,7 +90,7 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// Дополняем source элементами из additional с перезаписью одинаковых ключей
         /// </summary>
-        public static IDictionary<string, T> Extend<T>(this IDictionary<string, T> source, IDictionary<string, T> additional)
+        public static IDictionary<K, T> Extend<K, T>(this IDictionary<K, T> source, IDictionary<K, T> additional)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -106,12 +106,12 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// Создаем новый справочник из source с дополнением элементами из additional с перезаписью одинаковых ключей. 
         /// </summary>
-        public static IDictionary<string, T> ExtendNew<T>(this IDictionary<string, T> source, IDictionary<string, T> additional)
+        public static IDictionary<K, T> ExtendNew<K, T>(this IDictionary<K, T> source, IDictionary<K, T> additional)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            var eoColl = new Dictionary<string, T>();
+            var eoColl = new Dictionary<K, T>();
             foreach (var kvp in source)
             {
                 eoColl[kvp.Key] = kvp.Value;

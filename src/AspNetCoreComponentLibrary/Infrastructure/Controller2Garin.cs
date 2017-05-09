@@ -1,6 +1,7 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace AspNetCoreComponentLibrary
         public IStorage Storage;
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
+        public readonly IStringLocalizerFactory LocalizerFactory;
+        public readonly IStringLocalizer SharedLocalizer;
 
         [RepositorySettings]
         public ISiteRepository Sites { get; set; }
@@ -36,11 +39,18 @@ namespace AspNetCoreComponentLibrary
         [RepositorySettings]
         public IMenuRepository Menus { get; set; }
 
-        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory)
+        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory)
         {
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
             Storage = storage;
+
+            LocalizerFactory = localizerFactory;
+            var type = typeof(SharedResource);
+            var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
+            //_localizer = factory.Create(type);
+            //SharedLocalizer = LocalizerFactory.Create("SharedResource", ""); //assemblyName);
+
             Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
         }
 
@@ -151,6 +161,8 @@ namespace AspNetCoreComponentLibrary
                 SetCulture(inputModel.Culture);
 
             Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
+
+            //base.OnActionExecuting(context);
         }
 
         public IActionResult ClearCache()

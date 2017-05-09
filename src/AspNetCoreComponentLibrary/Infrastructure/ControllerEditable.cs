@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 using System.Linq;
+using Microsoft.Extensions.Localization;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -19,7 +20,7 @@ namespace AspNetCoreComponentLibrary
         // теперь получаем ссылку на репозиторий с контроллера через рефлексию, так что вызов конструктора не нужен
         //protected virtual EnumDB DB { get { return EnumDB.Content; } }
 
-        public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory) : base(storage, loggerFactory)
+        public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory) : base(storage, loggerFactory, localizerFactory)
         {
             Logger.LogTrace("Сonstructor ControllerEditable {0}", this.GetType().FullName);
             // здесь еще нет конекта к БД

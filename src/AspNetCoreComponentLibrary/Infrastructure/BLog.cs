@@ -27,12 +27,12 @@ namespace AspNetCoreComponentLibrary
 
         public void Start(string args)
         {
-            Logger.LogInformation("\n--------------- {0} {1}\n\n\n\n\n\n", Name, args);
+            Logger.LogInformation("--------------- {0} {1}\n\n\n\n\n", Name, args);
         }
 
         public void Dispose()
         {
-            Logger.LogInformation("\n- - - - - - - - END OF {0}\n\n\n\n\n\n", Name);
+            Logger.LogInformation("- - - - - - - - END OF {0}\n\n\n\n\n", Name);
         }
     }
 }

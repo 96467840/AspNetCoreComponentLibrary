@@ -156,9 +156,15 @@ namespace AspNetCoreComponentLibrary
             ResolveCurrentSite(context);
             if (context.Result != null) return;
 
-            BaseIM inputModel = context.ActionArguments.ContainsKey("input") ? (BaseIM)context.ActionArguments["input"] : null;
+            // плохой вариант, надо заставлять девелоперов называть входные модели "input"
+            /*BaseIM inputModel = context.ActionArguments.ContainsKey("input") ? (BaseIM)context.ActionArguments["input"] : null;
             if (inputModel != null)
                 SetCulture(inputModel.Culture);
+            /**/
+            if (context.RouteData.Values.ContainsKey("Culture"))
+            {
+                SetCulture(context.RouteData.Values["Culture"] as string);
+            }
 
             Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
 

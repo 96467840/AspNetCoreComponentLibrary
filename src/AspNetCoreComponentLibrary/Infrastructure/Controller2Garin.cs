@@ -29,15 +29,34 @@ namespace AspNetCoreComponentLibrary
 
         public Sites Site { get; set; }
         public Users SessionUser { get; set; }
+        
         /// <summary>
         /// Запрашиваемый язык
         /// </summary>
         public string Culture { get; set; }
 
-        //public BaseIM Input { get; set; }
+        private T GetContentRepository<T>() where T:IRepositorySetStorageContext
+        {
+            if (!IsConnectedToSiteDB)
+            {
+                Logger.LogError("Try get content repository {0} without connect to DB", typeof(T).FullName);
+            }
+            return Storage.GetRepository<T>(EnumDB.Content);
+        }
 
+        private IMenuRepository _Menus { get; set; }
         [RepositorySettings]
-        public IMenuRepository Menus { get; set; }
+        public IMenuRepository Menus
+        {
+            get
+            {
+                if (_Menus != null) return _Menus;
+                _Menus = GetContentRepository<IMenuRepository>();
+                return _Menus;
+            }
+        }
+
+        private bool IsConnectedToSiteDB = false;
 
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory)
         {
@@ -53,6 +72,14 @@ namespace AspNetCoreComponentLibrary
             //SharedLocalizer = LocalizerFactory.Create("SharedResource", ""); //assemblyName);
 
             Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
+        }
+
+        [NonAction]
+        public virtual string Localize(string key)
+        {
+            var res = SharedLocalizer[key];
+            Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
+            return res;
         }
 
         /// <summary>
@@ -143,6 +170,7 @@ namespace AspNetCoreComponentLibrary
             //Logger.LogDebug("Connect to Content DB {0}", Site.Id.Value);
             // для начала мы должны определить текущий сайт
             Storage.ConnectToSiteDB(Site.Id);
+            IsConnectedToSiteDB = true;
         }
 
         //[NonAction]
@@ -167,7 +195,8 @@ namespace AspNetCoreComponentLibrary
                 SetCulture(context.RouteData.Values["Culture"] as string);
             }
 
-            Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
+            // теперь репозитории грузим тока тогда когда они понадобятся
+            //Menus = Storage.GetRepository<IMenuRepository>(EnumDB.Content);
 
             //base.OnActionExecuting(context);
         }

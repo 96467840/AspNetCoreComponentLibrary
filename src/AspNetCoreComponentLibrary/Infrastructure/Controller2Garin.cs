@@ -37,10 +37,6 @@ namespace AspNetCoreComponentLibrary
 
         private T GetContentRepository<T>() where T:IRepositorySetStorageContext
         {
-            if (!IsConnectedToSiteDB)
-            {
-                Logger.LogError("Try get content repository {0} without connect to DB", typeof(T).FullName);
-            }
             return Storage.GetRepository<T>(EnumDB.Content);
         }
 
@@ -55,8 +51,6 @@ namespace AspNetCoreComponentLibrary
                 return _Menus;
             }
         }
-
-        private bool IsConnectedToSiteDB = false;
 
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory)
         {
@@ -170,7 +164,6 @@ namespace AspNetCoreComponentLibrary
             //Logger.LogDebug("Connect to Content DB {0}", Site.Id.Value);
             // для начала мы должны определить текущий сайт
             Storage.ConnectToSiteDB(Site.Id);
-            IsConnectedToSiteDB = true;
         }
 
         //[NonAction]

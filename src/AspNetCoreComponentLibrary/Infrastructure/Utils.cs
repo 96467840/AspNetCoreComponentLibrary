@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -42,6 +45,28 @@ namespace AspNetCoreComponentLibrary
         public static string CryptPassword(string source)
         {
             return source;
+        }
+
+        public static IStringLocalizer LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
+        {
+            try
+            {
+                var cultureInfo = new CultureInfo(culture);
+                var l = localizer.WithCulture(cultureInfo);
+                // проверим культуру
+                // если такой кульутры нет, то в этом месте будет эксепшен (при вызове GetAllStrings). 
+                // причем как я понял это единственный способ узнать есть ли такая культура в ресурсах или нет
+                var str = string.Join("\n", l.GetAllStrings().Select(i => i.Name + "->" + i.Value).ToList());
+                if (logger != null)
+                {
+                    logger.LogTrace("{0} strings:\n{1}", localizer.GetType().FullName, str);
+                }
+                return l;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         // скопировано отсюда http://stackoverflow.com/questions/78536/deep-cloning-objects

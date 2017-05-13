@@ -11,4 +11,11 @@ namespace AspNetCoreComponentLibrary
     public class SharedResource
     {
     }
+
+    /// <summary>
+    /// класс для локализации
+    /// </summary>
+    public class SharedResourceOverride
+    {
+    }
 }

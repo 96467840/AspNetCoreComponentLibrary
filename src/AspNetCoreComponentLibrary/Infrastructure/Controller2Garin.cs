@@ -20,7 +20,22 @@ namespace AspNetCoreComponentLibrary
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
         public readonly IStringLocalizerFactory LocalizerFactory;
-        public readonly IStringLocalizer SharedLocalizer;
+        
+        /// <summary>
+        /// Язык по умолчанию для админки и системных сообщений. Его можно переопределить в своих контролерах.
+        /// </summary>
+        public virtual string DefaultCulture { get { return "en-US"; } }
+        //public virtual string DefaultCulture { get { return "ru"; } }
+
+        // локализатор из этой сборки
+        public IStringLocalizer Localizer;
+        // локализатор из сборки где определен контроллер
+        public IStringLocalizer LocalizerController;
+
+        // локализатор из этой сборки (с культурой по умолчанию)
+        public readonly IStringLocalizer LocalizerDefault;
+        // локализатор из сборки где определен контроллер (с культурой по умолчанию)
+        public readonly IStringLocalizer LocalizerControllerDefault;
 
         [RepositorySettings]
         public ISiteRepository Sites { get; set; }
@@ -52,26 +67,74 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory)
+        public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer)
         {
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+
+            Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
+
             Storage = storage;
 
             LocalizerFactory = localizerFactory;
             var type = typeof(SharedResource);
-            var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
-            //_localizer = factory.Create(type);
-            SharedLocalizer = LocalizerFactory.Create(type);
-            //SharedLocalizer = LocalizerFactory.Create("SharedResource", ""); //assemblyName);
+            var assembly = this.GetType().GetTypeInfo().Assembly;
+            //Logger.LogTrace("Сonstructor Controller2Garin Localion={0}", assembly.Location);
+            
+            Localizer = LocalizerFactory.Create(type);
+            LocalizerController = localizer;
 
-            Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
+            //var defcult = new CultureInfo(DefaultCulture);
+
+            if (Localizer != null)
+                LocalizerDefault = Localizer.LoadCulture(DefaultCulture, Logger);
+
+            if (LocalizerController != null)
+                LocalizerControllerDefault = LocalizerController.LoadCulture(DefaultCulture, Logger);
+
+            //SharedLocalizerControllerDefault = SharedLocalizerController.WithCulture(defcult);
+            
+            //SharedLocalizerController = LocalizerFactory.Create(typeof(SharedResourceOverride));
+            /*foreach (Type t in assembly.GetTypes())
+            {
+                if (t.Name == "SharedResource")
+                {
+                    Logger.LogTrace("Сonstructor Controller2Garin reflection={0}", t.FullName);
+                    SharedLocalizerController = LocalizerFactory.Create(t);
+                }
+            }/**/
         }
 
         [NonAction]
         public virtual string Localize(string key)
         {
-            var res = SharedLocalizer[key];
+            Logger.LogTrace("Controller2Garin::Localize {0}", key);
+            if (string.IsNullOrWhiteSpace(key)) return key;
+
+            string res = key;
+            // пробуем загрузить строку из сборки с контролерами
+            if (LocalizerController != null)
+            {
+                res = LocalizerController[key];
+                Logger.LogTrace("------------- Controller2Garin::LocalizerController {0}->[{1}]", key, res);
+            }
+            if (res == key && Localizer != null) // нет такой строки
+            {
+                res = Localizer[key];
+                Logger.LogTrace("------------- Controller2Garin::Localizer {0}->[{1}]", key, res);
+            }
+
+            if (res == key && LocalizerControllerDefault != null)
+            {
+                res = LocalizerControllerDefault[key];
+                Logger.LogTrace("------------- Controller2Garin::LocalizerControllerDefault {0}->[{1}]", key, res);
+            }
+            if (res == key && LocalizerDefault != null)
+            {
+                res = LocalizerDefault[key];
+                Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
+            }
+
             Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
             return res;
         }
@@ -109,12 +172,18 @@ namespace AspNetCoreComponentLibrary
                 CultureInfo.CurrentUICulture = cultureInfo;
 
                 Culture = cultureFromGet;
+
+                if (LocalizerController != null)
+                    LocalizerController = LocalizerController.LoadCulture(cultureFromGet, Logger);
+                if (Localizer != null)
+                    Localizer = Localizer.LoadCulture(cultureFromGet, Logger);
             }
             catch (Exception e)
             {
                 Logger.LogInformation("Cann't set culture to {0}: {1}", cultureFromGet, e);
             }
         }
+        
 
         [NonAction]
         protected virtual void LoadSessionUser()

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -24,9 +25,25 @@ namespace AspNetCoreComponentLibrary
                 if (!routeValues.ContainsKey("culture")) routeValues["culture"] = currentRV["culture"];
             }
 
-            if (routeValues != null && routeValues.ContainsKey("culture") && routeName.IndexOf(".") < 0)
+            if (routeValues != null && routeValues.ContainsKey("culture"))
             {
-                routeName += ".Culture";
+                if (string.IsNullOrWhiteSpace(routeValues["culture"] as string))
+                {
+                    // культура принудительно пуста, ничего не делаем так пустую и передаем, тока чистим имя роута
+                    if (routeName.IndexOf(".") >= 0)
+                    {
+                        routeName = Regex.Replace(routeName, @"\.Culture$", "");
+                    }
+                    routeValues["culture"] = null; // хотя бы для того чтобы убить пустую строку
+                }
+                else
+                {
+                    if (routeName.IndexOf(".") < 0)
+                    {
+                        routeName += ".Culture";
+                    }
+                }
+
             }
             
             var res = url.RouteUrl(routeName, routeValues);

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public partial class Menus : BaseDM<long>, IBlockable, ISortable
+    public partial class Menus : BaseDM<long>, IBlockable, ISortable, IWithSiteId
     {
         public Menus()
         {

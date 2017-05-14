@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,6 +33,43 @@ namespace AspNetCoreComponentLibrary
             return EqualityComparer<K>.Default.Equals(item, default(K));
         }
 
+        public static string CurrentUrl(this IUrlHelper Url, object replaces = null)
+        {
+            var rd = Url.ActionContext.RouteData;
+            var routeName = rd?.GetRouteName();
+            var currentRV = rd?.Values?.ToDictionary(i => i.Key, i => i.Value);
+            if (currentRV == null) currentRV = new Dictionary<string, object>();
+            string path = null;
+            foreach (var r in currentRV)
+            {
+                if (r.Key == "path")
+                {
+                    currentRV["path"] = "[___path___]";
+                    path = r.Value as string;
+                    break;
+                }
+            }
+            foreach (var q in Url.ActionContext.HttpContext.Request.Query)
+            {
+                currentRV[q.Key] = q.Value;
+            }
+            if (replaces != null)
+            {
+                foreach (var r in replaces.AsDictionary())
+                {
+                    currentRV[r.Key] = r.Value;
+                }
+            }
+
+            var res = Url.RouteUrlWithCulture(routeName, currentRV);
+            // решение ппц какое стремное, но пока не найду красивого и универсального решения будет так (по другому нельзя сделать path="faq/index")
+            if (path != null)
+            {
+                res = res.Replace("%5b___path___%5d", path);
+            }
+            return res;
+        }
+
         public static bool EqualsIC(this string arg1, string arg2) {
             if (arg1 == null)
                 throw new ArgumentNullException(nameof(arg1));
@@ -45,6 +83,33 @@ namespace AspNetCoreComponentLibrary
         public static string CryptPassword(string source)
         {
             return source;
+        }
+
+        public static bool IsImplementsInterface(this Type T, Type I)
+        {
+            return I.GetTypeInfo().IsAssignableFrom(T);
+        }
+
+        /// <summary>
+        /// Очищаем строку от опасных html инструкций. Пока не реализовано! Пока удаляем все html теги
+        /// </summary>
+        public static string SanitizeHtml(this string source, bool removeAllHtml = true)
+        {
+            if (source == null) return null;
+            if (removeAllHtml) return source.Replace("<", "&lt;").Replace(">","&gt;");
+
+            return source.Replace("<", "");
+        }
+
+        public static string ToJson(this object obj)
+        {
+            var str = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                StringEscapeHandling = StringEscapeHandling.Default
+            });
+            //return str.Replace("\\u003cbr /\\u003e", "<br />");
+            return str;
         }
 
         public static IStringLocalizer LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
@@ -63,8 +128,9 @@ namespace AspNetCoreComponentLibrary
                 }
                 return l;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogTrace("LoadCulture for {0} fail. {1}", localizer.GetType().FullName, e);
                 return null;
             }
         }

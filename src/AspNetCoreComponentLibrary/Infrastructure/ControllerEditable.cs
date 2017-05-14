@@ -20,7 +20,7 @@ namespace AspNetCoreComponentLibrary
         // теперь получаем ссылку на репозиторий с контроллера через рефлексию, так что вызов конструктора не нужен
         //protected virtual EnumDB DB { get { return EnumDB.Content; } }
 
-        public ControllerEditable(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer) : base(storage, loggerFactory, localizerFactory, localizer)
+        public ControllerEditable(IControllerSettings settings) : base(settings)
         {
             Logger.LogTrace("Сonstructor ControllerEditable {0}", this.GetType().FullName);
             // здесь еще нет конекта к БД
@@ -49,7 +49,7 @@ namespace AspNetCoreComponentLibrary
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            Logger.LogTrace("OnActionExecuting");
+            Logger.LogTrace("ControllerEditable OnActionExecuting");
             base.OnActionExecuting(context);
 
             // не будем дублировать! все репозитории определены в Controller2Garin и получим нужный нам через рефлексию

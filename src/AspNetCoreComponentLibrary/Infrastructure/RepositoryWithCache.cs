@@ -83,7 +83,8 @@ namespace AspNetCoreComponentLibrary
 
         protected override void SetBlock(K id, bool value)
         {
-            if (typeof(T) is IBlockable)
+            //if (typeof(T) is IBlockable)
+            if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;

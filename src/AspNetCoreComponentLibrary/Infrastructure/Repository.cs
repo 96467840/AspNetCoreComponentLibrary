@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace AspNetCoreComponentLibrary
@@ -42,6 +43,16 @@ namespace AspNetCoreComponentLibrary
             return DbSet.AsNoTracking();
         }
 
+        public List<T> GetUnblocked(long siteid)
+        {
+            Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+                using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
+                    return StartQuery().Where(i => ((IWithSiteId)i).SiteId == siteid).ToList();
+
+            return new List<T>();
+        }
+
         public virtual void Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
@@ -78,7 +89,8 @@ namespace AspNetCoreComponentLibrary
 
         protected virtual void SetBlock(K id, bool value)
         {
-            if (typeof(T) is IBlockable)
+            //if (typeof(T) is IBlockable)
+            if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;

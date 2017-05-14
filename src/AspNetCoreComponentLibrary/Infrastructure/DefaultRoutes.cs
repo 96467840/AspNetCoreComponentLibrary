@@ -55,8 +55,8 @@ namespace AspNetCoreComponentLibrary
                 { "Error",         new RouteConfig(10,      "e/{action}", new { controller = "Error", action = "Index" })},
 
                 // чтобы не было конфликта с именем страницы (и шаблоном культуры) используем /a/ (имя страницы обязательно должно иметь длину больше 2 и отличаться от шаблона культуры)
-                { "Admin.Culture", new RouteConfig(10000,  "{culture}/a/{controller}/{action}/", new { action = "List" }, new { culture = new CultureRouteConstraint() })},
-                { "Admin" ,        new RouteConfig(10001,  "a/{controller}/{action}/", new { action = "List" })},
+                { "Admin.Culture", new RouteConfig(10000,  "{culture}/a/{controller}/{action}/{*path}", new { action = "List" }, new { culture = new CultureRouteConstraint() })},
+                { "Admin" ,        new RouteConfig(10001,  "a/{controller}/{action}/{*path}", new { action = "List" })},
 
                 { "Page.Culture",  new RouteConfig(100000, "{culture}/{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" }, new { culture = new CultureRouteConstraint() })},
                 { "Page",          new RouteConfig(100001, "{page?}/{*path}", new { controller = "Home", action = "Index", page = "index.html" })},

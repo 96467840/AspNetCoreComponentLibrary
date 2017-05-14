@@ -1,4 +1,5 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
@@ -50,6 +51,8 @@ namespace AspNetCoreComponentLibrary
         /// </summary>
         public string Culture { get; set; }
 
+        #region Repositories
+
         private T GetContentRepository<T>() where T:IRepositorySetStorageContext
         {
             return Storage.GetRepository<T>(EnumDB.Content);
@@ -67,6 +70,20 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
+        private ILanguageRepository _Languages { get; set; }
+        [RepositorySettings]
+        public ILanguageRepository Languages
+        {
+            get
+            {
+                if (_Languages != null) return _Languages;
+                _Languages = GetContentRepository<ILanguageRepository>();
+                return _Languages;
+            }
+        }
+
+        #endregion
+
         public Controller2Garin(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer)
         {
             LoggerFactory = loggerFactory;
@@ -78,7 +95,7 @@ namespace AspNetCoreComponentLibrary
 
             LocalizerFactory = localizerFactory;
             var type = typeof(SharedResource);
-            var assembly = this.GetType().GetTypeInfo().Assembly;
+            //var assembly = this.GetType().GetTypeInfo().Assembly;
             //Logger.LogTrace("Сonstructor Controller2Garin Localion={0}", assembly.Location);
             
             Localizer = LocalizerFactory.Create(type);
@@ -139,6 +156,34 @@ namespace AspNetCoreComponentLibrary
             return res;
         }
 
+        private bool TrySetCulture(string culture)
+        {
+            IStringLocalizer LC=null, L=null;
+            if (LocalizerController != null)
+                LC = LocalizerController.LoadCulture(culture, Logger);
+            if (Localizer != null)
+                L = Localizer.LoadCulture(culture, Logger);
+
+            // один из локализаторов должен существовать
+            if (L != null || LC != null)
+            {
+                // это влияет тока на параметры форматирования 
+                /*
+                var cultureInfo = new CultureInfo(culture);
+                CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+                CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+                CultureInfo.CurrentCulture = cultureInfo;
+                CultureInfo.CurrentUICulture = cultureInfo;
+                */
+                Localizer = L;
+                LocalizerController = LC;
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Проверка и установка запрашиваемого языка
         /// </summary>
@@ -164,19 +209,9 @@ namespace AspNetCoreComponentLibrary
 
             try
             {
-                var cultureInfo = new CultureInfo(cultureFromGet);
-                CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-                CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-                CultureInfo.CurrentCulture = cultureInfo;
-                CultureInfo.CurrentUICulture = cultureInfo;
-
+                TrySetCulture(cultureFromGet);
+                
                 Culture = cultureFromGet;
-
-                if (LocalizerController != null)
-                    LocalizerController = LocalizerController.LoadCulture(cultureFromGet, Logger);
-                if (Localizer != null)
-                    Localizer = Localizer.LoadCulture(cultureFromGet, Logger);
             }
             catch (Exception e)
             {
@@ -247,14 +282,31 @@ namespace AspNetCoreComponentLibrary
             ResolveCurrentSite(context);
             if (context.Result != null) return;
 
-            // плохой вариант, надо заставлять девелоперов называть входные модели "input"
-            /*BaseIM inputModel = context.ActionArguments.ContainsKey("input") ? (BaseIM)context.ActionArguments["input"] : null;
-            if (inputModel != null)
-                SetCulture(inputModel.Culture);
-            /**/
             if (context.RouteData.Values.ContainsKey("Culture"))
             {
                 SetCulture(context.RouteData.Values["Culture"] as string);
+            }
+            else // культуры нет, ее надо поискать и установить
+            {
+                var provider = new AcceptLanguageHeaderRequestCultureProvider();
+                var result = provider.DetermineProviderCultureResult(context.HttpContext).Result;
+                if (result != null)
+                {
+                    Logger.LogInformation("AcceptLanguageHeaderRequestCultureProvider UICultures={0}", string.Join(", ", result.UICultures));
+                    Logger.LogInformation("AcceptLanguageHeaderRequestCultureProvider Cultures={0}", string.Join(", ", result.Cultures));
+
+                    foreach (var c in result.Cultures)
+                    {
+                        if (TrySetCulture(c)) break;
+                    }
+                }
+                else
+                {
+                    // тупо ставим дефолтную
+                    //TrySetCulture(DefaultCulture);
+                    Localizer = null;
+                    LocalizerController = null;
+                }
             }
 
             // теперь репозитории грузим тока тогда когда они понадобятся

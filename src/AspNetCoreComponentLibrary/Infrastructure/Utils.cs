@@ -59,7 +59,7 @@ namespace AspNetCoreComponentLibrary
                 var str = string.Join("\n", l.GetAllStrings().Select(i => i.Name + "->" + i.Value).ToList());
                 if (logger != null)
                 {
-                    logger.LogTrace("{0} strings:\n{1}", localizer.GetType().FullName, str);
+                    logger.LogTrace("LoadCulture for {0} strings:\n{1}", localizer.GetType().FullName, str);
                 }
                 return l;
             }

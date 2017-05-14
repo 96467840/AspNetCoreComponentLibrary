@@ -117,10 +117,118 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lang.news" xml:space="preserve">
+    <value>News</value>
+  </data>
+  <data name="lang.founded" xml:space="preserve">
+    <value>Founded: {all}. Shown: {begin}-{end}.</value>
+  </data>
+  <data name="lang.months" xml:space="preserve">
+    <value>january,february,march,april,may,june,july,august,september,october,november,december</value>
+  </data>
+  <data name="lang.public" xml:space="preserve">
+    <value>Published</value>
+  </data>
+  <data name="lang.faq.from" xml:space="preserve">
+    <value>{date} from {name}:</value>
+  </data>
+  <data name="lang.faq.answer" xml:space="preserve">
+    <value>Answer: </value>
+  </data>
+  <data name="lang.form.send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="lang.form.req.fields" xml:space="preserve">
+    <value>Fields marked with an asterisk (*) are required.</value>
+  </data>
+  <data name="lang.form.req.field" xml:space="preserve">
+    <value>Field is required</value>
+  </data>
+  <data name="lang.form.field.incorrect" xml:space="preserve">
+    <value>Field filled incorrectly.</value>
+  </data>
+  <data name="lang.form.fields.wrong" xml:space="preserve">
+    <value>Fields {fields} filled incorrectly.</value>
+  </data>
+  <data name="lang.form.field.wrong" xml:space="preserve">
+    <value>Field {field} filled incorrectly.</value>
+  </data>
+  <data name="lang.form.i.am.not.a.robot" xml:space="preserve">
+    <value>I'am not a robot.</value>
+  </data>
+  <data name="lang.form.send.success" xml:space="preserve">
+    <value>Your message was sent succesfully.</value>
+  </data>
+  <data name="lang.print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="lang.faq.ask" xml:space="preserve">
+    <value>Ask your question.</value>
+  </data>
+  <data name="lang.faq.question" xml:space="preserve">
+    <value>Question: </value>
+  </data>
+  <data name="lang.shop.buy" xml:space="preserve">
+    <value>Buy</value>
+  </data>
+  <data name="lang.shop.ordered" xml:space="preserve">
+    <value>Ordered</value>
+  </data>
+  <data name="lang.shop.relateditems" xml:space="preserve">
+    <value>Related goods</value>
+  </data>
+  <data name="lang.shop.quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="lang.shop.find" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="lang.shop.reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="lang.shop.errorfind" xml:space="preserve">
+    <value>An error occurred while retrieving data for your search. Check the connection to the Internet.</value>
+  </data>
+  <data name="lang.shop.search.text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="lang.shop.search.price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="lang.shop.search.brand" xml:space="preserve">
+    <value>Brands</value>
+  </data>
+  <data name="lang.shop.list" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="lang.shop.gallery" xml:space="preserve">
+    <value>Gallery</value>
+  </data>
+  <data name="lang.shop.order.priority" xml:space="preserve">
+    <value>Order by default</value>
+  </data>
+  <data name="lang.shop.order.name" xml:space="preserve">
+    <value>Order by name</value>
+  </data>
+  <data name="lang.shop.order.price" xml:space="preserve">
+    <value>Order by price</value>
+  </data>
+  <data name="lang.shop.order.priority.desc" xml:space="preserve">
+    <value>Order by default descending</value>
+  </data>
+  <data name="lang.shop.order.name.desc" xml:space="preserve">
+    <value>Order by name descending</value>
+  </data>
+  <data name="lang.shop.order.price.desc" xml:space="preserve">
+    <value>Order by price descending</value>
+  </data>
   <data name="menus.name" xml:space="preserve">
     <value>Pages</value>
   </data>
   <data name="sites.name" xml:space="preserve">
     <value>Sites</value>
+  </data>
+  <data name="languages.name" xml:space="preserve">
+    <value>Languages</value>
   </data>
 </root>

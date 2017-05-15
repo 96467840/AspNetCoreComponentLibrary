@@ -64,6 +64,8 @@ namespace AspNetCoreComponentLibrary
             var routeName = rd?.GetRouteName();
             var currentRV = rd?.Values?.ToDictionary(i => i.Key, i => i.Value);
             if (currentRV == null) currentRV = new Dictionary<string, object>();
+            
+            // костыль для вставки пути
             string path = null;
             foreach (var r in currentRV)
             {
@@ -74,6 +76,8 @@ namespace AspNetCoreComponentLibrary
                     break;
                 }
             }
+            // конец костыля
+
             foreach (var q in Url.ActionContext.HttpContext.Request.Query)
             {
                 currentRV[q.Key] = q.Value;
@@ -87,11 +91,15 @@ namespace AspNetCoreComponentLibrary
             }
 
             var res = Url.RouteUrlWithCulture(routeName, currentRV);
+            
+            // костыль для вставки пути
             // решение ппц какое стремное, но пока не найду красивого и универсального решения будет так (по другому нельзя сделать path="faq/index")
             if (path != null)
             {
                 res = res.Replace("%5b___path___%5d", path);
             }
+            // конец костыля
+
             return res;
         }
 

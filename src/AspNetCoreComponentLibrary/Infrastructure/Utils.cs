@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.WebEncoders;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -18,7 +21,10 @@ using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 using System.Threading.Tasks;
+using Microsoft.Extensions.FileProviders;
+
 
 namespace AspNetCoreComponentLibrary
 {
@@ -41,6 +47,44 @@ namespace AspNetCoreComponentLibrary
             if (arg2 == null) return false;
 
             return string.Equals(arg1, arg2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static void Set2GarinServices<L>(this IServiceCollection services) where L: class, IStringLocalizer
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            // Setup options with DI
+            services.AddOptions();
+
+            // Add framework services.
+            services.AddMvc()
+                // локализацию шаблонов мы не юзаем, но мы юзаем инжект на вьюхах (IViewLocalizer)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix) //Adds support for localized view files. In this sample view localization is based on the view file suffix. For example "fr" in the Index.fr.cshtml file.
+                .AddDataAnnotationsLocalization();
+
+            // чтобы во вьюхах русские символы не кодировались
+            services.Configure<WebEncoderOptions>(options =>
+            {
+                options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
+            });
+
+            // генерируем урлы в низком регистре (так как для и линукса делаем, а там привычнее когда все пути в низком регистре)
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+            // конфигурируем подгрузку представлений из библиотеки
+            var assembly = typeof(AspNetCoreComponentLibrary.TestComponent).GetTypeInfo().Assembly;
+            var embededFileProvider = new EmbeddedFileProvider(assembly, "AspNetCoreComponentLibrary");
+            services.Configure<RazorViewEngineOptions>(options => { options.FileProviders.Add(embededFileProvider); });
+
+            // https://docs.microsoft.com/ru-ru/aspnet/core/performance/caching/middleware
+            //services.AddResponseCaching();
+
+            // необходимо для NLog (без этого в логах не будет текущего запроса)
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IStringLocalizer, L>();
+
+            services.AddTransient<IControllerSettings, ControllerSettings>();
         }
 
         public static string CryptPassword(string source)

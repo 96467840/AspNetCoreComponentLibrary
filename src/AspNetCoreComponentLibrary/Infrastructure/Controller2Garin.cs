@@ -39,7 +39,7 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// Выбранный язык сайта Site
         /// </summary>
-        public Languages CurrentLanguage { get; set; }
+        //public Languages CurrentLanguage { get; set; }
 
         /// <summary>
         /// Список языков сайта Site
@@ -228,10 +228,15 @@ namespace AspNetCoreComponentLibrary
         public readonly IStringLocalizer LocalizerDefault;
         // локализатор из сборки где определен контроллер (с культурой по умолчанию)
         public readonly IStringLocalizer LocalizerControllerDefault;
+        
         /// <summary>
-        /// Запрашиваемый пользователем язык. Устанавливается из урла.
+        /// Текущий язык. Может быть нулом, только если у сайта нет языков.
         /// </summary>
-        public string Culture { get; set; }
+        public Languages Language { get; set; }
+        /// <summary>
+        /// Язык с урла. Нулл если язык в урле не определен.
+        /// </summary>
+        public string CultureFromGet { get; set; }
 
         [NonAction]
         protected void ResolveCulture(ActionExecutingContext context)
@@ -241,31 +246,43 @@ namespace AspNetCoreComponentLibrary
             var provider = new AcceptLanguageHeaderRequestCultureProvider();
             var languagePreferences = provider.DetermineProviderCultureResult(context.HttpContext).Result;
 
-            //var routeName = context.RouteData.GetRouteName();
-            //var currentRV = context.RouteData.Values;
-
             var cult = context.RouteData.Values["Culture"] as string;
+            // приведем к корректному виду (в урле могут быть маленькие буквы во второй части ru-ru)
+            if (string.IsNullOrWhiteSpace(cult) || !cult.TestCulture())
+            {
+                // ни в коем случае так не делать! если тут будет послана фигня, то будет сделан редирект на правильный урл => просто игнорируем
+                //cult = null;
+            }
+            else
+            {
+                cult = cult.ToLower();
+                if (cult.Length > 2)
+                {
+                    // мы прошли проверку TestCulture и значит елси больше 2 букв то етсь 1 дефис
+                    var tmp = cult.Explode("-");
+                    cult = tmp[0] + "-" + tmp[1].ToUpper();
+                }
+            }
+            CultureFromGet = cult;
+
             if (!string.IsNullOrWhiteSpace(cult))
             {
                 var l = SiteLanguages.FirstOrDefault(i => i.Lang == cult);
                 if (l != null) // указанный язык есть на сайте все ок
                 {
-                    SetCulture(cult);
-                    CurrentLanguage = l;
+                    SetLang(l);
                     return;
                 }
                 else
                 {
                     // языка указанного в запросе нет на сайте => делаем редирект (постоянный, чтобы выбить из поискового индекса)
-                    //currentRV["culture"] = (string)null;
-                    var url = Url.CurrentUrl(new { culture = (string)null });//Url.RouteUrlWithCulture(routeName, currentRV.ToDictionary(i => i.Key, i => i.Value)); //new { culture = (string)null }
+                    var url = Url.CurrentUrl(new { culture = (string)null });
                     Logger.LogTrace("ResolveCulture redirect to {0}", url);
                     context.Result = new RedirectResult(url, true);
-                    //context.Result = new RedirectResult(Url.RouteUrlWithCulture(routeName, new { culture = (string)null }), true);
                     return;
                 }
             }
-            else // культуры в запросе нет, ее надо поискать и установить
+            else // культуры в запросе нет, ее надо поискать и установить. Вот тут никаких редиректов быть не должно! Редирект на язык делаем исключительно на js (для кеширования страниц)
             {
                 if (languagePreferences != null && languagePreferences.Cultures != null)
                 {
@@ -279,18 +296,23 @@ namespace AspNetCoreComponentLibrary
                         {
                             if (l.IsDefault) // если язык по умолчанию, то показываем контент сайта на этом языке. причем без указания культуры в запросе
                             {
-                                SetCulture(l.Lang);
-                                CurrentLanguage = l;
+                                SetLang(l);
                                 return;
                             }
                             else
                             {
+                                // редирект тут делать не будем. редирект сделаем на уровне js. (для кеширования страниц)
+                                // условие пока оставим иначе захочется пооптимизировать
+                                SetLang(l);
+                                return;
+
                                 // предпочитаемый юзером язык определен на сайте и так как язык не является дефолтным, то нам надо сделать редирект
                                 //currentRV["culture"] = l.Lang;
-                                var url = Url.CurrentUrl(new { culture = l.Lang });//Url.RouteUrlWithCulture(routeName, currentRV.ToDictionary(i=>i.Key, i=>i.Value)); //new { culture = l.Lang }
+                                /*var url = Url.CurrentUrl(new { culture = l.Lang });//Url.RouteUrlWithCulture(routeName, currentRV.ToDictionary(i=>i.Key, i=>i.Value)); //new { culture = l.Lang }
                                 Logger.LogTrace("ResolveCulture redirect to {0}", url);
                                 context.Result = new RedirectResult(url, true);
                                 return;
+                                */
                             }
                         }
                     }
@@ -307,8 +329,7 @@ namespace AspNetCoreComponentLibrary
                     Logger.LogWarning("Site {0} ({1}) have not default language.", Site.Id, Site.Hosts);
                     l = SiteLanguages.First();
                 }
-                SetCulture(l.Lang);
-                CurrentLanguage = l;
+                SetLang(l);
                 return;
             }
             else // на сайте вообще нет языков
@@ -333,10 +354,10 @@ namespace AspNetCoreComponentLibrary
 
             string res = key;
 
-            if (CurrentLanguage != null)
+            if (Language != null)
             {
-                res = CurrentLanguage[key];
-                Logger.LogTrace("------------- Controller2Garin::CurrentLanguage {0}->[{1}]", key, res);
+                res = Language[key];
+                Logger.LogTrace("------------- Controller2Garin::Language {0}->[{1}]", key, res);
             }
 
             // пробуем загрузить строку из сборки с контролерами
@@ -366,6 +387,11 @@ namespace AspNetCoreComponentLibrary
             return res;
         }
 
+        /// <summary>
+        /// Данная функция только инициализирует локализаторы
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         private bool TrySetCulture(string culture)
         {
             IStringLocalizer LC = null, L = null;
@@ -397,35 +423,21 @@ namespace AspNetCoreComponentLibrary
         /// <summary>
         /// Проверка и установка запрашиваемого языка
         /// </summary>
-        /// <param name="cultureFromGet"></param>
+        /// <param name="lang"></param>
         [NonAction]
-        public virtual void SetCulture(string cultureFromGet)
+        public virtual void SetLang(Languages lang)
         {
-            Logger.LogTrace("SetCulture {0}", cultureFromGet);
-
-            // проверить cultureFromGet!
-
-            // для начала примитивная (наша) проверка
-            if (!cultureFromGet.TestCulture()) return;
-
-            // так как культура идет с пути, а пути в низком регистре, то надо привести в норм вид
-            cultureFromGet = cultureFromGet.ToLower();
-            if (cultureFromGet.Length > 2)
-            {
-                // мы прошли проверку TestCulture и значит елси больше 2 букв то етсь 1 дефис
-                var tmp = cultureFromGet.Explode("-");
-                cultureFromGet = tmp[0] + "-" + tmp[1].ToUpper();
-            }
+            Logger.LogTrace("SetLang {0}", lang);
 
             try
             {
-                TrySetCulture(cultureFromGet);
+                TrySetCulture(lang.Lang);
 
-                Culture = cultureFromGet;
+                Language = lang;
             }
             catch (Exception e)
             {
-                Logger.LogInformation("Cann't set culture to {0}: {1}", cultureFromGet, e);
+                Logger.LogInformation("Cann't set language to {0}: {1}", lang, e);
             }
         }
 

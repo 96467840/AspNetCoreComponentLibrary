@@ -46,8 +46,25 @@ namespace AspNetCoreComponentLibrary
                 }
 
             }
-            
+
+            // костыль для вставки пути. без него получаем 
+            // @Url.RouteUrl("Page", new { page = "mypage", path = "my/long/path", getvar=1}) = /mypage/my%2flong%2fpath?getvar=1
+            string path = null;
+            if (routeValues.ContainsKey("path"))
+            {
+                path = routeValues["path"] as string;
+                routeValues["path"] = "[___path___]";
+            }
+
+            // собс-но сама генерация урла
             var res = url.RouteUrl(routeName, routeValues);
+
+            // продолжение костыля
+            if (path != null)
+            {
+                res = res.Replace("%5b___path___%5d", path);
+            }
+
             return res;
         }
 
@@ -66,7 +83,7 @@ namespace AspNetCoreComponentLibrary
             if (currentRV == null) currentRV = new Dictionary<string, object>();
             
             // костыль для вставки пути
-            string path = null;
+            /*string path = null;
             foreach (var r in currentRV)
             {
                 if (r.Key == "path")
@@ -75,7 +92,7 @@ namespace AspNetCoreComponentLibrary
                     path = r.Value as string;
                     break;
                 }
-            }
+            }*/
             // конец костыля
 
             foreach (var q in Url.ActionContext.HttpContext.Request.Query)
@@ -94,10 +111,10 @@ namespace AspNetCoreComponentLibrary
             
             // костыль для вставки пути
             // решение ппц какое стремное, но пока не найду красивого и универсального решения будет так (по другому нельзя сделать path="faq/index")
-            if (path != null)
+            /*if (path != null)
             {
                 res = res.Replace("%5b___path___%5d", path);
-            }
+            }*/
             // конец костыля
 
             return res;

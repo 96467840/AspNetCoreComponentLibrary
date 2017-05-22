@@ -53,14 +53,15 @@ namespace AspNetCoreComponentLibrary
             if (routeValues.ContainsKey("path"))
             {
                 path = routeValues["path"] as string;
-                routeValues["path"] = "[___path___]";
+                if (!string.IsNullOrWhiteSpace(path))
+                    routeValues["path"] = "[___path___]";
             }
 
             // собс-но сама генерация урла
             var res = url.RouteUrl(routeName, routeValues);
 
             // продолжение костыля
-            if (path != null)
+            if (!string.IsNullOrWhiteSpace(path))
             {
                 res = res.Replace("%5b___path___%5d", path);
             }

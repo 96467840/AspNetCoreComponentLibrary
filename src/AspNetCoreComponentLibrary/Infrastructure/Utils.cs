@@ -57,7 +57,7 @@ namespace AspNetCoreComponentLibrary
             // Setup options with DI
             services.AddOptions();
 
-            services.Configure<LocalizerConfigure>(Configuration.GetSection("LocalizerConfigure"));
+            services.Configure<LocalizerConfigure>(Configuration.GetSection("LocalizerConfigure")/*, trackConfigChanges: true*/);
 
             // Add framework services.
             services.AddMvc()

@@ -13,5 +13,6 @@ namespace AspNetCoreComponentLibrary.Abstractions
         ILoggerFactory LoggerFactory { get; set; }
         IStringLocalizerFactory LocalizerFactory { get; set; }
         IStringLocalizer Localizer { get; set; }
+        string DefaultCulture { get; set; }
     }
 }

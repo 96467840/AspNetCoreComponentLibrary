@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Configuration;
 
 
 namespace AspNetCoreComponentLibrary
@@ -49,12 +50,14 @@ namespace AspNetCoreComponentLibrary
             return string.Equals(arg1, arg2, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static void Set2GarinServices<L>(this IServiceCollection services) where L: class, IStringLocalizer
+        public static void Set2GarinServices<L>(this IServiceCollection services, IConfigurationRoot Configuration) where L: class, IStringLocalizer
         {
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             // Setup options with DI
             services.AddOptions();
+
+            services.Configure<LocalizerConfigure>(Configuration.GetSection("LocalizerConfigure"));
 
             // Add framework services.
             services.AddMvc()

@@ -34,6 +34,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="1.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -97,8 +97,21 @@ namespace AspNetCoreComponentLibrary
             LocalizerControllerOriginal = settings.Localizer;
             LocalizerController = LocalizerControllerOriginal;
 
+            DefaultCulture = settings.DefaultCulture;
+            if (string.IsNullOrWhiteSpace(DefaultCulture)) DefaultCulture = DefaultLibraryCulture;
+
             if (LocalizerOriginal != null)
-                LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultCulture, Logger);
+            {
+                // установка дефолтного локализатора из библиотеки
+                if (LibraryCultures.Contains(DefaultCulture))
+                {
+                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultCulture, Logger);
+                }
+                else
+                {
+                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultLibraryCulture, Logger);
+                }
+            }
 
             if (LocalizerControllerOriginal != null)
                 LocalizerControllerDefault = LocalizerControllerOriginal.LoadCulture(DefaultCulture, Logger);
@@ -211,22 +224,31 @@ namespace AspNetCoreComponentLibrary
         public readonly IStringLocalizerFactory LocalizerFactory;
 
         /// <summary>
-        /// Язык по умолчанию для админки и системных сообщений. Его можно переопределить в своих контролерах.
+        /// Язык по умолчанию для админки и системных сообщений. Загружается из конфига.
         /// </summary>
-        //public virtual string DefaultCulture { get { return "en-US"; } }
-        //public virtual string DefaultCulture { get { return "ru"; } }
-        public virtual string DefaultCulture { get { return "es"; } }
+        protected string DefaultCulture { get; set; }
 
-        // локализатор из этой сборки
+        // языки определенные в этой либе (в будущем переделать на рефлексию)
+        private List<string> LibraryCultures = new List<string>() { "en", "ru" };
+        private string DefaultLibraryCulture { get { return "en"; } }
+
+        /// <summary>
+        /// локализатор из сборки библиотеки
+        /// </summary>
         public IStringLocalizer Localizer;
-        public readonly IStringLocalizer LocalizerOriginal;
-        // локализатор из сборки где определен контроллер
+        private readonly IStringLocalizer LocalizerOriginal;
+        /// <summary>
+        /// локализатор из сборки где определен контроллер
+        /// </summary>
         public IStringLocalizer LocalizerController;
-        public readonly IStringLocalizer LocalizerControllerOriginal;
-
-        // локализатор из этой сборки (с культурой по умолчанию)
+        private readonly IStringLocalizer LocalizerControllerOriginal;
+        /// <summary>
+        /// локализатор из сборки библиотеки (с культурой по умолчанию)
+        /// </summary>
         public readonly IStringLocalizer LocalizerDefault;
-        // локализатор из сборки где определен контроллер (с культурой по умолчанию)
+        /// <summary>
+        /// локализатор из сборки где определен контроллер (с культурой по умолчанию)
+        /// </summary>
         public readonly IStringLocalizer LocalizerControllerDefault;
         
         /// <summary>

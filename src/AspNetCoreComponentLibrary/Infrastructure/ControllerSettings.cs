@@ -1,6 +1,7 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,15 @@ namespace AspNetCoreComponentLibrary
         public ILoggerFactory LoggerFactory { get; set; }
         public IStringLocalizerFactory LocalizerFactory { get; set; }
         public IStringLocalizer Localizer { get; set; }
+        public string DefaultCulture { get; set; }
 
-        public ControllerSettings(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer)
+        public ControllerSettings(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer, IOptions<LocalizerConfigure> LocalizerOptionsAccessor)
         {
             Storage = storage;
             LoggerFactory = loggerFactory;
             LocalizerFactory = localizerFactory;
             Localizer = localizer;
+            DefaultCulture = LocalizerOptionsAccessor.Value.DefaultCulture;
         }
     }
 }

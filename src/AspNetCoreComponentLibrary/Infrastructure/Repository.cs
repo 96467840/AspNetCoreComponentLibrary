@@ -46,11 +46,21 @@ namespace AspNetCoreComponentLibrary
         public List<T> GetUnblocked(long siteid)
         {
             Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            var query = StartQuery();
             if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
-                using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
-                    return StartQuery().Where(i => ((IWithSiteId)i).SiteId == siteid).ToList();
+            {
+                query = query.Where(i => ((IWithSiteId)i).SiteId == siteid);//.ToList();
+            }
+            /*else // список сайтов. что вернуть?
+            {
+                return new List<T>();
+            }/**/
 
-            return new List<T>();
+            if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
+                query = query.Where(i => !((IBlockable)i).IsBlocked);
+
+            using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
+                return query.ToList();
         }
 
         public virtual void Save(T item)

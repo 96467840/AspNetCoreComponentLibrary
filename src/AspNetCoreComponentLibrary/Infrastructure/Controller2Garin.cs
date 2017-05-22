@@ -37,11 +37,6 @@ namespace AspNetCoreComponentLibrary
         public Users SessionUser { get; set; }
 
         /// <summary>
-        /// Выбранный язык сайта Site
-        /// </summary>
-        //public Languages CurrentLanguage { get; set; }
-
-        /// <summary>
         /// Список языков сайта Site
         /// </summary>
         public List<Languages> SiteLanguages { get; set; }

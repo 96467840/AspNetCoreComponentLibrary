@@ -97,6 +97,7 @@ namespace AspNetCoreComponentLibrary
 
             if (LocalizerOriginal != null)
             {
+                Logger.LogTrace("------------LocalizerDefault LoadCulture");
                 // установка дефолтного локализатора из библиотеки
                 if (LibraryCultures.Contains(DefaultCulture))
                 {
@@ -109,7 +110,10 @@ namespace AspNetCoreComponentLibrary
             }
 
             if (LocalizerControllerOriginal != null)
+            {
+                Logger.LogTrace("------------LocalizerControllerDefault LoadCulture");
                 LocalizerControllerDefault = LocalizerControllerOriginal.LoadCulture(DefaultCulture, Logger);
+            }
 
             Logger.LogTrace("end of Сonstructor Controller2Garin {0}", this.GetType().FullName);
         }
@@ -351,13 +355,14 @@ namespace AspNetCoreComponentLibrary
             }
             else // на сайте вообще нет языков
             {
-                // надо бы попробовать установить локализацию по предпочтениям юзера
-                if (languagePreferences != null && languagePreferences.Cultures != null)
+                // надо бы попробовать установить локализацию по предпочтениям юзера. 
+                // НЕТ! кеширование контента накрывается. Страницы должны выдаватся независимо от предпочтений юзера!
+                /*if (languagePreferences != null && languagePreferences.Cultures != null)
                     foreach (var c in languagePreferences.Cultures)
                     {
                         if (TrySetCulture(c)) return;
                     }
-
+                /**/
                 Localizer = null;
                 LocalizerController = null;
             }
@@ -366,7 +371,7 @@ namespace AspNetCoreComponentLibrary
         [NonAction]
         public virtual string Localize(string key)
         {
-            Logger.LogTrace("Controller2Garin::Localize {0}", key);
+            //Logger.LogTrace("Controller2Garin::Localize {0}", key);
             if (string.IsNullOrWhiteSpace(key)) return key;
 
             string res = key;
@@ -400,7 +405,7 @@ namespace AspNetCoreComponentLibrary
                 Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
             }
 
-            Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
+            //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
             return res;
         }
 
@@ -413,11 +418,16 @@ namespace AspNetCoreComponentLibrary
         {
             IStringLocalizer LC = null, L = null;
             if (LocalizerControllerOriginal != null)
+            {
+                Logger.LogTrace("===================== LocalizerController LoadCulture");
                 LC = LocalizerControllerOriginal.LoadCulture(culture, Logger);
+            }
 
             if (LocalizerOriginal != null)
+            {
+                Logger.LogTrace("===================== Localizer LoadCulture");
                 L = LocalizerOriginal.LoadCulture(culture, Logger);
-
+            }
             // один из локализаторов должен существовать
             if (L != null || LC != null)
             {

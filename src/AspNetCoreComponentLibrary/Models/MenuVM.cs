@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Html;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,13 +9,13 @@ namespace AspNetCoreComponentLibrary
     public class MenuItem
     {
         public string Href { get; set; }
-        public string Title { get; set; }
+        public HtmlString Title { get; set; }
         public string liClass { get; set; }
         public string aClass { get; set; }
         public bool IsBlank { get; set; }
         public int Priority { get; set; }
 
-        public MenuItem(string href, string title, string liclass=null, string aclass=null, bool isBlank = false)
+        public MenuItem(string href, HtmlString title, string liclass=null, string aclass=null, bool isBlank = false)
         {
             Href = href; Title = title;
             liClass = liclass; aClass = aclass;

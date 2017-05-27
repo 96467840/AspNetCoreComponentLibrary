@@ -71,6 +71,10 @@ namespace AspNetCoreComponentLibrary
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
 
+            // https://docs.microsoft.com/en-us/aspnet/core/security/cross-site-scripting
+            services.AddSingleton<HtmlEncoder>(
+                HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
+
             // генерируем урлы в низком регистре (так как для и линукса делаем, а там привычнее когда все пути в низком регистре)
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 

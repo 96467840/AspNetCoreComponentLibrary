@@ -1,4 +1,5 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -356,7 +357,7 @@ namespace AspNetCoreComponentLibrary
             else // на сайте вообще нет языков
             {
                 // надо бы попробовать установить локализацию по предпочтениям юзера. 
-                // НЕТ! кеширование контента накрывается. Страницы должны выдаватся независимо от предпочтений юзера!
+                // НЕТ! кеширование контента накрывается. Страницы должны выдаваться независимо от предпочтений юзера!
                 /*if (languagePreferences != null && languagePreferences.Cultures != null)
                     foreach (var c in languagePreferences.Cultures)
                     {
@@ -369,10 +370,10 @@ namespace AspNetCoreComponentLibrary
         }
 
         [NonAction]
-        public virtual string Localize(string key)
+        public virtual HtmlString Localize(string key)
         {
             //Logger.LogTrace("Controller2Garin::Localize {0}", key);
-            if (string.IsNullOrWhiteSpace(key)) return key;
+            if (string.IsNullOrWhiteSpace(key)) return new HtmlString(string.Empty);
 
             string res = key;
 
@@ -406,7 +407,7 @@ namespace AspNetCoreComponentLibrary
             }
 
             //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
-            return res;
+            return new HtmlString(res);
         }
 
         /// <summary>

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
-    //public class LanguageRepositoryProto : RepositoryWithCache<long, Languages>
-    public class LanguageRepositoryProto : Repository<long, Languages>
+    public class LanguageRepositoryProto : RepositoryWithCache<long, Languages>
+    //public class LanguageRepositoryProto : Repository<long, Languages>
     {
     }
 }

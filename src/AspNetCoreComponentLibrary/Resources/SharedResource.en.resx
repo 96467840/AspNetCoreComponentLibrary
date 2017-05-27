@@ -229,6 +229,6 @@
     <value>Sites</value>
   </data>
   <data name="languages.name" xml:space="preserve">
-    <value>Languages</value>
+    <value>&lt;b&gt;Languages&lt;/b&gt;</value>
   </data>
 </root>

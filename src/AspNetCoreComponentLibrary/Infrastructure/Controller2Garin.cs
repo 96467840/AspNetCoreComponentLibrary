@@ -28,6 +28,11 @@ namespace AspNetCoreComponentLibrary
         public IUserRepository Users { get; set; }
 
         /// <summary>
+        /// Префикс для локализации
+        /// </summary>
+        public string LocalizerPrefix { get; set; }
+
+        /// <summary>
         /// Текущий сайт
         /// </summary>
         public Sites Site { get; set; }

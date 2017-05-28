@@ -5,7 +5,7 @@
 
 @await Component.InvokeAsync(nameof(BreadcrumbComponent), new { vm = Model.Breadcrumb })
 
-<h1>List</h1>
+<h1>@Model.GetH1()</h1>
 
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 

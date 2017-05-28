@@ -3,7 +3,7 @@
 @{
     if (Model == null) { return; }
 }
-<ol class="@Model.Class">
+<ul class="@(Model.Class??"nav nav-pills nav-stacked")">
     @for (var i = 0; i < Model.Items.Count; i++)
     {
         var item = Model.Items[i];
@@ -19,4 +19,4 @@
             }
         </li>
     }
-</ol>
+</ul>

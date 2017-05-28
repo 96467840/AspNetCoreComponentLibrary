@@ -17,7 +17,11 @@ namespace AspNetCoreComponentLibrary
     {
         public AdminVM(Controller2Garin controller) : base(controller)
         {
-            //if ()
+            if (!CheckRights())
+            {
+                throw new Exception(controller.Localize("common").ToString());
+            }
+
         }
 
         private MenuVM _LeftMenu { get; set; }
@@ -27,6 +31,7 @@ namespace AspNetCoreComponentLibrary
             {
                 if (_LeftMenu != null) return _LeftMenu;
                 var items = new List<MenuItem>();
+                var current = Controller.GetType().FullName;
 
                 foreach (Type type in Controller.GetType().GetTypeInfo().Assembly.GetTypes())
                 {
@@ -37,9 +42,14 @@ namespace AspNetCoreComponentLibrary
                         if (!tmp.Any()) continue;
                         var controllerName = Regex.Replace(tmp.Last(), "Controller$", "");
                         var href = Controller.Url.RouteUrlWithCulture("Admin", new { Controller = controllerName, Action = "List" });
-                        var title = Controller.Localize(attr.LocalizerPrefix+".name");
+                        var title = Controller.Localize(attr.LocalizerPrefix + ".name");
                         var priority = attr.Priority;
-                        items.Add(new MenuItem(href, title) { Priority = priority });
+                        var liClass = string.Empty;
+                        if (current == type.FullName)
+                        {
+                            liClass = "active";
+                        }
+                        items.Add(new MenuItem(href, title, liClass) { Priority = priority });
                     }
                 }
 

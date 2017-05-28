@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,8 @@ namespace AspNetCoreComponentLibrary
     // ---------------- View Model
     public interface IListVM: IAdminVM
     {
+        HtmlString GetH1();
+
     }
 
     public class ListVM<K, T> : AdminVM, IListVM where T : BaseDM<K> /*where K : struct*/
@@ -17,6 +20,11 @@ namespace AspNetCoreComponentLibrary
 
         public ListVM(Controller2Garin controller) : base(controller)
         {
+        }
+        
+        public HtmlString GetH1()
+        {
+            return Controller.Localize(Controller.LocalizerPrefix + ".name");
         }
     }
 

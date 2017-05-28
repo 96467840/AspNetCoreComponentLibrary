@@ -25,7 +25,16 @@ namespace AspNetCoreComponentLibrary
             Logger.LogTrace("Сonstructor ControllerEditable {0}", this.GetType().FullName);
             // здесь еще нет конекта к БД
             //Repository = Storage.GetRepository<R>(DB);
+
+            // получить атрибуты контролера
+            var type = GetType();
+            var attr = (AdminControllerSettingsAttribute)type.GetTypeInfo().GetCustomAttribute(typeof(AdminControllerSettingsAttribute));
+            if (attr != null && type.GetTypeInfo().IsClass)
+            {
+                LocalizerPrefix = attr.LocalizerPrefix;
+            }
         }
+
 
         private void SetRepository()
         {

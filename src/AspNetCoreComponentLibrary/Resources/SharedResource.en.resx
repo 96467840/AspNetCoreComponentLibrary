@@ -117,24 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  
   <!-- 
     ===================================
   -->
+
 <data name="lang.news" xml:space="preserve"><value>News</value></data>
 
 <data name="lang.founded" xml:space="preserve"><value>Founded: {all}. Shown: {begin}-{end}.</value></data>
 
+<data name="lang.founded0" xml:space="preserve"><value>Nothing was found.</value></data>
+
 <data name="lang.months" xml:space="preserve"><value>january,february,march,april,may,june,july,august,september,october,november,december</value></data>
 
-<data name="lang.public" xml:space="preserve"><value>Published</value></data>
+<data name="lang.public" xml:space="preserve"><value>Published {date}</value></data>
 
 <data name="lang.faq.from" xml:space="preserve"><value>{date} from {name}:</value></data>
 
+<data name="lang.faq.question" xml:space="preserve"><value>Question: </value></data>
+
 <data name="lang.faq.answer" xml:space="preserve"><value>Answer: </value></data>
+
+<data name="lang.faq.ask" xml:space="preserve"><value>Ask your question.</value></data>
 
 <data name="lang.form.send" xml:space="preserve"><value>Send</value></data>
 
-<data name="lang.form.req.fields" xml:space="preserve"><value>Fields marked with an asterisk (*) are required.</value></data>
+<data name="lang.form.req.fields" xml:space="preserve"><value>Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.</value></data>
 
 <data name="lang.form.req.field" xml:space="preserve"><value>Field is required</value></data>
 
@@ -149,10 +157,6 @@
 <data name="lang.form.send.success" xml:space="preserve"><value>Your message was sent succesfully.</value></data>
 
 <data name="lang.print" xml:space="preserve"><value>Print</value></data>
-
-<data name="lang.faq.ask" xml:space="preserve"><value>Ask your question.</value></data>
-
-<data name="lang.faq.question" xml:space="preserve"><value>Question: </value></data>
 
 <data name="lang.shop.buy" xml:space="preserve"><value>Buy</value></data>
 
@@ -193,6 +197,7 @@
   <!-- 
     ===================================
   -->
+
 <data name="common.delete" xml:space="preserve"><value>Delete</value></data>
 
 <data name="common.edit" xml:space="preserve"><value>Edit</value></data>
@@ -223,13 +228,11 @@
 
 <data name="common.upload" xml:space="preserve"><value>Select file</value></data>
 
-<data name="common.required" xml:space="preserve"><value>Field is required</value></data>
+<!--<data name="common.required" xml:space="preserve"><value>Field is required</value></data>
+<data name="common.form.req" xml:space="preserve"><value>Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.</value></data>-->
 
-<data name="common.form.req" xml:space="preserve"><value>Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.</value></data>
-
-<data name="common.founded" xml:space="preserve"><value>Founded: {all}. Shown: {begin}-{end}.</value></data>
-
-<data name="common.founded.0" xml:space="preserve"><value>Nothing was found.</value></data>
+<!--<data name="common.founded" xml:space="preserve"><value>Founded: {all}. Shown: {begin}-{end}.</value></data>
+<data name="common.founded.0" xml:space="preserve"><value>Nothing was found.</value></data>-->
 
 <data name="common.hosting" xml:space="preserve"><value>Hosted at <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">digitalocean.com</a>.</value></data>
 
@@ -241,11 +244,9 @@
 
 <data name="common.404" xml:space="preserve"><value>Not found.</value></data>
 
-<data name="common.field.wrong" xml:space="preserve"><value>Field {field} filled incorrectly.</value></data>
-
+<!--<data name="common.field.wrong" xml:space="preserve"><value>Field {field} filled incorrectly.</value></data>
 <data name="common.fields.wrong" xml:space="preserve"><value>Fields {fields} filled incorrectly.</value></data>
-
-<data name="common.field.incorrect" xml:space="preserve"><value>Field filled incorrectly.</value></data>
+<data name="common.field.incorrect" xml:space="preserve"><value>Field filled incorrectly.</value></data>-->
 
 <data name="common.morefields" xml:space="preserve"><value>More options</value></data>
 
@@ -305,10 +306,10 @@
     ===================================
   -->
 
-<data name="menus.name" xml:space="preserve"><value>Pages!</value></data>
+<data name="menus.name" xml:space="preserve"><value>Pages</value></data>
 
-<data name="sites.name" xml:space="preserve"><value>Sites!</value></data>
+<data name="sites.name" xml:space="preserve"><value>Sites</value></data>
 
-<data name="languages.name" xml:space="preserve"><value>Languages!</value></data>
+<data name="languages.name" xml:space="preserve"><value>Languages</value></data>
 
 </root>

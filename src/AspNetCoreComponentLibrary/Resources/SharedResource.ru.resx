@@ -117,10 +117,199 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="menus.name" xml:space="preserve">
-    <value>Страницы</value>
-  </data>
-  <data name="sites.name" xml:space="preserve">
-    <value>Сайты</value>
-  </data>
+
+  <!-- 
+    ===================================
+  -->
+
+<data name="lang.news" xml:space="preserve"><value>Новости</value></data>
+
+<data name="lang.founded" xml:space="preserve"><value>Найдено: {all}. Показано: {begin}-{end}.</value></data>
+
+<data name="lang.founded0" xml:space="preserve"><value>Найдено: 0.</value></data>
+
+<data name="lang.months" xml:space="preserve"><value>января,февраля,марта,апрель,мая,июня,июля,августа,сентября,октября,ноября,декабря</value></data>
+
+<data name="lang.public" xml:space="preserve"><value>Опубликовано: {date}</value></data>
+
+<data name="lang.faq.from" xml:space="preserve"><value>{date}. Вопрос от {name}:</value></data>
+
+<data name="lang.faq.question" xml:space="preserve"><value>Вопрос: </value></data>
+
+<data name="lang.faq.answer" xml:space="preserve"><value>Ответ: </value></data>
+
+<data name="lang.faq.ask" xml:space="preserve"><value>Задать вопрос.</value></data>
+
+<data name="lang.form.send" xml:space="preserve"><value>Отправить</value></data>
+
+<data name="lang.form.req.fields" xml:space="preserve"><value>Поля, отмеченные звёздочкой (<span class="text-danger required">*</span>), обязательны для заполнения.</value></data>
+
+<data name="lang.form.req.field" xml:space="preserve"><value>Поле обязательно для заполнения</value></data>
+
+<data name="lang.form.field.incorrect" xml:space="preserve"><value>Поле заполнено неправильно.</value></data>
+
+<data name="lang.form.fields.wrong" xml:space="preserve"><value>Поля {fields} заполнены неправильно.</value></data>
+
+<data name="lang.form.field.wrong" xml:space="preserve"><value>Поле {field} заполнено неправильно.</value></data>
+
+<data name="lang.form.i.am.not.a.robot" xml:space="preserve"><value>Я не робот</value></data>
+
+<data name="lang.form.send.success" xml:space="preserve"><value>Ваше сообщение было успешно отправлено.</value></data>
+
+<data name="lang.print" xml:space="preserve"><value>Распечатать</value></data>
+
+<data name="lang.shop.buy" xml:space="preserve"><value>Купить</value></data>
+
+<data name="lang.shop.ordered" xml:space="preserve"><value>В корзине</value></data>
+
+<data name="lang.shop.relateditems" xml:space="preserve"><value>Сопутствующие товары.</value></data>
+
+<data name="lang.shop.quantity" xml:space="preserve"><value>Укажите количество</value></data>
+
+<data name="lang.shop.find" xml:space="preserve"><value>Найти</value></data>
+
+<data name="lang.shop.reset" xml:space="preserve"><value>Очистить</value></data>
+
+<data name="lang.shop.errorfind" xml:space="preserve"><value>Произошла ошибка при получении данных для поиска. Проверьте соединение с интернетом.</value></data>
+
+<data name="lang.shop.search.text" xml:space="preserve"><value>Текст</value></data>
+
+<data name="lang.shop.search.price" xml:space="preserve"><value>Цена</value></data>
+
+<data name="lang.shop.search.brand" xml:space="preserve"><value>Брэнды</value></data>
+
+<data name="lang.shop.list" xml:space="preserve"><value>Список</value></data>
+
+<data name="lang.shop.gallery" xml:space="preserve"><value>Галерея</value></data>
+
+<data name="lang.shop.order.priority" xml:space="preserve"><value>По умолчанию</value></data>
+
+<data name="lang.shop.order.name" xml:space="preserve"><value>По названию</value></data>
+
+<data name="lang.shop.order.price" xml:space="preserve"><value>По цене</value></data>
+
+<data name="lang.shop.order.priority.desc" xml:space="preserve"><value>По умолчанию (по убыванию)</value></data>
+
+<data name="lang.shop.order.name.desc" xml:space="preserve"><value>По названию (по убыванию)</value></data>
+
+<data name="lang.shop.order.price.desc" xml:space="preserve"><value>По цене (по убыванию)</value></data>
+
+  <!-- 
+    ===================================
+  -->
+
+<data name="common.delete" xml:space="preserve"><value>Удалить</value></data>
+
+<data name="common.edit" xml:space="preserve"><value>Изменить</value></data>
+
+<data name="common.block" xml:space="preserve"><value>Скрыть</value></data>
+
+<data name="common.unblock" xml:space="preserve"><value>Показать</value></data>
+
+<data name="common.add" xml:space="preserve"><value>Добавить</value></data>
+
+<data name="common.password" xml:space="preserve"><value>Пароль</value></data>
+
+<data name="common.cancel" xml:space="preserve"><value>Отменить</value></data>
+
+<data name="common.save" xml:space="preserve"><value>Сохранить</value></data>
+
+<data name="common.find" xml:space="preserve"><value>Найти</value></data>
+
+<data name="common.reset" xml:space="preserve"><value>Очистить</value></data>
+
+<data name="common.send" xml:space="preserve"><value>Отправить</value></data>
+
+<data name="common.close" xml:space="preserve"><value>Закрыть</value></data>
+
+<data name="common.more" xml:space="preserve"><value>Подробнее</value></data>
+
+<data name="common.select" xml:space="preserve"><value>Выбрать</value></data>
+
+<data name="common.upload" xml:space="preserve"><value>Выбрать файл</value></data>
+
+<!--<data name="common.required" xml:space="preserve"><value>Поле обязательно для заполнения</value></data>
+<data name="common.form.req" xml:space="preserve"><value>Поля, отмеченные звёздочкой (<span class="text-danger required">*</span>), обязательны для заполнения.</value></data>-->
+
+<!--<data name="common.founded" xml:space="preserve"><value>Найдено: {all}. Показано: {begin}-{end}.</value></data>
+<data name="common.founded.0" xml:space="preserve"><value>Найдено: 0.</value></data>-->
+
+<data name="common.hosting" xml:space="preserve"><value>Размещено на <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">хостинге</a>.</value></data>
+
+<data name="common.made" xml:space="preserve"><value>Сделано в &laquo;<a target="_blank" href="http://2garin.com/">Конструкторе сайтов</a>&raquo;</value></data>
+
+<data name="common.denied" xml:space="preserve"><value>Доступ ограничен.</value></data>
+
+<data name="common.denied.only.author" xml:space="preserve"><value>Доступ ограничен. Только автор может просматривать этот сайт.</value></data>
+
+<data name="common.404" xml:space="preserve"><value>Страница не найдена.</value></data>
+
+<!--<data name="common.field.wrong" xml:space="preserve"><value>Поле %field% заполнено неправильно.</value></data>
+<data name="common.fields.wrong" xml:space="preserve"><value>Поля %fields% заполнены неправильно.</value></data>
+<data name="common.field.incorrect" xml:space="preserve"><value>Поле заполнено неправильно.</value></data>-->
+
+<data name="common.morefields" xml:space="preserve"><value>Больше параметров</value></data>
+
+<data name="common.lessfields" xml:space="preserve"><value>Меньше параметров</value></data>
+
+<data name="common.file.deleted" xml:space="preserve"><value>Файл {file} удален.</value></data>
+
+<data name="common.file.deleted.suc" xml:space="preserve"><value>Файл удален успешно.</value></data>
+
+<data name="common.bytes" xml:space="preserve"><value>байт</value></data>
+
+<data name="common.error.couldnot.create.tmp.folder" xml:space="preserve"><value>Не могу создать временную папку.</value></data>
+
+<data name="common.error.recursion" xml:space="preserve"><value>Элемент не может находиться сам в себе.</value></data>
+
+<data name="common.error.recursion.deep" xml:space="preserve"><value>Элемент не может находиться в своем потомке.</value></data>
+
+<data name="common.error.pwd.chars" xml:space="preserve"><value><![CDATA[Поле содержит недопустимые символы. Разрешено вводить только английские буквы, цифры и спецсимволы: !@#$%^&*()-_=+'"?,.|:;/{}][№`~<>\]]></value></data>
+
+<data name="common.error.len" xml:space="preserve"><value>Строка имеет длину {len}. Максимально разрешено: {maxlen}.</value></data>
+
+<data name="common.error.len.lang" xml:space="preserve"><value>Строка (язык: {lang}) имеет длину {len}. Максимально разрешено: {maxlen}.</value></data>
+
+<data name="common.error.date.format" xml:space="preserve"><value>Неправильный формат даты. Правильный формат: {format}</value></data>
+
+<data name="common.error.date.not.exists" xml:space="preserve"><value>Дата не существует.</value></data>
+
+<data name="common.error.date.hour" xml:space="preserve"><value>Поле содержит недопустимое значение "часы"</value></data>
+
+<data name="common.error.date.minute" xml:space="preserve"><value>Поле содержит недопустимое значение "минуты"</value></data>
+
+<data name="common.error.date.second" xml:space="preserve"><value>Поле содержит недопустимое значение "секунды"</value></data>
+
+<data name="common.unique" xml:space="preserve"><value>Значение должно быть уникальным.</value></data>
+
+<data name="common.save.error" xml:space="preserve"><value>Ошибка при сохранении. Пожалуйста повторите попытку позже.</value></data>
+
+<data name="common.send.error" xml:space="preserve"><value>Ошибка при отправке почты. Пожалуйста повторите попытку позже.</value></data>
+
+<data name="common.file.delete" xml:space="preserve"><value>Удаление файла.</value></data>
+
+<data name="common.file.delete.confirm" xml:space="preserve"><value>Удалить файл? Восстановление будет невозможно.</value></data>
+
+<data name="common.image.name" xml:space="preserve"><value>Название</value></data>
+
+<data name="common.image.priority" xml:space="preserve"><value>Порядковый номер</value></data>
+
+<data name="common.select.value" xml:space="preserve"><value>Выберите значение ...</value></data>
+
+<data name="common.items.saved" xml:space="preserve"><value>Элементы сохранены успешно</value></data>
+
+<data name="common.items.error.saving" xml:space="preserve"><value>Ошибка при сохранении данных</value></data>
+
+<data name="common.articul" xml:space="preserve"><value>Артикул</value></data>
+
+  <!-- 
+    ===================================
+  -->
+
+<data name="menus.name" xml:space="preserve"><value>Страницы</value></data>
+
+<data name="sites.name" xml:space="preserve"><value>Сайты</value></data>
+
+<data name="languages.name" xml:space="preserve"><value>Языки</value></data>
+
 </root>

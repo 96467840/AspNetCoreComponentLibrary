@@ -12,9 +12,9 @@ namespace AspNetCoreComponentLibrary
     public class AdminControllerSettingsAttribute : Attribute
     {
         /// <summary>
-        /// Название пункта меню
+        /// Префикс для локализации
         /// </summary>
-        public string MenuName { get; set; }
+        public string LocalizerPrefix { get; set; }
 
         /// <summary>
         /// Порядковый номер в меню.

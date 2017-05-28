@@ -50,8 +50,11 @@ namespace AspNetCoreComponentLibrary
             return string.Equals(arg1, arg2, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static void Set2GarinServices<L>(this IServiceCollection services, IConfigurationRoot Configuration) where L: class, IStringLocalizer
+        public static void Set2GarinServices<L>(this IServiceCollection services, IConfigurationRoot Configuration) where L : class, IStringLocalizer
         {
+            // необходимо для NLog (без этого в логах не будет текущего запроса)
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             // Setup options with DI
@@ -69,11 +72,12 @@ namespace AspNetCoreComponentLibrary
             services.Configure<WebEncoderOptions>(options =>
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
-            });
+            });/**/
 
+            // зачем его инжектить если его всегда можно создать и сохранить в статике?
             // https://docs.microsoft.com/en-us/aspnet/core/security/cross-site-scripting
-            services.AddSingleton<HtmlEncoder>(
-                HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
+            //services.AddSingleton<HtmlEncoder>(
+            //    HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
 
             // генерируем урлы в низком регистре (так как для и линукса делаем, а там привычнее когда все пути в низком регистре)
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -86,12 +90,34 @@ namespace AspNetCoreComponentLibrary
             // https://docs.microsoft.com/ru-ru/aspnet/core/performance/caching/middleware
             //services.AddResponseCaching();
 
-            // необходимо для NLog (без этого в логах не будет текущего запроса)
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             services.AddSingleton<IStringLocalizer, L>();
 
             services.AddTransient<IControllerSettings, ControllerSettings>();
+        }
+
+        /*public static HtmlEncoder _enc;
+        public static HtmlEncoder GetHtmlEncoder() {
+            if (_enc == null)
+                _enc = HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All });
+            return _enc;
+        }*/
+        public static string StripHtml(this string source)
+        {
+            if (source == null) return null;
+
+            return HtmlUtility.StripHtml(source);// GetHtmlEncoder().Encode(source);
+        }
+
+        /// <summary>
+        /// Пока не реализовано.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string SanitizeHtml(this string source)
+        {
+            if (source == null) return null;
+
+            return HtmlUtility.SanitizeHtml(source);
         }
 
         public static string CryptPassword(string source)

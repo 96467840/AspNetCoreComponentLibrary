@@ -37,7 +37,7 @@ namespace AspNetCoreComponentLibrary
                         if (!tmp.Any()) continue;
                         var controllerName = Regex.Replace(tmp.Last(), "Controller$", "");
                         var href = Controller.Url.RouteUrlWithCulture("Admin", new { Controller = controllerName, Action = "List" });
-                        var title = Controller.Localize(attr.MenuName);
+                        var title = Controller.Localize(attr.LocalizerPrefix+".name");
                         var priority = attr.Priority;
                         items.Add(new MenuItem(href, title) { Priority = priority });
                     }

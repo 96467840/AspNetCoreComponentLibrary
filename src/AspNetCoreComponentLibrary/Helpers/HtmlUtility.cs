@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//using HtmlAgilityPack;
+using HtmlAgilityPack;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 //using System.Web;
 
 namespace AspNetCoreComponentLibrary
 {
-    /*
+    
     public static class HtmlUtility
     {
         private static readonly Dictionary<string, string[]> ValidHtmlTags = new Dictionary<string, string[]>
@@ -61,6 +63,7 @@ namespace AspNetCoreComponentLibrary
 
         public static string SanitizeHtml(string source)
         {
+            var enc = GetHtmlEncoder();
             if (string.IsNullOrWhiteSpace(source)) return "";
             var html = GetHtml(source);
             if (html == null) return string.Empty;
@@ -76,7 +79,7 @@ namespace AspNetCoreComponentLibrary
                 {
                     if (a.Name.StartsWith("data-"))
                     {
-                        a.Value = HttpUtility.HtmlAttributeEncode(a.Value);
+                        a.Value = enc.Encode(a.Value);// HttpUtility.HtmlAttributeEncode(a.Value);
                     }
                     else if (!tag.Value.Contains(a.Name))
                     {
@@ -102,7 +105,7 @@ namespace AspNetCoreComponentLibrary
                             //    a.Value = System.Web.Security.AntiXss.AntiXssEncoder.CssEncode(a.Value);
                             //	  break;
                             default:
-                                a.Value = HttpUtility.HtmlAttributeEncode(a.Value);
+                                a.Value = enc.Encode(a.Value);//HttpUtility.HtmlAttributeEncode(a.Value);
                                 break;
                         }
                     }
@@ -111,6 +114,15 @@ namespace AspNetCoreComponentLibrary
 
             return allNodes.InnerHtml;
         }
+
+        public static HtmlEncoder _enc;
+        public static HtmlEncoder GetHtmlEncoder()
+        {
+            if (_enc == null)
+                _enc = HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All });
+            return _enc;
+        }
+
 
         public static string StripHtml(string source)
         {
@@ -148,6 +160,7 @@ namespace AspNetCoreComponentLibrary
 
         private static HtmlDocument GetHtml(string source)
         {
+            var enc = GetHtmlEncoder();
             var html = new HtmlDocument
             {
                 OptionFixNestedTags = true,
@@ -162,7 +175,7 @@ namespace AspNetCoreComponentLibrary
                 if (n.Name != "code") continue;
                 var attr = n.Attributes.ToArray();
                 foreach (var a in attr.Where(a => a.Name != "style" && a.Name != "class")) a.Remove();
-                n.InnerHtml = HttpUtility.HtmlEncode(n.InnerHtml);
+                n.InnerHtml = enc.Encode(n.InnerHtml);//HttpUtility.HtmlEncode(n.InnerHtml);
             }
 
             return html;

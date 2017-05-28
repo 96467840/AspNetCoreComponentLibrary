@@ -129,7 +129,14 @@ namespace AspNetCoreComponentLibrary
         {
             Logger.LogTrace("LoadSessionUser");
             long id = 1;
-            SessionUser = Users[id];
+            try
+            {
+                SessionUser = Users[id];
+            }
+            catch (Exception e)
+            {
+                Logger.LogDebug("User {id} not founded: {e}", id, e);
+            }
             //Logger.LogInformation("user {0} have {1} relations with sites.", id, SessionUser.UserSites.Count);
 
             // вот так делать нельзя! так мы пойдем по БД. права будем грузить при загрузке юзера

@@ -1,3 +1,10 @@
-﻿<meta charset="utf-8" />
+﻿@{ 
+    var M = (BaseVM)Model;
+}
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>@ViewData["Title"] - AspNetCore Admin</title>
+
+<title>@(M?.SEO?.Title ?? "Admin")</title>
+<meta name="keywords" content="@(M?.SEO?.Keywords)" />
+<meta name="description" content="@(M?.SEO?.Description)" />

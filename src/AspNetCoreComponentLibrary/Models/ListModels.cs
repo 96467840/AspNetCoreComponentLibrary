@@ -20,6 +20,13 @@ namespace AspNetCoreComponentLibrary
 
         public ListVM(Controller2Garin controller) : base(controller)
         {
+            var href = controller.Url.RouteUrlWithCulture("Page", new { page = "index.html" });
+            Breadcrumb.Items.Add(new MenuItem(href, controller.Localize("common.main")));
+
+            href = controller.Url.RouteUrlWithCulture("Admin", new { controller = "sites" });
+            Breadcrumb.Items.Add(new MenuItem(href, controller.Localize("common.admin")));
+
+            Breadcrumb.Items.Add(new MenuItem(null, GetH1()));
         }
         
         public HtmlString GetH1()

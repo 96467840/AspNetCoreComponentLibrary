@@ -11,11 +11,15 @@ using System.Text;
 namespace AspNetCoreComponentLibrary
 {
     // ---------------- View Model
-    public class SetupVM
+    public class SetupVM : BaseVM
     {
-        public SetupIM Input { get; set; }
-        public Exception Error { get; set; }
+        public SetupVM() : base(null)
+        {
+            SEO = new SEO("Setup.");
+        }
 
+        public SetupIM Input { get; set; }
+        //public Exception Error { get; set; }
     }
 
     // ---------------- Input Model

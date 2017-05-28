@@ -12,6 +12,7 @@ namespace AspNetCoreComponentLibrary
         MenuVM Breadcrumb { get; set; }
         Sites Site { get; }
         Users SessionUser { get; }
+        SEO SEO { get; }
     }
 
     public class BaseVM: IBaseVM
@@ -21,6 +22,7 @@ namespace AspNetCoreComponentLibrary
         public MenuVM Breadcrumb { get; set; }
         public Sites Site { get { return Controller?.Site; }  }
         public Users SessionUser { get { return Controller?.SessionUser; }  }
+        public SEO SEO { get; set; }
 
         public BaseVM(Controller2Garin controller)
         {

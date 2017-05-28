@@ -36,7 +36,6 @@ namespace AspNetCoreComponentLibrary
         public virtual IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
-            //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
 
             var vm = new ListVM<K, T>(controller) { Input = this };
 

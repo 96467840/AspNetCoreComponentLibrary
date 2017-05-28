@@ -52,7 +52,8 @@ namespace AspNetCoreComponentLibrary
             var defaults = new Dictionary<string, RouteConfig> {
                 { "Setup",         new RouteConfig(0,      "setup", new { controller = "Setup", action = "Index" })},
 
-                { "Error",         new RouteConfig(10,      "e/{action}", new { controller = "Error", action = "Index" })},
+                { "Error.Culture", new RouteConfig(10,      "{culture}/e/{action}", new { controller = "Error", action = "Index" })},
+                { "Error",         new RouteConfig(11,      "e/{action}", new { controller = "Error", action = "Index" })},
 
                 // чтобы не было конфликта с именем страницы (и шаблоном культуры) используем /a/ (имя страницы обязательно должно иметь длину больше 2 и отличаться от шаблона культуры)
                 { "Admin.Culture", new RouteConfig(10000,  "{culture}/a/{controller}/{action}/{*path}", new { action = "List" }, new { culture = new CultureRouteConstraint() })},

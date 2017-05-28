@@ -47,6 +47,28 @@ namespace AspNetCoreComponentLibrary
 
             }
 
+            // надо сделать автоподстановку .html
+            if (routeName.EqualsIC("Page.Culture") || routeName.EqualsIC("Page"))
+            {
+                if (routeValues.ContainsKey("path")) // етсь путь значит к нему
+                {
+                    var p = (string)routeValues["path"];
+                    if (!p.EndsWith(".html"))
+                    {
+                        if (p.EndsWith("/"))
+                            p = p.TrimEnd(new[] { '/' });
+                        routeValues["path"] = p + ".html";
+                    }
+                }
+                else // к самой странице
+                {
+                    if (routeValues.ContainsKey("page") && !((string)routeValues["page"]).EndsWith(".html"))
+                    {
+                        routeValues["page"] = (string)routeValues["page"] + ".html";
+                    }
+                }
+            }
+
             // костыль для вставки пути. без него получаем 
             // @Url.RouteUrl("Page", new { page = "mypage", path = "my/long/path", getvar=1}) = /mypage/my%2flong%2fpath?getvar=1
             string path = null;

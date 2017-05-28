@@ -190,6 +190,121 @@
 
 <data name="lang.shop.order.price.desc" xml:space="preserve"><value>Order by price descending</value></data>
 
+  <!-- 
+    ===================================
+  -->
+<data name="common.delete" xml:space="preserve"><value>Delete</value></data>
+
+<data name="common.edit" xml:space="preserve"><value>Edit</value></data>
+
+<data name="common.block" xml:space="preserve"><value>Block</value></data>
+
+<data name="common.unblock" xml:space="preserve"><value>Unblock</value></data>
+
+<data name="common.add" xml:space="preserve"><value>Add</value></data>
+
+<data name="common.password" xml:space="preserve"><value>Password</value></data>
+
+<data name="common.cancel" xml:space="preserve"><value>Cancel</value></data>
+
+<data name="common.save" xml:space="preserve"><value>Save</value></data>
+
+<data name="common.find" xml:space="preserve"><value>Find</value></data>
+
+<data name="common.reset" xml:space="preserve"><value>Reset</value></data>
+
+<data name="common.send" xml:space="preserve"><value>Send</value></data>
+
+<data name="common.close" xml:space="preserve"><value>Close</value></data>
+
+<data name="common.more" xml:space="preserve"><value>More</value></data>
+
+<data name="common.select" xml:space="preserve"><value>Select</value></data>
+
+<data name="common.upload" xml:space="preserve"><value>Select file</value></data>
+
+<data name="common.required" xml:space="preserve"><value>Field is required</value></data>
+
+<data name="common.form.req" xml:space="preserve"><value>Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.</value></data>
+
+<data name="common.founded" xml:space="preserve"><value>Founded: %all%. Shown: %begin%-%end%.</value></data>
+
+<data name="common.founded.0" xml:space="preserve"><value>Nothing was found.</value></data>
+
+<data name="common.hosting" xml:space="preserve"><value>Hosted at <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">digitalocean.com</a>.</value></data>
+
+<data name="common.made" xml:space="preserve"><value>Created by &laquo;<a target="_blank" href="http://2garin.com/">Website free</a>&raquo;</value></data>
+
+<data name="common.denied" xml:space="preserve"><value>Access denied.</value></data>
+
+<data name="common.denied.only.author" xml:space="preserve"><value>Access denied. Only the author can view this site.</value></data>
+
+<data name="common.404" xml:space="preserve"><value>Not found.</value></data>
+
+<data name="common.field.wrong" xml:space="preserve"><value>Field %field% filled incorrectly.</value></data>
+
+<data name="common.fields.wrong" xml:space="preserve"><value>Fields %fields% filled incorrectly.</value></data>
+
+<data name="common.field.incorrect" xml:space="preserve"><value>Field filled incorrectly.</value></data>
+
+<data name="common.morefields" xml:space="preserve"><value>More options</value></data>
+
+<data name="common.lessfields" xml:space="preserve"><value>Less options</value></data>
+
+<data name="common.file.deleted" xml:space="preserve"><value>File "%file%" removed</value></data>
+
+<data name="common.file.deleted.suc" xml:space="preserve"><value>File deleted successfully.</value></data>
+
+<data name="common.bytes" xml:space="preserve"><value>bytes</value></data>
+
+<data name="common.error.couldnot.create.tmp.folder" xml:space="preserve"><value>Can not create a temporary folder.</value></data>
+
+<data name="common.error.recursion" xml:space="preserve"><value>Element can not belong to himself.</value></data>
+
+<data name="common.error.recursion.deep" xml:space="preserve"><value>Element can not belong to the offspring.</value></data>
+
+<data name="common.error.pwd.chars" xml:space="preserve"><value>Field contains invalid characters. Allowed to enter only english letters, digits and special characters: !@#$%^&*()-_=+'"?,.|:;/{}][№`~<>\</value></data>
+
+<data name="common.error.len" xml:space="preserve"><value>The string has a length of %len%. Maximum allowed: %maxlen%.</value></data>
+
+<data name="common.error.len.lang" xml:space="preserve"><value>The string (language: %lang%) has a length of %len%. Maximum allowed: %maxlen%.</value></data>
+
+<data name="common.error.date.format" xml:space="preserve"><value>Wrong date format. The correct format: %format%</value></data>
+
+<data name="common.error.date.not.exists" xml:space="preserve"><value>Date does not exist.</value></data>
+
+<data name="common.error.date.hour" xml:space="preserve"><value>Field contains invalid value "hours"</value></data>
+
+<data name="common.error.date.minute" xml:space="preserve"><value>Field contains invalid value "minutes"</value></data>
+
+<data name="common.error.date.second" xml:space="preserve"><value>Field contains invalid value "seconds"</value></data>
+
+<data name="common.unique" xml:space="preserve"><value>Value must be unique.</value></data>
+
+<data name="common.save.error" xml:space="preserve"><value>Save error. Please try again later.</value></data>
+
+<data name="common.send.error" xml:space="preserve"><value>Send mail error. Please try again later.</value></data>
+
+<data name="common.file.delete" xml:space="preserve"><value>Delete file.</value></data>
+
+<data name="common.file.delete.confirm" xml:space="preserve"><value>Delete file? Recovery will be impossible!<br/><br/>Are you sure?</value></data>
+
+<data name="common.image.name" xml:space="preserve"><value>Name</value></data>
+
+<data name="common.image.priority" xml:space="preserve"><value>Priority</value></data>
+
+<data name="common.select.value" xml:space="preserve"><value>Select value ...</value></data>
+
+<data name="common.items.saved" xml:space="preserve"><value>Items has been saved successfully</value></data>
+
+<data name="common.items.error.saving" xml:space="preserve"><value>Error saving data</value></data>
+
+<data name="common.articul" xml:space="preserve"><value>Articul</value></data>
+
+  <!-- 
+    ===================================
+  -->
+
 <data name="menus.name" xml:space="preserve"><value>Pages!</value></data>
 
 <data name="sites.name" xml:space="preserve"><value>Sites!</value></data>

@@ -19,9 +19,8 @@ namespace AspNetCoreComponentLibrary
         {
             if (!CheckRights())
             {
-                throw new Exception(controller.Localize("common").ToString());
+                throw new Exception(controller.Localize("common.denied").ToString());
             }
-
         }
 
         private MenuVM _LeftMenu { get; set; }

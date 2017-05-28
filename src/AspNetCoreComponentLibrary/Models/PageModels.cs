@@ -28,6 +28,9 @@ namespace AspNetCoreComponentLibrary
         public IActionResult ToActionResult(Controller2Garin controller)
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
+
+            if (Page == "404") return controller.NotFound(controller.Localize("common.404"));
+
             //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
             var vm = new PageVM(controller) { Input = this };
             try

@@ -142,7 +142,7 @@
 
 <data name="lang.form.send" xml:space="preserve"><value>Отправить</value></data>
 
-<data name="lang.form.req.fields" xml:space="preserve"><value>Поля, отмеченные звёздочкой (<span class="text-danger required">*</span>), обязательны для заполнения.</value></data>
+<data name="lang.form.req.fields" xml:space="preserve"><value><![CDATA[Поля, отмеченные звёздочкой (<span class="text-danger required">*</span>), обязательны для заполнения.]]></value></data>
 
 <data name="lang.form.req.field" xml:space="preserve"><value>Поле обязательно для заполнения</value></data>
 
@@ -234,9 +234,11 @@
 <!--<data name="common.founded" xml:space="preserve"><value>Найдено: {all}. Показано: {begin}-{end}.</value></data>
 <data name="common.founded.0" xml:space="preserve"><value>Найдено: 0.</value></data>-->
 
-<data name="common.hosting" xml:space="preserve"><value>Размещено на <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">хостинге</a>.</value></data>
+<data name="common.hosting" xml:space="preserve"><value><![CDATA[Размещено на <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">хостинге</a>.]]></value></data>
 
-<data name="common.made" xml:space="preserve"><value>Сделано в &laquo;<a target="_blank" href="http://2garin.com/">Конструкторе сайтов</a>&raquo;</value></data>
+<data name="common.made" xml:space="preserve"><value><![CDATA[Сделано в &laquo;<a target="_blank" href="http://2garin.com/">Конструкторе сайтов</a>&raquo;]]></value></data>
+
+<data name="common.copy" xml:space="preserve"><value><![CDATA[&copy; 2017 - <a target="_blank" href="http://2garin.com/">2garin.com</a>]]></value></data>
 
 <data name="common.denied" xml:space="preserve"><value>Доступ ограничен.</value></data>
 

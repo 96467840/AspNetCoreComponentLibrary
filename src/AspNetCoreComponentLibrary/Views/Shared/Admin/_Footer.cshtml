@@ -1,4 +1,7 @@
-﻿<hr />
+﻿@{ 
+    var M = (BaseVM)Model;
+}
+<hr />
 <footer>
-    <p>&copy; 2017 - AspNetCore Admin</p>
+    <p>@M?.Controller?.Localize("common.copy")</p>
 </footer>

@@ -142,7 +142,7 @@
 
 <data name="lang.form.send" xml:space="preserve"><value>Send</value></data>
 
-<data name="lang.form.req.fields" xml:space="preserve"><value>Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.</value></data>
+<data name="lang.form.req.fields" xml:space="preserve"><value><![CDATA[Fields marked with an asterisk (<span class="text-danger required">*</span>) are required.]]></value></data>
 
 <data name="lang.form.req.field" xml:space="preserve"><value>Field is required</value></data>
 
@@ -234,9 +234,11 @@
 <!--<data name="common.founded" xml:space="preserve"><value>Founded: {all}. Shown: {begin}-{end}.</value></data>
 <data name="common.founded.0" xml:space="preserve"><value>Nothing was found.</value></data>-->
 
-<data name="common.hosting" xml:space="preserve"><value>Hosted at <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">digitalocean.com</a>.</value></data>
+<data name="common.hosting" xml:space="preserve"><value><![CDATA[Hosted at <a target="_blank" href="https://www.digitalocean.com/?refcode=e5c7b2319d1a">digitalocean.com</a>.]]></value></data>
 
-<data name="common.made" xml:space="preserve"><value>Created by &laquo;<a target="_blank" href="http://2garin.com/">Website free</a>&raquo;</value></data>
+<data name="common.made" xml:space="preserve"><value><![CDATA[Created by &laquo;<a target="_blank" href="http://2garin.com/">Website free</a>&raquo;]]></value></data>
+
+<data name="common.copy" xml:space="preserve"><value><![CDATA[&copy; 2017 - <a target="_blank" href="http://2garin.com/">2garin.com</a>]]></value></data>
 
 <data name="common.denied" xml:space="preserve"><value>Access denied.</value></data>
 

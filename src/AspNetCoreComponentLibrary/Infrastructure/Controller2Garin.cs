@@ -21,6 +21,7 @@ namespace AspNetCoreComponentLibrary
         public IStorage Storage;
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
+        protected readonly ILogger LoggerMEF;
 
         [RepositorySettings]
         public ISiteRepository Sites { get; set; }
@@ -84,6 +85,8 @@ namespace AspNetCoreComponentLibrary
         {
             LoggerFactory = settings.LoggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+            // для красоты в логах EntityFrameworkCore
+            LoggerMEF = LoggerFactory.CreateLogger(Utils.MEFNameSpace);
 
             Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
 
@@ -275,7 +278,8 @@ namespace AspNetCoreComponentLibrary
         [NonAction]
         protected void ResolveCulture(ActionExecutingContext context)
         {
-            SiteLanguages = Languages.GetUnblocked(Site.Id);
+            using (new BLog(LoggerMEF, "Controller2Garin::ResolveCulture() Languages.GetUnblocked", GetType().FullName))
+                SiteLanguages = Languages.GetUnblocked(Site.Id).ToList();
 
             var provider = new AcceptLanguageHeaderRequestCultureProvider();
             var languagePreferences = provider.DetermineProviderCultureResult(context.HttpContext).Result;

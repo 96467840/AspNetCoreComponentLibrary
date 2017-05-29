@@ -14,6 +14,8 @@ namespace AspNetCoreComponentLibrary.Abstractions
     public interface IRepository<K, T> where T : BaseDM<K>
     {
         IQueryable<T> StartQuery();
+        IQueryable<T> GetUnblocked(long siteid);
+        IQueryable<T> GetForSite(long siteid);
 
         T this[K index] { get; }
 
@@ -26,7 +28,6 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void Remove(T item);
 
         void ClearCache();
-        List<T> GetUnblocked(long siteid);
 
         // в репозитории без кеширования ничего тут не делают
         // надо перенести логику этих функций в Remove и AfterSave. Функции оставим тока сделаем их приватными

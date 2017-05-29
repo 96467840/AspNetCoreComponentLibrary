@@ -7,6 +7,10 @@
 
 <h1>@Model.GetH1()</h1>
 
+@foreach (var i in Model.Items)
+{
+    @i.IsBlockable;
+}
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 
 @* -------------------------------------------------------------------------------------------- *@

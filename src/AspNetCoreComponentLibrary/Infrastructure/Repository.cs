@@ -43,7 +43,7 @@ namespace AspNetCoreComponentLibrary
             return DbSet.AsNoTracking();
         }
 
-        public List<T> GetUnblocked(long siteid)
+        public IQueryable<T> GetForSite(long siteid)
         {
             Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
             var query = StartQuery();
@@ -51,16 +51,23 @@ namespace AspNetCoreComponentLibrary
             {
                 query = query.Where(i => ((IWithSiteId)i).SiteId == siteid);//.ToList();
             }
-            /*else // список сайтов. что вернуть?
+            else // список сайтов. что вернуть? пока вернем пустой список
             {
-                return new List<T>();
+                return query.Where(i =>false);
             }/**/
+            return query;
+        }
+
+        public IQueryable<T> GetUnblocked(long siteid)
+        {
+            Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            var query = GetForSite(siteid);
 
             if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
                 query = query.Where(i => !((IBlockable)i).IsBlocked);
 
-            using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
-                return query.ToList();
+            //using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
+                return query;
         }
 
         public virtual void Save(T item)

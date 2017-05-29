@@ -11,7 +11,7 @@ using Microsoft.Extensions.Localization;
 
 namespace AspNetCoreComponentLibrary
 {
-    public class ControllerEditable<K, T, R> : Controller2Garin where T : BaseDM<K> where R:IRepositorySetStorageContext
+    public class ControllerEditable<K, T, R> : Controller2Garin where T : BaseDM<K>,IBaseDM where R:IRepositorySetStorageContext, IRepository<K, T>
     {
         //public T Item { get; set; }
         public R Repository { get; set; }
@@ -66,13 +66,13 @@ namespace AspNetCoreComponentLibrary
             SetRepository();
         }
 
-        public virtual IActionResult Edit(EditIM<K, T> input)
+        public virtual IActionResult Edit(EditIM<K, T, R> input)
         {
             Logger.LogTrace("Edit");
             return input.ToActionResult(this);
         }
 
-        public virtual IActionResult List(ListIM<K, T> input)
+        public virtual IActionResult List(ListIM<K, T, R> input)
         {
             Logger.LogTrace("List");
             return input.ToActionResult(this);

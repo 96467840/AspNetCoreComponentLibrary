@@ -15,7 +15,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
     {
         IQueryable<T> StartQuery();
         IQueryable<T> GetUnblocked(long siteid);
-        IQueryable<T> GetForSite(long siteid);
+        IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null);
 
         T this[K index] { get; }
 

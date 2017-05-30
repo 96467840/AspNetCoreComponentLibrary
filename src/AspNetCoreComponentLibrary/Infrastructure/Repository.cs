@@ -43,7 +43,7 @@ namespace AspNetCoreComponentLibrary
             return DbSet.AsNoTracking();
         }
 
-        public IQueryable<T> GetForSite(long siteid)
+        public IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null)
         {
             Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
             var query = StartQuery();
@@ -55,6 +55,11 @@ namespace AspNetCoreComponentLibrary
             {
                 return query.Where(i =>false);
             }/**/
+
+            if (filter != null)
+            {
+                // ... 
+            }
             return query;
         }
 

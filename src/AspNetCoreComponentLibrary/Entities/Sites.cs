@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
+    [EntitySettings(LocalizerPrefix = "sites")]
     public partial class Sites : BaseDM<long>
     {
         public Sites()

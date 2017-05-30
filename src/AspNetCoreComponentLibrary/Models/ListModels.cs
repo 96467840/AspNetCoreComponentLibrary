@@ -14,6 +14,7 @@ namespace AspNetCoreComponentLibrary
     {
         HtmlString GetH1();
         List<IBaseDM> Items { get; }
+        Dictionary<string, List<string>> Filter { get; }
     }
 
     public class ListVM<K, T, R> : AdminVM, IListVM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T> /*where K : struct*/
@@ -36,12 +37,16 @@ namespace AspNetCoreComponentLibrary
         {
             return Controller.Localize(Controller.LocalizerPrefix + ".name");
         }
+
+        public Dictionary<string, List<string>> Filter => Input.Filter;
+
     }
 
     // ---------------- Input Model
     public class ListIM<K, T, R> : BaseIM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T>/* where K : struct*/
     {
         public int? Offset { get; set; }
+        public Dictionary<string, List<string>> Filter { get; set; }
 
         public virtual IActionResult ToActionResult(ControllerEditable<K, T, R> controller)
         {

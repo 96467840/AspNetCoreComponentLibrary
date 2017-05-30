@@ -9,15 +9,23 @@ using Microsoft.AspNetCore.Html;
 
 namespace AspNetCoreComponentLibrary
 {
-
+    [EntitySettings(LocalizerPrefix = "languages")]
     public partial class Languages : BaseDM<long>, IBlockable, IWithSiteId
     {
         public long SiteId { get; set; }
+
         public string Name { get; set; }
+
+        [Filter(HtmlType = EnumHtmlType.Text)]
         public string Lang { get; set; }
+
         public bool IsDefault { get; set; }
+
+        [Filter(HtmlType=EnumHtmlType.CheckBox)]
         public bool IsBlocked { get; set; }
+
         public string Json { get; set; }
+
         public string ExternalId { get; set; }
 
         public string Localize(string key)
@@ -61,7 +69,7 @@ namespace AspNetCoreComponentLibrary
                                 {
                                     var val = row[1];
                                     if (val == null) continue;
-                                    _Strings[key] = val.SanitizeHtml(false); // разрешим html теги
+                                    _Strings[key] = val.SanitizeHtml(); // разрешим html теги
                                 }
                             }
                         }

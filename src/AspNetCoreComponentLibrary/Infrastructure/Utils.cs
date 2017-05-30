@@ -109,7 +109,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         /// <summary>
-        /// Пока не реализовано.
+        /// Разрешаем только безопасные html теги.
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
@@ -128,17 +128,6 @@ namespace AspNetCoreComponentLibrary
         public static bool IsImplementsInterface(this Type T, Type I)
         {
             return I.GetTypeInfo().IsAssignableFrom(T);
-        }
-
-        /// <summary>
-        /// Очищаем строку от опасных html инструкций. Пока не реализовано! Пока удаляем все html теги
-        /// </summary>
-        public static string SanitizeHtml(this string source, bool removeAllHtml = true)
-        {
-            if (source == null) return null;
-            if (removeAllHtml) return source.Replace("<", "&lt;").Replace(">","&gt;");
-
-            return source.Replace("<", "");
         }
 
         public static string ToJson(this object obj)

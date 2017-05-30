@@ -7,9 +7,21 @@
 
 <h1>@Model.GetH1()</h1>
 
+@if (Model.Filter != null)
+{
+    foreach (var f in Model.Filter)
+    {
+        <div>
+            @f.Key - @string.Join(", ", f.Value.Select(i=>(string)i))
+        </div>
+    }
+}
+
 @foreach (var i in Model.Items)
 {
-    @i.IsBlockable;
+    <div>
+        @i.IsBlockable
+    </div>
 }
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 

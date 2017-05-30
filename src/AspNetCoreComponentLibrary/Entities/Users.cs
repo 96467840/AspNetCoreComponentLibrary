@@ -4,6 +4,7 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
+    [EntitySettings(LocalizerPrefix = "users")]
     public partial class Users : BaseDM<long>
     {
         public Users()

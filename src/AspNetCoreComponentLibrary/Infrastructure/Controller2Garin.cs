@@ -55,29 +55,11 @@ namespace AspNetCoreComponentLibrary
             return Storage.GetRepository<T>(EnumDB.Content);
         }
 
-        private IMenuRepository _Menus { get; set; }
         [RepositorySettings]
-        public IMenuRepository Menus
-        {
-            get
-            {
-                if (_Menus != null) return _Menus;
-                _Menus = GetContentRepository<IMenuRepository>();
-                return _Menus;
-            }
-        }
+        public IMenuRepository Menus => GetContentRepository<IMenuRepository>();
 
-        private ILanguageRepository _Languages { get; set; }
         [RepositorySettings]
-        public ILanguageRepository Languages
-        {
-            get
-            {
-                if (_Languages != null) return _Languages;
-                _Languages = GetContentRepository<ILanguageRepository>();
-                return _Languages;
-            }
-        }
+        public ILanguageRepository Languages => GetContentRepository<ILanguageRepository>();
 
         #endregion
 
@@ -88,7 +70,7 @@ namespace AspNetCoreComponentLibrary
             // для красоты в логах EntityFrameworkCore
             LoggerMEF = LoggerFactory.CreateLogger(Utils.MEFNameSpace);
 
-            Logger.LogTrace("Сonstructor Controller2Garin {0}", this.GetType().FullName);
+            Logger.LogTrace("-=-= Сonstructor Controller2Garin {0}", this.GetType().FullName);
 
             Storage = settings.Storage;
 
@@ -149,6 +131,8 @@ namespace AspNetCoreComponentLibrary
         [NonAction]
         protected void ResolveCurrentSite(ActionExecutingContext context)
         {
+            Logger.LogTrace("============================= ResolveCurrentSite in");
+
             // найти сайт
             var host = context.HttpContext.Request.Host.Host.ToLower();
             if (host.StartsWith("www."))
@@ -187,6 +171,8 @@ namespace AspNetCoreComponentLibrary
         //[NonAction]
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            Logger.LogTrace("============================= OnActionExecuting in");
+
             Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
             Users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
 
@@ -278,8 +264,9 @@ namespace AspNetCoreComponentLibrary
         [NonAction]
         protected void ResolveCulture(ActionExecutingContext context)
         {
-            using (new BLog(LoggerMEF, "Controller2Garin::ResolveCulture() Languages.GetUnblocked", GetType().FullName))
-                SiteLanguages = Languages.GetUnblocked(Site.Id).ToList();
+            Logger.LogTrace("============================= ResolveCulture in");
+            //using (new BLog(LoggerMEF, "Controller2Garin::ResolveCulture() Languages.GetUnblocked", GetType().FullName))
+            SiteLanguages = Languages.GetUnblocked(Site.Id).ToList();
 
             var provider = new AcceptLanguageHeaderRequestCultureProvider();
             var languagePreferences = provider.DetermineProviderCultureResult(context.HttpContext).Result;

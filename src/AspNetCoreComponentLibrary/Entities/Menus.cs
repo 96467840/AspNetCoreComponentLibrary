@@ -52,6 +52,9 @@ namespace AspNetCoreComponentLibrary
         public bool ShowInMenu { get; set; }
 
         [FieldSettings(HtmlType = EnumHtmlType.TextArea)]
+        public string ShortContent { get; set; }
+
+        [FieldSettings(HtmlType = EnumHtmlType.TextArea)]
         public string Content { get; set; }
 
         [FieldSettings(HtmlType = EnumHtmlType.Text)]
@@ -66,7 +69,6 @@ namespace AspNetCoreComponentLibrary
         [FieldSettings(HtmlType = EnumHtmlType.Text)]
         public string Url { get; set; }
 
-        [FieldSettings(HtmlType = EnumHtmlType.Text)]
         public string Layout { get; set; }
 
         //public long? ArticlesId { get; set; }
@@ -112,8 +114,6 @@ namespace AspNetCoreComponentLibrary
         [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsShowOnMain { get; set; }
 
-        [FieldSettings(HtmlType = EnumHtmlType.Text)]
-        public string ShortContent { get; set; }
 
         //public virtual ICollection<Sites> SitesE404page { get; set; }
         //public virtual ICollection<Sites> SitesOrderPage { get; set; }

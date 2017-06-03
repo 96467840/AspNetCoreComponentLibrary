@@ -45,7 +45,7 @@ namespace AspNetCoreComponentLibrary
 
         public IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null)
         {
-            Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            Logger.LogTrace("Repository GetForSite for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
             var query = StartQuery();
             if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
             {
@@ -65,7 +65,7 @@ namespace AspNetCoreComponentLibrary
 
         public IQueryable<T> GetUnblocked(long siteid)
         {
-            Logger.LogTrace("Repository GetUnblocked for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            Logger.LogTrace("Repository GetUnblocked for {0}.", GetType().FullName);
             var query = GetForSite(siteid);
 
             if (typeof(T).IsImplementsInterface(typeof(IBlockable)))

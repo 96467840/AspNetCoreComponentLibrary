@@ -6,24 +6,30 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
+//using System.Linq.Expressions;
 
 namespace AspNetCoreComponentLibrary
 {
     [EntitySettings(LocalizerPrefix = "languages")]
     public partial class Languages : BaseDM<long>, IBlockable, IWithSiteId
     {
+        [FieldSettings(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
+        [Filter(HtmlType = EnumHtmlType.Text)]
         public string Name { get; set; }
 
         [Filter(HtmlType = EnumHtmlType.Text)]
         public string Lang { get; set; }
 
+        [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsDefault { get; set; }
 
-        [Filter(HtmlType=EnumHtmlType.CheckBox)]
+        [Filter(HtmlType = EnumHtmlType.CheckBox)]
+        [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsBlocked { get; set; }
 
+        [Filter(HtmlType = EnumHtmlType.Json)]
         public string Json { get; set; }
 
         public string ExternalId { get; set; }

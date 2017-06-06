@@ -1,6 +1,7 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,8 @@ namespace AspNetCoreComponentLibrary
         public bool IsDefault { get; set; }
         public bool IsVisible { get; set; }
         public string Name { get; set; }
+
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime Created { get; set; }
         public string Hosts { get; set; }
         public string Description { get; set; }

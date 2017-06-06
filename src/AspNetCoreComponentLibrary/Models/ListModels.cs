@@ -22,8 +22,9 @@ namespace AspNetCoreComponentLibrary
         public ListIM<K, T, R> Input { get; set; }
         public List<IBaseDM> Items { get; set; }
 
-        public ListVM(ControllerEditable<K, T, R> controller) : base(controller)
+        public ListVM(ControllerEditable<K, T, R> controller, ListIM<K, T, R> input) : base(controller)
         {
+            Input = input;
             var href = controller.Url.RouteUrlWithCulture("Page", new { page = "index.html" });
             Breadcrumb.Items.Add(new MenuItem(href, controller.Localize("common.main")));
 
@@ -52,15 +53,23 @@ namespace AspNetCoreComponentLibrary
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
 
-            var vm = new ListVM<K, T, R>(controller) { Input = this };
+            var vm = new ListVM<K, T, R>(controller, this);
 
-            if (!typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+            try
             {
-                vm.Items = controller.Sites.GetForUser(controller.SessionUser.Id).Select(i => (IBaseDM)i).ToList();
+                if (!typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+                {
+                    vm.Items = controller.Sites.GetForUser(controller.SessionUser.Id).Select(i => (IBaseDM)i).ToList();
+                }
+                else
+                {
+                    using (new BLog(controller.LoggerMEF, "ListIM::ToActionResult {0}", GetType().FullName))
+                        vm.Items = controller.Repository.GetForSite(controller.Site.Id, Filter).Select(i => (IBaseDM)i).ToList();
+                }
             }
-            else
+            catch (Exception e)
             {
-                vm.Items = controller.Repository.GetForSite(controller.Site.Id).Select(i => (IBaseDM)i).ToList();
+                vm.Error = e;
             }
             return controller.View("Admin/List", vm);
         }

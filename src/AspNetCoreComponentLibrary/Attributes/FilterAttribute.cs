@@ -20,7 +20,11 @@ namespace AspNetCoreComponentLibrary
         Files = 8,
         Hidden = 9,
         Image = 10,
-        Images = 11
+        Images = 11,
+        /// <summary>
+        /// Что то типа справочника ключ -> значение, хранимое в json формате
+        /// </summary>
+        Json = 12
     }
 
     /// <summary>

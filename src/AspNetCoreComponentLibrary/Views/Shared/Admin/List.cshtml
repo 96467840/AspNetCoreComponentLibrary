@@ -20,7 +20,7 @@
 @foreach (var i in Model.Items)
 {
     <div>
-        @i.IsBlockable
+        @i.ToJson()
     </div>
 }
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>

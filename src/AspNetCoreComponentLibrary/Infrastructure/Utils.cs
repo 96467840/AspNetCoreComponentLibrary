@@ -134,7 +134,7 @@ namespace AspNetCoreComponentLibrary
         {
             var str = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                //ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 StringEscapeHandling = StringEscapeHandling.Default
             });
             //return str.Replace("\\u003cbr /\\u003e", "<br />");

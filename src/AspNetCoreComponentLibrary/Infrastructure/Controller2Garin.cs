@@ -21,7 +21,7 @@ namespace AspNetCoreComponentLibrary
         public IStorage Storage;
         public readonly ILoggerFactory LoggerFactory;
         public readonly ILogger Logger;
-        protected readonly ILogger LoggerMEF;
+        public readonly ILogger LoggerMEF;
 
         [RepositorySettings]
         public ISiteRepository Sites { get; set; }
@@ -383,30 +383,30 @@ namespace AspNetCoreComponentLibrary
             if (Language != null)
             {
                 res = Language[key];
-                Logger.LogTrace("------------- Controller2Garin::Language {0}->[{1}]", key, res);
+                //Logger.LogTrace("------------- Controller2Garin::Language {0}->[{1}]", key, res);
             }
 
             // пробуем загрузить строку из сборки с контролерами
             if (LocalizerController != null)
             {
                 res = LocalizerController[key];
-                Logger.LogTrace("------------- Controller2Garin::LocalizerController {0}->[{1}]", key, res);
+                //Logger.LogTrace("------------- Controller2Garin::LocalizerController {0}->[{1}]", key, res);
             }
             if (res == key && Localizer != null) // нет такой строки
             {
                 res = Localizer[key];
-                Logger.LogTrace("------------- Controller2Garin::Localizer {0}->[{1}]", key, res);
+                //Logger.LogTrace("------------- Controller2Garin::Localizer {0}->[{1}]", key, res);
             }
 
             if (res == key && LocalizerControllerDefault != null)
             {
                 res = LocalizerControllerDefault[key];
-                Logger.LogTrace("------------- Controller2Garin::LocalizerControllerDefault {0}->[{1}]", key, res);
+                //Logger.LogTrace("------------- Controller2Garin::LocalizerControllerDefault {0}->[{1}]", key, res);
             }
             if (res == key && LocalizerDefault != null)
             {
                 res = LocalizerDefault[key];
-                Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
+                //Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
             }
 
             //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);

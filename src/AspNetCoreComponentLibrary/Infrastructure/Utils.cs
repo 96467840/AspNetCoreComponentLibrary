@@ -92,6 +92,8 @@ namespace AspNetCoreComponentLibrary
 
             services.AddSingleton<IStringLocalizer, L>();
 
+            services.AddScoped<ILocalizer2Garin, Localizer2Garin>();
+
             services.AddTransient<IControllerSettings, ControllerSettings>();
         }
 

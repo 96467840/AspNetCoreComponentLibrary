@@ -11,8 +11,9 @@ namespace AspNetCoreComponentLibrary.Abstractions
     {
         IStorage Storage { get; set; }
         ILoggerFactory LoggerFactory { get; set; }
-        IStringLocalizerFactory LocalizerFactory { get; set; }
-        IStringLocalizer Localizer { get; set; }
-        string DefaultCulture { get; set; }
+        ILocalizer2Garin Localizer2Garin { get; set; }
+        //IStringLocalizerFactory LocalizerFactory { get; set; }
+        //IStringLocalizer Localizer { get; set; }
+        //string DefaultCulture { get; set; }
     }
 }

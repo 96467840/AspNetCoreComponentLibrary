@@ -13,17 +13,19 @@ namespace AspNetCoreComponentLibrary
     {
         public IStorage Storage { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
-        public IStringLocalizerFactory LocalizerFactory { get; set; }
-        public IStringLocalizer Localizer { get; set; }
-        public string DefaultCulture { get; set; }
+        public ILocalizer2Garin Localizer2Garin { get; set; }
+        //public IStringLocalizerFactory LocalizerFactory { get; set; }
+        //public IStringLocalizer Localizer { get; set; }
+        //public string DefaultCulture { get; set; }
 
-        public ControllerSettings(IStorage storage, ILoggerFactory loggerFactory, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer, IOptions<LocalizerConfigure> LocalizerOptionsAccessor)
+        public ControllerSettings(IStorage storage, ILoggerFactory loggerFactory, ILocalizer2Garin localizer2Garin/*, IStringLocalizerFactory localizerFactory, IStringLocalizer localizer, IOptions<LocalizerConfigure> LocalizerOptionsAccessor*/)
         {
             Storage = storage;
             LoggerFactory = loggerFactory;
-            LocalizerFactory = localizerFactory;
-            Localizer = localizer;
-            DefaultCulture = LocalizerOptionsAccessor.Value.DefaultCulture;
+            Localizer2Garin = localizer2Garin;
+            //LocalizerFactory = localizerFactory;
+            //Localizer = localizer;
+            //DefaultCulture = LocalizerOptionsAccessor.Value.DefaultCulture;
         }
     }
 }

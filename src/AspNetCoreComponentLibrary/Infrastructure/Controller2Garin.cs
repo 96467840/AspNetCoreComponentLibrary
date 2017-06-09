@@ -156,8 +156,19 @@ namespace AspNetCoreComponentLibrary
             if (context.Result != null) return;
 
             SiteLanguages = Languages.GetUnblocked(Site.Id).ToList();
-            Localizer2Garin.ResolveCulture(context, SiteLanguages, Url);
-            
+            var provider = new AcceptLanguageHeaderRequestCultureProvider();
+            var languagePreferences = provider.DetermineProviderCultureResult(context.HttpContext).Result;
+            try
+            {
+                Localizer2Garin.ResolveCulture(context.RouteData.Values["Culture"] as string, SiteLanguages, languagePreferences != null && languagePreferences.Cultures != null ? languagePreferences.Cultures : null);
+            }
+            catch (CultureException)
+            {
+                var url = Url.CurrentUrl(new { culture = (string)null });
+                Logger.LogTrace("ResolveCulture redirect to {0}", url);
+                context.Result = new RedirectResult(url, true);
+            }
+
             if (context.Result != null) return;
 
             //base.OnActionExecuting(context);

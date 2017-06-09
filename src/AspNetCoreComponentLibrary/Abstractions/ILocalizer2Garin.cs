@@ -20,6 +20,6 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         HtmlString Localize(string key);
 
-        void ResolveCulture(ActionExecutingContext context, List<Languages> SiteLanguages, IUrlHelper Url);
+        void ResolveCulture(string CultureFromRouteData, List<Languages> SiteLanguages, IList<string> CulturalPreferences);
     }
 }

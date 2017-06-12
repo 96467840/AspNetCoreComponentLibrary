@@ -16,7 +16,7 @@ namespace AspNetCoreComponentLibrary
         [FieldSettings(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Text)]
+        [FieldSettings(HtmlType = EnumHtmlType.Text)]
         public string Name { get; set; }
 
         [Filter(HtmlType = EnumHtmlType.Text)]
@@ -25,11 +25,11 @@ namespace AspNetCoreComponentLibrary
         [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsDefault { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.CheckBox)]
+        [Filter(HtmlType = EnumHtmlType.Select, SelectValuesJson = "[{key='',name='common.all'},{key='true',name='common.yes'},{key='false',name='common.no'}]")]
         [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsBlocked { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Json)]
+        [FieldSettings(HtmlType = EnumHtmlType.Json)]
         public string Json { get; set; }
 
         public string ExternalId { get; set; }

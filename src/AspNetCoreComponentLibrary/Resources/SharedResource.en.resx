@@ -198,6 +198,14 @@
     ===================================
   -->
 
+<data name="common.filter.unsupported.type" xml:space="preserve"><value>Unsupported filter type: {0}</value></data>
+
+<data name="common.yes" xml:space="preserve"><value>Yes</value></data>
+
+<data name="common.no" xml:space="preserve"><value>No</value></data>
+
+<data name="common.all" xml:space="preserve"><value>All</value></data>
+
 <data name="common.delete" xml:space="preserve"><value>Delete</value></data>
 
 <data name="common.edit" xml:space="preserve"><value>Edit</value></data>

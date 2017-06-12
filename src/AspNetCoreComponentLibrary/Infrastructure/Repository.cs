@@ -73,7 +73,8 @@ namespace AspNetCoreComponentLibrary
                 var props = typeof(T).GetProperties();
                 foreach (var p in props)
                 {
-                    var nameLC = p.Name.ToLower();
+                    // не будем переводить имя фильтра в нижний регистр
+                    var nameLC = p.Name;//.ToLower();
                     var attr = (FilterAttribute)p.GetCustomAttribute(typeof(FilterAttribute));
                     if (attr != null && filter.ContainsKey(nameLC) && filter[nameLC].Any())
                     {

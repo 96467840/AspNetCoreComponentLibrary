@@ -18,7 +18,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         string DefaultCulture { get; set; }
 
-        HtmlString Localize(string key);
+        HtmlString Localize(string key, params object[] args);
 
         void ResolveCulture(string CultureFromRouteData, List<Languages> SiteLanguages, IList<string> CulturalPreferences);
     }

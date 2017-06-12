@@ -7,15 +7,7 @@
 
 <h1>@Model.GetH1()</h1>
 
-@if (Model.Filter != null)
-{
-    foreach (var f in Model.Filter)
-    {
-        <div>
-            @f.Key - @string.Join(", ", f.Value.Select(i=>(string)i))
-        </div>
-    }
-}
+@Html.Partial("Admin/Filter/_Filter", Model)
 
 @foreach (var i in Model.Items)
 {

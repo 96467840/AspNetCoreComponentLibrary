@@ -72,5 +72,10 @@ namespace AspNetCoreComponentLibrary
         /// Имя поля строкового значения (для типа EnumHtmlType.Select и EnumHtmlType.Tree)
         /// </summary>
         public string SelectValueName { get; set; }
+
+        /// <summary>
+        /// Cписок значений. Может быть нулл, тогда список составляем по SelectRepository. Значение закодировано Json
+        /// </summary>
+        public string SelectValuesJson { get; set; }
     }
 }

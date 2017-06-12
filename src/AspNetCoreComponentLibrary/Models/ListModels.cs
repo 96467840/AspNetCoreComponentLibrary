@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace AspNetCoreComponentLibrary
@@ -15,6 +16,7 @@ namespace AspNetCoreComponentLibrary
         HtmlString GetH1();
         List<IBaseDM> Items { get; }
         Dictionary<string, List<string>> Filter { get; }
+        Type Type { get; }
     }
 
     public class ListVM<K, T, R> : AdminVM, IListVM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T> /*where K : struct*/
@@ -41,6 +43,7 @@ namespace AspNetCoreComponentLibrary
 
         public Dictionary<string, List<string>> Filter => Input.Filter;
 
+        public Type Type => typeof(T);
     }
 
     // ---------------- Input Model
@@ -59,6 +62,7 @@ namespace AspNetCoreComponentLibrary
             {
                 if (!typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
                 {
+                    // а юзеры тут могут быть?
                     vm.Items = controller.Sites.GetForUser(controller.SessionUser.Id).Select(i => (IBaseDM)i).ToList();
                 }
                 else
@@ -73,6 +77,14 @@ namespace AspNetCoreComponentLibrary
             }
             return controller.View("Admin/List", vm);
         }
+    }
+
+    // ----------------- Filters
+    public class FilterFieldVM
+    {
+        public FilterAttribute Attribute { get; set; }
+        public PropertyInfo Property { get; set; }
+        public List<string> Values { get; set; }
     }
 
 }

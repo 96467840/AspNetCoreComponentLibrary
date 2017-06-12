@@ -222,7 +222,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public HtmlString Localize(string key)
+        public HtmlString Localize(string key, params object[] args)
         {
             //Logger.LogTrace("Controller2Garin::Localize {0}", key);
             if (string.IsNullOrWhiteSpace(key)) return new HtmlString(string.Empty);
@@ -259,7 +259,7 @@ namespace AspNetCoreComponentLibrary
             }
 
             //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
-            return new HtmlString(res);
+            return new HtmlString(string.Format(res, args));
         }
 
         /// <summary>

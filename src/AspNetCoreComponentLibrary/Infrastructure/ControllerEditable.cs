@@ -35,7 +35,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-
+        [NonAction]
         private void SetRepository()
         {
             // а вот тут оптимизировать низя! не у всех свойств есть атрибуты
@@ -77,6 +77,12 @@ namespace AspNetCoreComponentLibrary
             Logger.LogTrace("List");
             return input.ToActionResult(this);
         }
+
+        /*public virtual IActionResult Block(K index)
+        {
+            Logger.LogTrace("Block");
+            return input.ToActionResult(this);
+        }*/
 
     }
 }

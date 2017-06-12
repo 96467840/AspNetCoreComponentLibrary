@@ -1,0 +1,12 @@
+﻿@model AlertVM
+@if (Model.IsDismissible)
+{
+    <div class="alert-dismissible alert alert-@Model.Type" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Model.Body
+    </div>
+}
+else
+{
+    <div class="alert alert-@Model.Type" role="alert">@Model.Body</div>
+}

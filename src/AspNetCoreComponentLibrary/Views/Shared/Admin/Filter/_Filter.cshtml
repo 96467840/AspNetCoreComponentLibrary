@@ -1,0 +1,29 @@
+﻿@model IListVM
+@{ 
+    var filters = Model.Type.GetProperties()
+        .Select(i => new FilterFieldVM()
+        {
+            Attribute = (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
+            Property = i,
+            Values = Model.Filter?.ContainsKey(i.Name) == true ? Model.Filter[i.Name] : null
+        })
+        .Where(i => i.Attribute != null);
+    if (!filters.Any()) { return; }
+}
+
+@if (Model.Filter != null)
+{
+    foreach (var f in Model.Filter)
+    {
+        <div>
+            @f.Key - @string.Join(", ", f.Value.Select(i => (string)i))
+        </div>
+    }
+}
+<form method="get" class="form-inline">
+    @foreach (var f in filters)
+    {
+        @Html.Partial("Admin/Filter/_Field", f)
+    }
+    <button type="submit" class="btn btn-default">@Localizer.Localize("common.find")</button>
+</form>

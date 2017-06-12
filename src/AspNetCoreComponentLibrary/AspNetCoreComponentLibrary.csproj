@@ -23,7 +23,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Views\**\*.cshtml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <Content Remove="Views\Shared\Admin\Filter\_CheckBox.cshtml" />
+    <Content Remove="Views\Shared\Admin\Filter\_Field.cshtml" />
+    <Content Remove="Views\Shared\Admin\Filter\_Select.cshtml" />
+    <Content Remove="Views\Shared\Components\AlertComponent\Default.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Shared\Admin\Edit.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\Filter\_CheckBox.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\Filter\_Field.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\Filter\_Filter.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\Filter\_Select.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\List.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_Footer.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_LeftMenu.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_Meta.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_NavBar.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_Scripts.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\_Styles.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Components\AlertComponent\Default.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Components\BreadcrumbComponent\Default.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Components\TestComponent\Default.cshtml" />
+    <EmbeddedResource Include="Views\Shared\_LayoutAdmin.cshtml" />
     <!--<EmbeddedResource Include="Resources\**" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />-->
   </ItemGroup>
 

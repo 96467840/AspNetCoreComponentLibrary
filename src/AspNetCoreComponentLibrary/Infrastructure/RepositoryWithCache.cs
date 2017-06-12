@@ -6,6 +6,7 @@ using System.Collections;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -15,15 +16,15 @@ namespace AspNetCoreComponentLibrary
 
         public virtual void LoadFromDB()
         {
+            //Logger.LogTrace("........ LoadFromDB");
+            //Thread.Sleep(1000);
             using (new BLog(LoggerMEF, "LoadFromDB", GetType().FullName))
                 if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
                 {
-                    //coll = DbSet
-                    //    // очень важный момент!
-                    //    .AsNoTracking()
-                    //    .GroupBy(i => ((IWithSiteId)i).SiteId).ToDictionary(i => i.Key, i => i.ToDictionary(j => j.Id, j => j));
                     coll = DbSet
-                        .AsNoTracking().ToList()
+                        // очень важный момент!
+                        .AsNoTracking()
+                        .ToList()
                         .GroupBy(i => ((IWithSiteId)i).SiteId).ToDictionary(i => i.Key, i => i.ToDictionary(j => j.Id, j => j));
                 }
                 else
@@ -37,11 +38,20 @@ namespace AspNetCoreComponentLibrary
                         }
                     };
                 }
+            //Logger.LogTrace("........ end of LoadFromDB");
         }
 
+        private static Object thisLock = new Object();
         protected void CheckColl()
         {
-            if (coll == null) LoadFromDB();
+            //Logger.LogTrace("........ CheckColl in");
+            // блокировка (абсолютно нет смысла делать еще один раз запрос к БД, проще тупо дождаться результата первого)
+            lock (thisLock)
+            {
+                //Logger.LogTrace("........ CheckColl after lock");
+                if (coll == null) LoadFromDB();
+                //Logger.LogTrace("........ CheckColl after load");
+            }
             if (coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
         }
 
@@ -61,7 +71,8 @@ namespace AspNetCoreComponentLibrary
                     return DbSet.AsNoTracking();
                 }
                 // такого сайта нет в кеше значит его нет и в БД => вернем пустой запрос (по идее это ошибка, но сайт мы ломать не станем)
-                Logger.LogCritical("Try build query for 'IWithSiteId' with siteid={siteid}, but site not founded in cache.", siteid);
+                //Logger.LogCritical("Try build query for 'IWithSiteId' with siteid={siteid}, but site not founded in cache.", siteid);
+                // и такое возможно если у сайта нет сущностей такого типа => смело шлем пустой результат
                 return new List<T>().AsQueryable();
             }
 

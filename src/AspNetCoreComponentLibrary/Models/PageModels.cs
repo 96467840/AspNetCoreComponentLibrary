@@ -59,7 +59,7 @@ namespace AspNetCoreComponentLibrary
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
                 //using (new BLog(LoggerMEF, "Load sites", GetType().FullName))
                 {
-                    vm.Sites = sites.StartQuery().Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
+                    vm.Sites = sites.StartQuery(0).Where(i => i.Id < 10).OrderByDescending(i => i.Id).ToList();
                 }
                 GC.Collect();
                 Logger.LogInformation("Memory used after full collection:   {0:N0}", GC.GetTotalMemory(true));

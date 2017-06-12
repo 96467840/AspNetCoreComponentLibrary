@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9A0C45D9-2DD7-4996-8F5E-475696FCD8B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F65671D6-A8BF-4DAE-A6A3-584258ED5176}"
 	ProjectSection(SolutionItems) = preProject
 		docs.txt = docs.txt
+		todo.txt = todo.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreComponentLibrary", "src\AspNetCoreComponentLibrary\AspNetCoreComponentLibrary.csproj", "{BF442807-DE07-45BD-A280-8672921E4DA1}"

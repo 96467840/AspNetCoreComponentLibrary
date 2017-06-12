@@ -13,9 +13,9 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
     public interface IRepository<K, T> where T : BaseDM<K>
     {
-        IQueryable<T> StartQuery();
+        IQueryable<T> StartQuery(long siteid);
         IQueryable<T> GetUnblocked(long siteid);
-        IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null);
+        IQueryable<T> GetFiltered(long siteid, Dictionary<string, List<string>> filter = null);
 
         T this[K index] { get; }
 

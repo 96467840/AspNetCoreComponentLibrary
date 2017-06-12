@@ -51,7 +51,7 @@ namespace AspNetCoreComponentLibrary
             //var LoggerMEF = loggerFactory.CreateLogger(Utils.MEFNameSpace);
             var Sites = Storage.GetRepository<ISiteRepository>(EnumDB.UserSites);
 
-            if (Sites.StartQuery().Any())
+            if (Sites.StartQuery(0).Any())
             {
                 return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
             }

@@ -42,29 +42,27 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public virtual IQueryable<T> StartQuery()
-        {
-            return DbSet.AsNoTracking();
-        }
-
         protected HtmlString Localize(string key)
         {
             return Localizer2Garin.Localize(key);
             //return new HtmlString(key);
         }
 
-        public IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null)
+        public virtual IQueryable<T> StartQuery(long siteid)
         {
-            Logger.LogTrace("Repository GetForSite for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
-            var query = StartQuery();
-            if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+            if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)) && siteid > 0)
             {
-                query = query.Where(i => ((IWithSiteId)i).SiteId == siteid);//.ToList();
+                return DbSet
+                    .AsNoTracking()
+                    .Where(i => ((IWithSiteId)i).SiteId == siteid);
             }
-            else // список сайтов. что вернуть? пока вернем пустой список
-            {
-                return query.Where(i =>false);
-            }/**/
+            return DbSet.AsNoTracking();
+        }
+
+        public IQueryable<T> GetFiltered(long siteid, Dictionary<string, List<string>> filter = null)
+        {
+            //Logger.LogTrace("Repository GetFiltered for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
+            var query = StartQuery(siteid);
 
             if (filter != null)
             {
@@ -118,13 +116,12 @@ namespace AspNetCoreComponentLibrary
         public IQueryable<T> GetUnblocked(long siteid)
         {
             Logger.LogTrace("Repository GetUnblocked for {0}.", GetType().FullName);
-            var query = GetForSite(siteid);
+            var query = StartQuery(siteid);
 
             if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
                 query = query.Where(i => !((IBlockable)i).IsBlocked);
 
-            //using (new BLog(LoggerMEF, "GetUnblocked", GetType().FullName))
-                return query;
+            return query;
         }
 
         public virtual void Save(T item)

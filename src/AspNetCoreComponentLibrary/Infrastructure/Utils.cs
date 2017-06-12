@@ -202,7 +202,7 @@ namespace AspNetCoreComponentLibrary
                 var reg = new Regex(@"^(\w+:)?//([^/:]+).*$"); // извлечь доменное имя
                 var host = reg.Replace(backurl, "$2");
 
-                if (sites.StartQuery().Any(i => i.TestHost(host))) return true;
+                if (sites.StartQuery(0).Any(i => i.TestHost(host))) return true;
 
                 return false;
             }

@@ -115,13 +115,13 @@ namespace AspNetCoreComponentLibrary
             }
 
             // на установку идем тока если БД пустая
-            if (!Sites.StartQuery().Any())
+            if (!Sites.StartQuery(0).Any())
             {
                 context.Result = new RedirectResult(Url.RouteUrl("Setup"));
                 return;
             }
 
-            Site = Sites.StartQuery().FirstOrDefault(i=>i.TestHost(host));
+            Site = Sites.StartQuery(0).FirstOrDefault(i=>i.TestHost(host));
             if (Site == null)
             {
                 //throw new HttpException(404, "Сайт не найден.");

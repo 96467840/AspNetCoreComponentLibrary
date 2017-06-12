@@ -11,17 +11,32 @@ namespace AspNetCoreComponentLibrary
 {
     public abstract class RepositoryWithCache<K, T> : Repository<K, T> where T : BaseDM<K>
     {
-        protected static Dictionary<K, T> coll;
+        protected static Dictionary<long, Dictionary<K, T>> coll;
 
         public virtual void LoadFromDB()
         {
             using (new BLog(LoggerMEF, "LoadFromDB", GetType().FullName))
-            {
-                coll = DbSet
-                    // очень важный момент!
-                    .AsNoTracking()
-                    .ToDictionary(i => i.Id, i => i);
-            }
+                if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+                {
+                    //coll = DbSet
+                    //    // очень важный момент!
+                    //    .AsNoTracking()
+                    //    .GroupBy(i => ((IWithSiteId)i).SiteId).ToDictionary(i => i.Key, i => i.ToDictionary(j => j.Id, j => j));
+                    coll = DbSet
+                        .AsNoTracking().ToList()
+                        .GroupBy(i => ((IWithSiteId)i).SiteId).ToDictionary(i => i.Key, i => i.ToDictionary(j => j.Id, j => j));
+                }
+                else
+                {
+                    coll = new Dictionary<long, Dictionary<K, T>> {
+                        {
+                            0, DbSet
+                            // очень важный момент!
+                            .AsNoTracking()
+                            .ToDictionary(i => i.Id, i => i)
+                        }
+                    };
+                }
         }
 
         protected void CheckColl()
@@ -30,10 +45,35 @@ namespace AspNetCoreComponentLibrary
             if (coll == null) throw new Exception(string.Format("Can't load collection {0} from DB", typeof(T).FullName));
         }
 
-        public override IQueryable<T> StartQuery()
+        public override IQueryable<T> StartQuery(long siteid)
         {
             CheckColl();
-            return coll.Values.AsQueryable();
+            if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+            {
+                if (siteid > 0)
+                {
+                    if (coll.ContainsKey(siteid))
+                        return coll[siteid].Values.AsQueryable();
+                }
+                else
+                {
+                    // попытка построить запрос по нескольким сайтам?  в теории такое может понадобится для аналитики => такие запросы идут мимо кеша
+                    return DbSet.AsNoTracking();
+                }
+                // такого сайта нет в кеше значит его нет и в БД => вернем пустой запрос (по идее это ошибка, но сайт мы ломать не станем)
+                Logger.LogCritical("Try build query for 'IWithSiteId' with siteid={siteid}, but site not founded in cache.", siteid);
+                return new List<T>().AsQueryable();
+            }
+
+            // запрос по сущностям без привязки к сайту (пока их 2 это сам сайт и юзер)
+            if (coll.ContainsKey(0))
+                return coll[0].Values.AsQueryable();
+
+            // критическая ситуация в CheckColl мы проверили и инициализировали кеш и сущности без сайта должны быть в нулевом индексе
+            // в этом случае вернем пустой запрос чтобы не ломать приложение
+            Logger.LogCritical("Try build query for non 'IWithSiteId' with siteid={siteid}, but site not founded in cache.", siteid);
+            return new List<T>().AsQueryable();
+            //return DbSet.AsNoTracking();
         }
 
         public override T this[K index]
@@ -41,8 +81,9 @@ namespace AspNetCoreComponentLibrary
             get
             {
                 CheckColl();
-                if (!coll.ContainsKey(index)) return default(T);
-                return coll[index];
+                var s = coll.Values.Where(i => i.ContainsKey(index)).FirstOrDefault();
+                if (s == null) return default(T);
+                return s[index];
             }
         }
 
@@ -64,8 +105,6 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(clone);
             }
-            
-            //CheckColl();
         }
 
         public override void AfterSave(T item, bool isnew)
@@ -83,7 +122,6 @@ namespace AspNetCoreComponentLibrary
 
         protected override void SetBlock(K id, bool value)
         {
-            //if (typeof(T) is IBlockable)
             if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
@@ -91,13 +129,6 @@ namespace AspNetCoreComponentLibrary
                 ((IBlockable)item).IsBlocked = value;
                 DbSet.Update(item);
             }
-        }
-
-        public bool Contains(K index)
-        {
-            CheckColl();
-            if (index == null) return false;
-            return coll.ContainsKey(index);
         }
 
         public override void ClearCache()
@@ -111,9 +142,9 @@ namespace AspNetCoreComponentLibrary
             CheckColl();
             try
             {
-                var item = this[index];
-                if (item == null) return;
-                coll.Remove(index);
+                var s = coll.Values.Where(i => i.ContainsKey(index)).FirstOrDefault();
+                if (s == null) return;
+                s.Remove(index);
             }
             catch { }
         }
@@ -130,10 +161,16 @@ namespace AspNetCoreComponentLibrary
 
             BeforeAddToCache(newitem);
 
-            if (coll.ContainsKey(index)) coll[index] = newitem;
-            else coll.Add(index, newitem);
+            if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+            {
+                if (!coll.ContainsKey(((IWithSiteId)newitem).SiteId)) coll[((IWithSiteId)newitem).SiteId] = new Dictionary<K, T>();
+                coll[((IWithSiteId)newitem).SiteId][index] = newitem;
+            }
+            else
+            {
+                if (!coll.ContainsKey(0)) coll[0] = new Dictionary<K, T>();
+                coll[0][index] = newitem;
+            }
         }
-
-
     }
 }

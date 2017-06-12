@@ -15,7 +15,7 @@ namespace AspNetCoreComponentLibrary
             // так как запрашивает это обычно текущий юзер который есть в кеше, то таким образом мы полностью добудем список из кеша
             var users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
             var user = users[userid];
-            return StartQuery().Where(i => user.UserSites.Select(us => us.SiteId).Contains(i.Id));
+            return StartQuery(0).Where(i => user.UserSites.Select(us => us.SiteId).Contains(i.Id));
 
             /*
             var usRep = Storage.GetRepository<IUserSiteRepository>(EnumDB.UserSites);

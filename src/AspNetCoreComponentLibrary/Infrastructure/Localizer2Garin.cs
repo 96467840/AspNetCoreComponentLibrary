@@ -34,6 +34,7 @@ namespace AspNetCoreComponentLibrary
         {
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(this.GetType().FullName);
+            Logger.LogTrace("Localizer::Constructor");
             LocalizerFactory = localizerFactory;
             DefaultCulture = LocalizerOptionsAccessor.Value.DefaultCulture;
 

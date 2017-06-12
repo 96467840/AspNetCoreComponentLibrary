@@ -20,8 +20,9 @@ namespace AspNetCoreComponentLibrary
         protected ILoggerFactory LoggerFactory;
         protected ILogger Logger;
         protected ILogger LoggerMEF;
+        protected ILocalizer2Garin Localizer2Garin;
 
-        public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory)
+        public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory, ILocalizer2Garin localizer2Garin)
         {
             try
             {
@@ -33,6 +34,7 @@ namespace AspNetCoreComponentLibrary
                 LoggerMEF = LoggerFactory.CreateLogger(Utils.MEFNameSpace);
                 //if (StorageContext == null) Logger.LogCritical("AAAAAAAAAAAAAAAAAAA!!!!!!!!!");
                 DbSet = (StorageContext as DbContext).Set<T>();
+                Localizer2Garin = localizer2Garin;
             }
             catch (Exception e)
             {
@@ -47,8 +49,8 @@ namespace AspNetCoreComponentLibrary
 
         protected HtmlString Localize(string key)
         {
-            // ...
-            return new HtmlString(key);
+            return Localizer2Garin.Localize(key);
+            //return new HtmlString(key);
         }
 
         public IQueryable<T> GetForSite(long siteid, Dictionary<string, List<string>> filter = null)

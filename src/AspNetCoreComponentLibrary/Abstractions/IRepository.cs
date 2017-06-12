@@ -8,7 +8,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 {
     public interface IRepositorySetStorageContext
     {
-        void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory);
+        void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory, ILocalizer2Garin localizer2Garin);
     }
 
     public interface IRepository<K, T> where T : BaseDM<K>

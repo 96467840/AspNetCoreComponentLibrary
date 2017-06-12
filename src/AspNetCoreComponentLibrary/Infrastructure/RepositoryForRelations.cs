@@ -16,8 +16,9 @@ namespace AspNetCoreComponentLibrary
         protected ILoggerFactory LoggerFactory;
         protected ILogger Logger;
         protected ILogger LoggerMEF;
+        protected ILocalizer2Garin Localizer2Garin;
 
-        public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory)
+        public void SetStorageContext(IStorageContext storageContext, IStorage storage, ILoggerFactory loggerFactory, ILocalizer2Garin localizer2Garin)
         {
             try
             {
@@ -31,6 +32,7 @@ namespace AspNetCoreComponentLibrary
 
                 //if (StorageContext == null) Logger.LogCritical("AAAAAAAAAAAAAAAAAAA!!!!!!!!!");
                 DbSet = (StorageContext as DbContext).Set<T>();
+                Localizer2Garin = localizer2Garin;
             }
             catch (Exception e)
             {

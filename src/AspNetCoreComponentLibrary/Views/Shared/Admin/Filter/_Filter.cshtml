@@ -1,19 +1,12 @@
 ﻿@model IListVM
-@{ 
-    var filters = Model.Type.GetProperties()
-        .Select(i => new FilterFieldVM()
-        {
-            Attribute = (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
-            Property = i,
-            Values = Model.Filter?.ContainsKey(i.Name) == true ? Model.Filter[i.Name] : null
-        })
-        .Where(i => i.Attribute != null);
+@{
+    var filters = Model.Filters;
     if (!filters.Any()) { return; }
 }
 
-@if (Model.Filter != null)
+@if (Model.FilterValues != null)
 {
-    foreach (var f in Model.Filter)
+    foreach (var f in Model.FilterValues)
     {
         <div>
             @f.Key - @string.Join(", ", f.Value.Select(i => (string)i))

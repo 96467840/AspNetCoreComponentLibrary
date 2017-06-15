@@ -222,10 +222,25 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
+        public HtmlString Localize(List<string> keys, params object[] args)
+        {
+            foreach(var k in keys)
+            {
+                var res = _Localize(k);
+                if (res != k) return new HtmlString(string.Format(res, args));
+            }
+            return null;
+        }
+
         public HtmlString Localize(string key, params object[] args)
         {
+            return new HtmlString(string.Format(_Localize(key), args));
+        }
+
+        private string _Localize(string key)
+        {
             //Logger.LogTrace("Controller2Garin::Localize {0}", key);
-            if (string.IsNullOrWhiteSpace(key)) return new HtmlString(string.Empty);
+            if (string.IsNullOrWhiteSpace(key)) return string.Empty;
 
             string res = key;
 
@@ -236,7 +251,7 @@ namespace AspNetCoreComponentLibrary
             }
 
             // пробуем загрузить строку из сборки с контролерами
-            if (LocalizerController != null)
+            if (res == key && LocalizerController != null)
             {
                 res = LocalizerController[key];
                 //Logger.LogTrace("------------- Controller2Garin::LocalizerController {0}->[{1}]", key, res);
@@ -259,7 +274,7 @@ namespace AspNetCoreComponentLibrary
             }
 
             //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
-            return new HtmlString(string.Format(res, args));
+            return res;
         }
 
         /// <summary>

@@ -1,0 +1,6 @@
+﻿@model FilterFieldVM
+
+<div class="form-group">
+    <label for="">@Localizer.Localize(Model.NameKeys)</label>
+    <input placeholder="@Localizer.Localize(Model.PlaceholderKeys)" value="@(Model.Values?.Any()==true?Model.Values[0]:Model.Attribute.Default)" type="text" name="filter.@Model.Property.Name" class="form-control" id="input-field-@Model.Property.Name" />
+</div>

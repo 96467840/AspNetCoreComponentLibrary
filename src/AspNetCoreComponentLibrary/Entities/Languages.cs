@@ -19,7 +19,8 @@ namespace AspNetCoreComponentLibrary
         [FieldSettings(HtmlType = EnumHtmlType.Text)]
         public string Name { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Text)]
+        [Filter(HtmlType = EnumHtmlType.Text, Compare = EnumFilterCompare.Equals)]
+        [FieldSettings(HtmlType = EnumHtmlType.Text)]
         public string Lang { get; set; }
 
         [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]

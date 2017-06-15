@@ -8,6 +8,9 @@
     case EnumHtmlType.Select:
         @Html.Partial("Admin/Filter/_Select", Model);
         break;
+    case EnumHtmlType.Text:
+        @Html.Partial("Admin/Filter/_Text", Model);
+        break;
     default:
         @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM(Localizer.Localize("common.filter.unsupported.type", Model.Attribute.HtmlType)) });
         break;

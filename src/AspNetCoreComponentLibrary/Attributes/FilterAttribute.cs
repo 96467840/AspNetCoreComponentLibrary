@@ -27,6 +27,10 @@ namespace AspNetCoreComponentLibrary
         Json = 12
     }
 
+    public enum EnumFilterCompare {
+        Equals, Include, Ends, Begins
+    }
+
     /// <summary>
     /// Атрибут для создания фильтра в админке
     /// </summary>
@@ -39,9 +43,19 @@ namespace AspNetCoreComponentLibrary
         public string Title { get; set; }
 
         /// <summary>
+        /// Ключ локализации для "placeholder".
+        /// </summary>
+        public string Placeholder { get; set; }
+
+        /// <summary>
         /// Тип фильтра (допустимые значения: EnumHtmlType.Select, EnumHtmlType.Tree, EnumHtmlType.CheckBox, EnumHtmlType.Text)
         /// </summary>
         public EnumHtmlType HtmlType { get; set; }
+
+        /// <summary>
+        /// Тип сравнения. В основном для текстовых полей
+        /// </summary>
+        public EnumFilterCompare Compare { get; set; }
 
         /// <summary>
         /// Значение по умолчанию

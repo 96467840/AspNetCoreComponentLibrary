@@ -313,8 +313,8 @@
 <data name="common.articul" xml:space="preserve"><value>Артикул</value></data>
 
 <!--Общие поля для всех сущностей-->
-<data name="common.field.name.title" xml:space="preserve"><value>Название</value></data>
-<data name="common.field.isblocked.title" xml:space="preserve"><value>Заблокировать</value></data>
+<data name="common.field.Name.title" xml:space="preserve"><value>Название</value></data>
+<data name="common.field.IsBlocked.title" xml:space="preserve"><value>Заблокировать</value></data>
 <!--Общие значения полей -->
 <data name="common.field.any.regexpmessage" xml:space="preserve"><value>Поле содержит недопустимые символы или записано не по формату</value></data>
 
@@ -335,15 +335,16 @@
   -->
 
 <data name="languages.name" xml:space="preserve"><value>Языки</value></data>
+<data name="languages.langtmp" xml:space="preserve"><value>Обозначение 1</value></data>
 
-<data name="languages.field.lang.title" xml:space="preserve"><value>Обозначение</value></data>
-<data name="languages.field.lang.placeholder" xml:space="preserve"><value>en-GB</value></data>
-<data name="languages.field.lang.description" xml:space="preserve"><value><![CDATA[Обозначение языка-страны. Самый простой вариант укажите просто 2 буквы обозначения языка (en, ru). Если вы хотите чтобы отрабатывало выставление языка автоматически придерживайтесь правил <a target="_blank" href="http://tools.ietf.org/html/rfc2616#section-14.4">отсюда</a>.]]></value></data>
+<data name="languages.field.Lang.title" xml:space="preserve"><value>Обозначение</value></data>
+<data name="languages.field.Lang.placeholder" xml:space="preserve"><value>en-GB</value></data>
+<data name="languages.field.Lang.description" xml:space="preserve"><value><![CDATA[Обозначение языка-страны. Самый простой вариант укажите просто 2 буквы обозначения языка (en, ru). Если вы хотите чтобы отрабатывало выставление языка автоматически придерживайтесь правил <a target="_blank" href="http://tools.ietf.org/html/rfc2616#section-14.4">отсюда</a>.]]></value></data>
 
-<data name="languages.field.isdefault.title" xml:space="preserve"><value>Язык по умолчанию</value></data>
-<data name="languages.field.isdefault.description" xml:space="preserve"><value>Ни в коем случае не меняйте язык по умолчанию после того как вы начнете заполнять сайт контентом. Контент придется заполнять заново.</value></data>
+<data name="languages.field.IsDefault.title" xml:space="preserve"><value>Язык по умолчанию</value></data>
+<data name="languages.field.IsDefault.description" xml:space="preserve"><value>Ни в коем случае не меняйте язык по умолчанию после того как вы начнете заполнять сайт контентом. Контент придется заполнять заново.</value></data>
 
-<data name="languages.field.json.title" xml:space="preserve"><value>Переводы</value></data>
+<data name="languages.field.Json.title" xml:space="preserve"><value>Переводы</value></data>
 
 <data name="languages.field." xml:space="preserve"><value><![CDATA[]]></value></data>
 

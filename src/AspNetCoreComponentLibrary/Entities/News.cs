@@ -8,7 +8,7 @@ namespace AspNetCoreComponentLibrary
     [EntitySettings(LocalizerPrefix = "news")]
     public partial class News : BaseDM<long>, IBlockable, IWithSiteId
     {
-        [FieldSettings(HtmlType = EnumHtmlType.Hidden)]
+        [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

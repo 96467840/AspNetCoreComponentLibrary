@@ -13,24 +13,24 @@ namespace AspNetCoreComponentLibrary
     [EntitySettings(LocalizerPrefix = "languages")]
     public partial class Languages : BaseDM<long>, IBlockable, IWithSiteId
     {
-        [FieldSettings(HtmlType = EnumHtmlType.Hidden)]
+        [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [FieldSettings(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text)]
         public string Name { get; set; }
 
         [Filter(HtmlType = EnumHtmlType.Text, Compare = EnumFilterCompare.Equals)]
-        [FieldSettings(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text)]
         public string Lang { get; set; }
 
-        [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
+        [Field(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsDefault { get; set; }
 
         [Filter(HtmlType = EnumHtmlType.Select, SelectValuesJson = "[{key='',name='common.all'},{key='true',name='common.yes'},{key='false',name='common.no'}]")]
-        [FieldSettings(HtmlType = EnumHtmlType.CheckBox)]
+        [Field(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsBlocked { get; set; }
 
-        [FieldSettings(HtmlType = EnumHtmlType.Json)]
+        [Field(HtmlType = EnumHtmlType.Json)]
         public string Json { get; set; }
 
         public string ExternalId { get; set; }

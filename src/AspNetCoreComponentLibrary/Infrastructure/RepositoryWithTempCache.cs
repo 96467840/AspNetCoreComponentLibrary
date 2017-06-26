@@ -123,9 +123,9 @@ namespace AspNetCoreComponentLibrary
             });
         }
 
-        public override void ClearCache()
+        public override void ClearCache(long? siteid)
         {
-            Logger.LogTrace("RepositoryWithTempCache ClearCache {0}", this.GetType().FullName);
+            Logger.LogTrace("RepositoryWithTempCache ClearCache {0} for siteid={1}", this.GetType().FullName, siteid);
             coll.Clear();
         }
 

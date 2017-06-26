@@ -142,10 +142,35 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public override void ClearCache()
+        /// <summary>
+        /// Чистим кеш. Если указан конкретный сайт, то кеш для него будет ПЕРЕЗАГРУЖЕН заново.
+        /// </summary>
+        /// <param name="siteid"></param>
+        public override void ClearCache(long? siteid)
         {
-            Logger.LogTrace("RepositoryWithCache ClearCache {0}", this.GetType().FullName);
-            coll = null;
+            Logger.LogTrace("RepositoryWithCache ClearCache {0} for siteid={1}", this.GetType().FullName, siteid);
+            if (siteid.HasValue)
+            {
+                if (coll != null)
+                {
+                    if (typeof(T).IsImplementsInterface(typeof(IWithSiteId)))
+                    {
+                        coll[siteid.Value] = DbSet
+                        // очень важный момент!
+                        .AsNoTracking()
+                        .Where(i => ((IWithSiteId)i).SiteId == siteid.Value)
+                        .ToDictionary(j => j.Id, j => j);
+                    }
+                    else
+                    {
+                        coll = null;
+                    }
+                }
+            }
+            else
+            {
+                coll = null;
+            }
         }
 
         protected void RemoveFromCache(K index)

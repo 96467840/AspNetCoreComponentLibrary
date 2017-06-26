@@ -222,7 +222,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public HtmlString Localize(List<string> keys, params object[] args)
+        public HtmlString LocalizeHtml(List<string> keys, params object[] args)
         {
             foreach(var k in keys)
             {
@@ -232,14 +232,29 @@ namespace AspNetCoreComponentLibrary
             return null;
         }
 
-        public HtmlString Localize(string key, params object[] args)
+        public HtmlString LocalizeHtml(string key, params object[] args)
         {
             return new HtmlString(string.Format(_Localize(key), args));
         }
 
+        public string Localize(List<string> keys, params object[] args)
+        {
+            foreach (var k in keys)
+            {
+                var res = _Localize(k);
+                if (res != k) return string.Format(res, args);
+            }
+            return null;
+        }
+
+        public string Localize(string key, params object[] args)
+        {
+            return string.Format(_Localize(key), args);
+        }
+
         private string _Localize(string key)
         {
-            //Logger.LogTrace("Controller2Garin::Localize {0}", key);
+            //Logger.LogTrace("Controller2Garin::LocalizeHtml {0}", key);
             if (string.IsNullOrWhiteSpace(key)) return string.Empty;
 
             string res = key;
@@ -273,7 +288,7 @@ namespace AspNetCoreComponentLibrary
                 //Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
             }
 
-            //Logger.LogTrace("Controller2Garin::Localize {0}->{1}", key, res);
+            //Logger.LogTrace("Controller2Garin::LocalizeHtml {0}->{1}", key, res);
             return res;
         }
 

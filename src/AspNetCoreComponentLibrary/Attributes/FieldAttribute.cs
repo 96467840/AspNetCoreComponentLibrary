@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreComponentLibrary.Abstractions;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -16,6 +17,5 @@ namespace AspNetCoreComponentLibrary
         // используем след схему LocalizerPrefix.ParentId
         //public string Title { get; set; }
 
-        
     }
 }

@@ -1,12 +1,11 @@
 ﻿@model FilterFieldVM
 
 <div class="form-group">
-    <label for="exampleInputName2">@Model.Property.Name</label>
-    <select name="filter.@Model.Property.Name" class="form-control">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
+    <label for="filter-@Model.Property.Name">@Model.Property.Name</label>
+    <select name="filter.@Model.Property.Name" class="form-control" id="filter-@Model.Property.Name">
+        @foreach (var option in Model.SelectOptions)
+        {
+            <!option @option.Selected value="@option.Value">@option.Title</!option>
+        }
     </select>
 </div>

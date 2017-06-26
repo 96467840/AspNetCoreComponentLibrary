@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreComponentLibrary.Abstractions;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -18,10 +19,14 @@ namespace AspNetCoreComponentLibrary
         public string Title { get; set; }
 
         /// <summary>
+        /// Ключ локализации для "placeholder".
+        /// </summary>
+        public string Placeholder { get; set; }
+
+        /// <summary>
         /// Тип сравнения. В основном для текстовых полей
         /// </summary>
         public EnumFilterCompare Compare { get; set; }
 
-        
     }
 }

@@ -19,7 +19,7 @@ namespace AspNetCoreComponentLibrary
         {
             if (!CheckRights())
             {
-                throw new Exception(controller.Localize("common.denied").ToString());
+                throw new Exception(controller.Localize("common.denied"));
             }
         }
 
@@ -41,7 +41,7 @@ namespace AspNetCoreComponentLibrary
                         if (!tmp.Any()) continue;
                         var controllerName = Regex.Replace(tmp.Last(), "Controller$", "");
                         var href = Controller.Url.RouteUrlWithCulture("Admin", new { Controller = controllerName, Action = "List" });
-                        var title = Controller.Localize(attr.LocalizerPrefix + ".name");
+                        var title = Controller.LocalizeHtml(attr.LocalizerPrefix + ".name");
                         var priority = attr.Priority;
                         var liClass = string.Empty;
                         if (current == type.FullName)

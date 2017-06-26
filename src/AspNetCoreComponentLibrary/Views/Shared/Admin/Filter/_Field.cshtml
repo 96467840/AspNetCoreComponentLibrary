@@ -12,6 +12,6 @@
         @Html.Partial("Admin/Filter/_Text", Model);
         break;
     default:
-        @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM(Localizer.Localize("common.filter.unsupported.type", Model.Attribute.HtmlType)) });
+        @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM(Localizer.LocalizeHtml("common.filter.unsupported.type", Model.Attribute.HtmlType)) });
         break;
 }

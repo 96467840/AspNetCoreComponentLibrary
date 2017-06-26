@@ -1,6 +1,6 @@
 ﻿@model FilterFieldVM
 
 <div class="form-group">
-    <label for="exampleInputName2">@Model.Property.Name</label>
-    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+    <input type="checkbox" class="form-control" id="filter-@Model.Property.Name" />
+    <label for="filter-@Model.Property.Name">@Model.Property.Name</label>
 </div>

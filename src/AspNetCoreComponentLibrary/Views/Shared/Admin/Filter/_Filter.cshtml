@@ -4,7 +4,7 @@
     if (!filters.Any()) { return; }
 }
 
-@if (Model.FilterValues != null)
+@*@if (Model.FilterValues != null)
 {
     foreach (var f in Model.FilterValues)
     {
@@ -12,11 +12,11 @@
             @f.Key - @string.Join(", ", f.Value.Select(i => (string)i))
         </div>
     }
-}
+}*@
 <form method="get" class="form-inline">
     @foreach (var f in filters)
     {
         @Html.Partial("Admin/Filter/_Field", f)
     }
-    <button type="submit" class="btn btn-default">@Localizer.Localize("common.find")</button>
+    <button type="submit" class="btn btn-default">@Localizer.LocalizeHtml("common.find")</button>
 </form>

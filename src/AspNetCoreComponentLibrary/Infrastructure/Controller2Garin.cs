@@ -174,7 +174,7 @@ namespace AspNetCoreComponentLibrary
             //base.OnActionExecuting(context);
         }
 
-        public IActionResult ClearCache()
+        public IActionResult ClearCache(long? siteid)
         {
             var hash = new Dictionary<string, bool>();
             foreach (var t in this.GetType().GetProperties())
@@ -194,7 +194,7 @@ namespace AspNetCoreComponentLibrary
                         var clearcache = inter.GetMethod("ClearCache");
                         if (clearcache != null)
                         {
-                            clearcache.Invoke(t.GetValue(this), null);
+                            clearcache.Invoke(t.GetValue(this), new object[] { siteid });
                             break;
                         }
                     }/**/
@@ -206,9 +206,16 @@ namespace AspNetCoreComponentLibrary
             return Utils.ContentResult("ClearCache Ok");
         }
 
-        public HtmlString Localize(string key)
+        [NonAction]
+        public HtmlString LocalizeHtml(string key, params object[] args)
         {
-            return Localizer2Garin.Localize(key);
+            return Localizer2Garin.LocalizeHtml(key, args);
+        }
+
+        [NonAction]
+        public string Localize(string key, params object[] args)
+        {
+            return Localizer2Garin.Localize(key, args);
         }
 
     }

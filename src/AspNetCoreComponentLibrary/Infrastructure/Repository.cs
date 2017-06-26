@@ -42,10 +42,13 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        protected HtmlString Localize(string key)
+        protected HtmlString LocalizeHtml(string key, params object[] args)
         {
-            return Localizer2Garin.Localize(key);
-            //return new HtmlString(key);
+            return Localizer2Garin.LocalizeHtml(key, args);
+        }
+        protected string Localize(string key, params object[] args)
+        {
+            return Localizer2Garin.Localize(key, args);
         }
 
         public virtual IQueryable<T> StartQuery(long siteid)
@@ -196,9 +199,9 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        public virtual void ClearCache()
+        public virtual void ClearCache(long? siteid)
         {
-            Logger.LogTrace("Repository ClearCache {0}", this.GetType().FullName);
+            Logger.LogTrace("Repository ClearCache {0} for siteid={1}", this.GetType().FullName, siteid);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreComponentLibrary.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +12,6 @@ namespace AspNetCoreComponentLibrary
         /// Тип фильтра (допустимые значения: EnumHtmlType.Select, EnumHtmlType.Tree, EnumHtmlType.CheckBox, EnumHtmlType.Text)
         /// </summary>
         public EnumHtmlType HtmlType { get; set; }
-
-        /// <summary>
-        /// Ключ локализации для "placeholder".
-        /// </summary>
-        public string Placeholder { get; set; }
 
         /// <summary>
         /// Значение по умолчанию

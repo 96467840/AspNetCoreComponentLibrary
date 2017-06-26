@@ -27,7 +27,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
         void UnBlock(K id);
         void Remove(T item);
 
-        void ClearCache();
+        void ClearCache(long? siteid);
 
         // в репозитории без кеширования ничего тут не делают
         // надо перенести логику этих функций в Remove и AfterSave. Функции оставим тока сделаем их приватными

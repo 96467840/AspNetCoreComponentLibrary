@@ -28,18 +28,23 @@ namespace AspNetCoreComponentLibrary
         public ListVM(ControllerEditable<K, T, R> controller, ListIM<K, T, R> input) : base(controller)
         {
             Input = input;
-            var href = controller.Url.RouteUrlWithCulture("Page", new { page = "index.html" });
-            Breadcrumb.Items.Add(new MenuItem(href, controller.Localize("common.main")));
+            string href;
+            var title = controller.Localize("common.breadcrumb.main");
+            if (title != "")
+            {
+                href = controller.Url.RouteUrlWithCulture("Page", new { page = "index.html" });
+                Breadcrumb.Items.Add(new MenuItem(href, new HtmlString(title)));
+            }
 
             href = controller.Url.RouteUrlWithCulture("Admin", new { controller = "sites" });
-            Breadcrumb.Items.Add(new MenuItem(href, controller.Localize("common.admin")));
+            Breadcrumb.Items.Add(new MenuItem(href, controller.LocalizeHtml("common.breadcrumb.admin")));
 
             Breadcrumb.Items.Add(new MenuItem(null, GetH1()));
         }
 
         public HtmlString GetH1()
         {
-            return Controller.Localize(Controller.LocalizerPrefix + ".name");
+            return Controller.LocalizeHtml(Controller.LocalizerPrefix + ".name");
         }
 
         public Dictionary<string, List<string>> FilterValues => Input.Filter;
@@ -50,7 +55,7 @@ namespace AspNetCoreComponentLibrary
             (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
             i,
             FilterValues?.ContainsKey(i.Name) == true ? FilterValues[i.Name] : null,
-            Controller.LocalizerPrefix
+            Controller
         )).Where(i => i.Attribute != null);
     }
 
@@ -84,45 +89,6 @@ namespace AspNetCoreComponentLibrary
                 vm.Error = e;
             }
             return controller.View("Admin/List", vm);
-        }
-    }
-
-    // ----------------- Filters
-    public class FilterFieldVM
-    {
-        public FilterAttribute Attribute { get; set; }
-        public PropertyInfo Property { get; set; }
-        public List<string> Values { get; set; }
-        public string LocalizerPrefix { get; set; }
-        public ILocalizer2Garin Localizer { get; set; }
-
-        public List<string> NameKeys
-        {
-            get
-            {
-                var res = new List<string>();
-                if (!string.IsNullOrWhiteSpace(Attribute.Title)) res.Add(LocalizerPrefix + "." + Attribute.Title);
-                res.Add(LocalizerPrefix + ".field." + Property.Name + ".title");
-                res.Add("common.field." + Property.Name + ".title");
-                return res;
-            }
-        }
-
-        public List<string> PlaceholderKeys
-        {
-            get
-            {
-                var res = new List<string>();
-                if (!string.IsNullOrWhiteSpace(Attribute.Placeholder)) res.Add(LocalizerPrefix + "." + Attribute.Placeholder);
-                res.Add(LocalizerPrefix + ".field." + Property.Name + ".placeholder");
-                res.Add("common.field." + Property.Name + ".placeholder");
-                return res;
-            }
-        }
-
-        public FilterFieldVM(FilterAttribute attribute, PropertyInfo property, List<string> values, string localizerPrefix)
-        {
-            Attribute = attribute;Property = property;Values = values;LocalizerPrefix = localizerPrefix;
         }
     }
 

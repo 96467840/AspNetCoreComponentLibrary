@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 
-
 namespace AspNetCoreComponentLibrary
 {
     public static class Utils
@@ -38,6 +37,103 @@ namespace AspNetCoreComponentLibrary
         public static bool CheckDefault<K>(K item)
         {
             return EqualityComparer<K>.Default.Equals(item, default(K));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerPrefix"></param>
+        /// <param name="attributePrefix"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="type"></param>
+        /// <param name="anyProperty">например, common.field.any.regexpmessage</param>
+        /// <returns></returns>
+        public static List<string> GenLocalizeKeysList(string controllerPrefix, string attributePrefix, string propertyName, string type, bool anyProperty = false)
+        {
+            var keys = new List<string>();
+            if (!string.IsNullOrWhiteSpace(attributePrefix) && attributePrefix != "field")
+            {
+                keys.Add(controllerPrefix + "." + attributePrefix + "." + propertyName + "." + type);
+                keys.Add("common." + attributePrefix + "." + propertyName + "." + type);
+                if (anyProperty)
+                {
+                    keys.Add(controllerPrefix + "." + attributePrefix + ".any." + type);
+                    keys.Add("common." + attributePrefix + ".any." + type);
+                }
+            }
+            keys.Add(controllerPrefix + ".field." + propertyName + "." + type);
+            keys.Add("common.field." + propertyName + "." + type);
+            if (anyProperty)
+            {
+                keys.Add(controllerPrefix + ".field.any." + type);
+                keys.Add("common.field.any." + type);
+            }
+            return keys;
+        }
+
+        public static Form GetForm<FA>(this Type t, Controller2Garin controller) where FA : FieldBaseAttribute
+        {
+            var fields = new List<IField>();
+
+            foreach (var f in t.GetProperties()
+                .Select(i => new { Attribute = (FA)i.GetCustomAttribute(typeof(FA)), Property = i, }).Where(i => i.Attribute != null))
+            {
+                var title = controller.Localizer2Garin.Localize(GenLocalizeKeysList(controller.LocalizerPrefix, f.Attribute.LocalizePrefix , f.Property.Name, "title"));
+
+                var placeholder = controller.Localizer2Garin.Localize(GenLocalizeKeysList(controller.LocalizerPrefix, f.Attribute.LocalizePrefix, f.Property.Name, "placeholder"));
+
+                IField field = null;
+                Type[] typeArgs = { f.Property.PropertyType };
+                Type d1, ff;
+                switch (f.Attribute.HtmlType)
+                {
+                    case EnumHtmlType.Image:
+                        break;
+                    case EnumHtmlType.Images:
+                        break;
+                    case EnumHtmlType.File:
+                        break;
+                    case EnumHtmlType.Files:
+                        break;
+                    case EnumHtmlType.Select:
+                        d1 = typeof(FieldSelect<>);
+                        ff = d1.MakeGenericType(typeArgs);
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, title, placeholder, f.Attribute.HtmlType, f.Property.Name, f.Attribute.Priority, f.Attribute.Default });
+                        break;
+                    default:
+                        d1 = typeof(Field<>);
+                        ff = d1.MakeGenericType(typeArgs);
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, title, placeholder, f.Attribute.HtmlType, f.Attribute.NeedTranslate, f.Property.Name, f.Attribute.Priority, f.Attribute.Default });
+                        break;
+                }
+                if (field != null)
+                {
+                    field.Priority = f.Attribute.Priority;
+
+                    fields.Add(field);
+                }
+            }
+
+            return new Form(controller, fields);
+        }
+
+        /// <summary>
+        /// Получаем значение параметра с запроса. Также будет попытка получить значение с RouteData
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static List<string> GetRequestValue(this HttpRequest request, string name)
+        {
+            // get данные могут быть и в посте! надо определить очередность
+            if (request.Query.ContainsKey(name)) return request.Query[name].ToList();
+
+            // post
+            if (request.Method.EqualsIC("post") && request.Form.ContainsKey(name)) return request.Form[name].ToList();
+
+            // возможно нужные нам данные есть в пути, то есть в RouteData. Причем в RouteData всегда одиночное значение
+            var rd = request.HttpContext.GetRouteData();
+            if (rd.Values.ContainsKey(name)) return new List<string>() { rd.Values[name].ToString() };
+            return null;
         }
 
         public static bool EqualsIC(this string arg1, string arg2) {

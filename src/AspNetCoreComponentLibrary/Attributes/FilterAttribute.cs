@@ -13,15 +13,17 @@ namespace AspNetCoreComponentLibrary
     [AttributeUsage(AttributeTargets.Property)]
     public class FilterAttribute : FieldBaseAttribute
     {
+        public override string LocalizePrefix => "filter";
+
         /// <summary>
         /// Ключ локализации для лабела. Если не указано то будет использовано название поля.
         /// </summary>
-        public string Title { get; set; }
+        //public string Title { get; set; }
 
         /// <summary>
         /// Ключ локализации для "placeholder".
         /// </summary>
-        public string Placeholder { get; set; }
+        //public string Placeholder { get; set; }
 
         /// <summary>
         /// Тип сравнения. В основном для текстовых полей

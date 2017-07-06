@@ -20,5 +20,20 @@ namespace AspNetCoreComponentLibrary
 
             return lambda;//.Compile();
         }
+
+        /*public static T Convert<T>(this object source)
+        {
+            Expression convertExpr = Expression.Convert(
+                            Expression.Constant(source),
+                            typeof(T)
+                        );
+
+            return Expression.Lambda<Func<T>>(convertExpr).Compile()();
+        }*/
+
+        /*public static Expression<Func<T>> ggg<T>(Type t)
+        {
+            return Expression.c
+        }*/
     }
 }

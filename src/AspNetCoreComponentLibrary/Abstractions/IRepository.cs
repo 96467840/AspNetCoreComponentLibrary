@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
     {
         IQueryable<T> StartQuery(long siteid);
         IQueryable<T> GetUnblocked(long siteid);
-        IQueryable<T> GetFiltered(long siteid, Dictionary<string, List<string>> filter = null);
+        IQueryable<T> GetFiltered(long siteid, Form form);
 
         T this[K index] { get; }
 

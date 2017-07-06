@@ -1,22 +1,22 @@
-﻿@model IListVM
+﻿@model Form
 @{
-    var filters = Model.Filters;
-    if (!filters.Any()) { return; }
+    //var filters = Model.Filters;
+    //if (!filters.Any()) { return; }
 }
 
-@*@if (Model.FilterValues != null)
+@if (Model.Fields != null)
 {
-    foreach (var f in Model.FilterValues)
+    foreach (var f in Model.Fields)
     {
         <div>
-            @f.Key - @string.Join(", ", f.Value.Select(i => (string)i))
+            @f.PropertyName - @f.DebugValues
         </div>
     }
-}*@
-<form method="get" class="form-inline">
+}@**@
+@*<form method="get" class="form-inline">
     @foreach (var f in filters)
     {
         @Html.Partial("Admin/Filter/_Field", f)
     }
     <button type="submit" class="btn btn-default">@Localizer.LocalizeHtml("common.find")</button>
-</form>
+</form>*@

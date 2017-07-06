@@ -14,6 +14,22 @@ namespace AspNetCoreComponentLibrary
         public EnumHtmlType HtmlType { get; set; }
 
         /// <summary>
+        /// Префикс для локализации. Знаечние "field" указывать не надо.
+        /// Перевод будет искаться в следующем порядке:
+        /// 1. Controller.LocalizerPrefix + "." + LocalizePrefix + "." + Property.Name + ".title"
+        /// 2. "common" + "." + LocalizePrefix + "." + Property.Name + ".title"
+        /// 3. Controller.LocalizerPrefix + ".field." + Property.Name + ".title"
+        /// 4. "common.field." + Property.Name + ".title"
+        /// см Utils.GenLocalizeKeysList
+        /// </summary>
+        public virtual string LocalizePrefix => null;
+
+        /// <summary>
+        /// Поле с переводом
+        /// </summary>
+        public bool NeedTranslate { get; set; }
+
+        /// <summary>
         /// Значение по умолчанию
         /// </summary>
         public string Default { get; set; }

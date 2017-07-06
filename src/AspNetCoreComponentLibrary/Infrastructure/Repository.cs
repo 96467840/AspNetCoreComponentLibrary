@@ -1,5 +1,6 @@
 ﻿using AspNetCoreComponentLibrary.Abstractions;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
@@ -62,54 +63,45 @@ namespace AspNetCoreComponentLibrary
             return DbSet.AsNoTracking();
         }
 
-        public IQueryable<T> GetFiltered(long siteid, Dictionary<string, List<string>> filter = null)
+        public IQueryable<T> GetFiltered(long siteid, Form form)
         {
             //Logger.LogTrace("Repository GetFiltered for {0}. IWithSiteId = {1}", GetType().FullName, typeof(IWithSiteId).GetTypeInfo().IsAssignableFrom(typeof(T)));
             var query = StartQuery(siteid);
 
-            if (filter != null)
+            if (form != null)
             {
                 // пример работы с сущностями https://stackoverflow.com/questions/42485128/entity-framework-core-what-is-the-fastest-way-to-check-if-a-generic-entity-is-a
-                //var entityType = (StorageContext as DbContext).Model.FindEntityType(typeof(T));
-                //var primaryKey = entityType.FindPrimaryKey();
-                
-                var props = typeof(T).GetProperties();
-                foreach (var p in props)
-                {
-                    // не будем переводить имя фильтра в нижний регистр
-                    var nameLC = p.Name;//.ToLower();
-                    var attr = (FilterAttribute)p.GetCustomAttribute(typeof(FilterAttribute));
-                    if (attr != null && filter.ContainsKey(nameLC) && filter[nameLC].Any())
-                    {
-                        Logger.LogTrace("..... Filter {name} type: {type} ", nameLC, p.PropertyType.Name);
-                        try
-                        {
-                            //var prop = entityType.FindProperty(p.Name);
-                            switch (p.PropertyType.Name)
-                            {
-                                case "Boolean":
-                                    //case "bool":
-                                    var values = filter[nameLC].Where(i => !string.IsNullOrWhiteSpace(i)).Select(i => bool.Parse(i)).Distinct().ToList();
-                                    Logger.LogTrace("..... ==> Boolean filter for {name} args: {args} => {boolargs}", nameLC, string.Join(", ", filter[nameLC]), string.Join(", ", values.Select(i=>i.ToString())));
-                                    if (values.Count == 1) // другие случаи означают все варианты
-                                    {
-                                        // такой вариант не работает с БД (точнее выполняется на клиенте, а не на стороне БД)
-                                        // до кучи это решение в 10 раз медленнее!!!
-                                        //query = query.Where(i => (bool)p.GetValue(i, null) == values[0]);
-                                        query = query.Where(ExpressionHelper.ComparePropertyWithConst<T, bool>(p.Name, values[0]));//.AsQueryable();
 
-                                    }
-                                    break;
-                                case "":
-                                    break;
-                            }
-                        }
-                        catch (Exception e)
+                foreach (var field in form.Fields)
+                {
+                    var nameLC = field.PropertyName;
+
+                    {
                         {
-                            Logger.LogWarning("Couldn't apply filter {name} with arguments: {args}\n{exception}", nameLC, string.Join(", ", filter[nameLC]), e.ToString());
-                            // сделать бы перевод сообщения
-                            // эта ошибка может возникнуть только при ручном указании параметров
-                            //throw new Exception(string.Format(("Couldn't apply filter {name} with arguments: {args}"), attr.Title, string.Join(", ", filter[nameLC]) ));
+                            Logger.LogTrace("..... Filter {name} type: {type} ", nameLC, field.Type.Name);
+                            try
+                            {
+                                switch (field.Type.Name)
+                                {
+                                    case "Boolean":
+                                        var value = field.GetValues<bool>();
+                                        Logger.LogTrace("..... ==> Boolean filter for {name} args: {boolargs}", nameLC, value);
+                                        if (value != null && value.Count == 1) // другие случаи означают все варианты
+                                        {
+                                            query = query.Where(ExpressionHelper.ComparePropertyWithConst<T, bool>(nameLC, value[0]));
+                                        }
+                                        break;
+                                    case "":
+                                        break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.LogWarning("Couldn't apply filter {name} with arguments: {exception}", nameLC, e.ToString());
+                                // сделать бы перевод сообщения
+                                // эта ошибка может возникнуть только при ручном указании параметров
+                                //throw new Exception(string.Format(("Couldn't apply filter {name} with arguments: {args}"), attr.Title, string.Join(", ", filter[nameLC]) ));
+                            }
                         }
                     }
                 }

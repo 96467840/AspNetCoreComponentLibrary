@@ -11,20 +11,21 @@ namespace AspNetCoreComponentLibrary
 {
 
     // ---------------- View Model
-    public interface IListVM: IAdminVM
+    public interface IListVM : IAdminVM
     {
         HtmlString GetH1();
         List<IBaseDM> Items { get; }
-        Dictionary<string, List<string>> FilterValues { get; }
+        //Dictionary<string, List<string>> FilterValues { get; }
         Type Type { get; }
-        IEnumerable<FilterFieldVM> Filters{ get; }
+        //IEnumerable<FilterFieldVM> Filters{ get; }
+        Form Form { get; }
     }
 
     public class ListVM<K, T, R> : AdminVM, IListVM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T> /*where K : struct*/
     {
         public ListIM<K, T, R> Input { get; set; }
         public List<IBaseDM> Items { get; set; }
-
+        
         public ListVM(ControllerEditable<K, T, R> controller, ListIM<K, T, R> input) : base(controller)
         {
             Input = input;
@@ -40,6 +41,7 @@ namespace AspNetCoreComponentLibrary
             Breadcrumb.Items.Add(new MenuItem(href, controller.LocalizeHtml("common.breadcrumb.admin")));
 
             Breadcrumb.Items.Add(new MenuItem(null, GetH1()));
+
         }
 
         public HtmlString GetH1()
@@ -47,23 +49,37 @@ namespace AspNetCoreComponentLibrary
             return Controller.LocalizeHtml(Controller.LocalizerPrefix + ".name");
         }
 
-        public Dictionary<string, List<string>> FilterValues => Input.Filter;
-
         public Type Type => typeof(T);
 
-        public IEnumerable<FilterFieldVM> Filters => Type.GetProperties().Select(i => new FilterFieldVM(
-            (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
-            i,
-            FilterValues?.ContainsKey(i.Name) == true ? FilterValues[i.Name] : null,
-            Controller
-        )).Where(i => i.Attribute != null);
+        //public Dictionary<string, List<string>> FilterValues => Input.Filter;
+
+        //public IEnumerable<FilterFieldVM> Filters => Type.GetProperties().Select(i => new FilterFieldVM(
+        //    (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
+        //    i,
+        //    FilterValues?.ContainsKey(i.Name) == true ? FilterValues[i.Name] : null,
+        //    Controller
+        //)).Where(i => i.Attribute != null);
+
+        private Form _form;
+        public Form Form
+        {
+            get
+            {
+                if (_form == null)
+                {
+                    _form = typeof(T).GetForm<FilterAttribute>(Controller);//new Form(Controller, typeof(T), "filter");
+                    _form.Load(Controller.SiteLanguages);
+                }
+                return _form;
+            }
+        }
     }
 
     // ---------------- Input Model
     public class ListIM<K, T, R> : BaseIM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T>/* where K : struct*/
     {
         public int? Offset { get; set; }
-        public Dictionary<string, List<string>> Filter { get; set; }
+        //public Dictionary<string, List<string>> Filter { get; set; }
 
         public virtual IActionResult ToActionResult(ControllerEditable<K, T, R> controller)
         {
@@ -81,13 +97,14 @@ namespace AspNetCoreComponentLibrary
                 else
                 {
                     using (new BLog(controller.LoggerMEF, "ListIM::ToActionResult", GetType().FullName))
-                        vm.Items = controller.Repository.GetFiltered(controller.Site.Id, Filter).Select(i => (IBaseDM)i).ToList();
+                        vm.Items = controller.Repository.GetFiltered(controller.Site.Id, vm.Form).Select(i => (IBaseDM)i).ToList();
                 }
             }
             catch (Exception e)
             {
                 vm.Error = e;
             }
+            var tmp = vm.Form;
             return controller.View("Admin/List", vm);
         }
     }

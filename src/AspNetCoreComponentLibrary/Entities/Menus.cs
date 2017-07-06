@@ -5,8 +5,8 @@ using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    [EntitySettings(LocalizerPrefix="menus")]
-    public partial class Menus : BaseDM<long>, IBlockable, ISortable, IWithSiteId
+    [EntitySettings(LocalizerPrefix = "menus")]
+    public partial class Menus : BaseDM<long>, IBlockable, ISortable, IWithSiteId, IWithPage
     {
         public Menus()
         {
@@ -20,17 +20,17 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectKeyName = "Id", SelectValueName ="Name")]
+        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectKeyName = "Id", SelectValueName = "Name")]
         [Field(HtmlType = EnumHtmlType.Tree, SelectKeyName = "Id", SelectValueName = "Name")]
         public long? ParentId { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text)]
         public string Page { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string MenuName { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string Name { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text)]
@@ -51,19 +51,19 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.CheckBox)]
         public bool ShowInMenu { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.TextArea)]
+        [Field(HtmlType = EnumHtmlType.TextArea, NeedTranslate = true)]
         public string ShortContent { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.TextArea)]
+        [Field(HtmlType = EnumHtmlType.TextArea, NeedTranslate = true)]
         public string Content { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string SeoTitle { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string SeoKeywords { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string SeoDescription { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text)]
@@ -100,7 +100,7 @@ namespace AspNetCoreComponentLibrary
 
         public string Search { get; set; }
 
-        [Field(HtmlType = EnumHtmlType.Text)]
+        [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string Description { get; set; }
 
         [Field(HtmlType = EnumHtmlType.CheckBox)]

@@ -6,7 +6,7 @@ using System.Text;
 namespace AspNetCoreComponentLibrary
 {
     [EntitySettings(LocalizerPrefix = "news")]
-    public partial class News : BaseDM<long>, IBlockable, IWithSiteId
+    public partial class News : BaseDM<long>, IBlockable, IWithSiteId, IWithPage
     {
         [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }

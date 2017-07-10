@@ -7,13 +7,20 @@
 
 <h1>@Model.GetH1()</h1>
 
+@if (Model.Error != null)
+{
+    @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM("<pre>" + Model.Error.ToString() + "</pre>") });
+}
 @Html.Partial("Admin/Filter/_Filter", Model.Form)
 
-@foreach (var i in Model.Items)
+@if (Model.Items != null)
 {
+    foreach (var i in Model.Items)
+    {
     <div>
         @i.ToJson()
     </div>
+    }
 }
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 

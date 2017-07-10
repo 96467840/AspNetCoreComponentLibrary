@@ -16,6 +16,7 @@ namespace AspNetCoreComponentLibrary
 
     public abstract class BaseDM<K> : IBaseDM
     {
+        [OrderBy(Priority = int.MaxValue)]
         public K Id { get; set; }
 
         public bool IsBlockable

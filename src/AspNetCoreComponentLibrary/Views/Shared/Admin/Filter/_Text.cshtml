@@ -1,6 +1,10 @@
-﻿@model FilterFieldVM
-
+﻿@model IField
+@{ 
+    var Values = Model.GetValueAsString();
+    var Default = Model.GetDefaultAsString();
+    var value = Values.Any() ? Values[0] : (Default.Any() ? Default[0] : "");
+}
 <div class="form-group">
-    <label for="filter-@Model.Property.Name">@Localizer.Localize(Model.NameKeys)</label>
-    <input placeholder="@Localizer.Localize(Model.PlaceholderKeys)" value="@(Model.Values?.Any()==true?Model.Values[0]:Model.Attribute.Default)" type="text" name="filter.@Model.Property.Name" class="form-control" id="filter-@Model.Property.Name" />
+    <label for="filter-@Model.PropertyName">@Model.Title</label>
+    <input placeholder="@Model.Placeholder" value="@(value)" type="text" name="@Model.PropertyName" class="form-control" id="filter-@Model.PropertyName" />
 </div>

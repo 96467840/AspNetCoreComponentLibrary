@@ -14,12 +14,13 @@ namespace AspNetCoreComponentLibrary.Abstractions
     public interface IStorage
     {
         T GetRepository<T>(EnumDB db, bool enableCache = true) where T : IRepositorySetStorageContext;
+        IGetOptions GetOptionsRepository(Type type, EnumDB db, bool enableCache = true);
 
         IStorageContext GetContextForSite(long siteid);
 
         void ConnectToSiteDB(long siteid);
 
-        void Save();
+        void Save(EnumDB db);
 
         void UpdateDBs();
     }

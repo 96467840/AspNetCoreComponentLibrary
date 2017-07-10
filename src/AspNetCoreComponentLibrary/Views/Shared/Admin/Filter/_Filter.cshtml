@@ -9,14 +9,15 @@
     foreach (var f in Model.Fields)
     {
         <div>
-            @f.PropertyName - @f.DebugValues
+            @f.PropertyName - @string.Join(", ", f.GetValueAsString())
         </div>
     }
 }@**@
-@*<form method="get" class="form-inline">
-    @foreach (var f in filters)
+
+<form method="get" class="form-inline">
+    @foreach (var f in Model.Fields)
     {
         @Html.Partial("Admin/Filter/_Field", f)
     }
     <button type="submit" class="btn btn-default">@Localizer.LocalizeHtml("common.find")</button>
-</form>*@
+</form>

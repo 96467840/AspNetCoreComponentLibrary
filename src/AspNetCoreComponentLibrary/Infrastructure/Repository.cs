@@ -7,12 +7,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
 namespace AspNetCoreComponentLibrary
 {
-    public abstract class Repository<K, T> : IRepository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
+    public abstract class Repository<K, T> : IGetOptions, IRepository<K, T> /*where K : struct/*, IComparable<K>*/ where T : BaseDM<K>
     {
         protected DbSet<T> DbSet { get; set; }
 
@@ -43,6 +44,79 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
+        #region Translates
+
+        protected virtual string TranslatesTable => "Translates";
+
+        /// <summary>
+        /// В теории переписав эту функцию в потомках можно отменить перевод.
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <param name="siteLanguages"></param>
+        /// <returns></returns>
+        protected virtual bool NeedTranslate(Languages lang, List<Languages> siteLanguages)
+        {
+            if (lang == null || lang.IsDefault) return false;
+            if (siteLanguages == null || !siteLanguages.Any()) return false;
+            return true;
+        }
+
+        public void TranslateItem(long siteid, Languages lang, List<Languages> siteLanguages, T item) //ref T item
+        {
+            if (!NeedTranslate(lang, siteLanguages)) return;
+        }
+
+        public void TranslateList(long siteid, Languages lang, List<Languages> siteLanguages, List<T> items) //ref T item
+        {
+            if (!NeedTranslate(lang, siteLanguages)) return;
+        }
+        #endregion
+
+        private List<OptionVM> GetTreeOptions(IQueryable<T> query, PropertyInfo propValue, PropertyInfo propTitle, PropertyInfo propParent, object parent, string SelectTreePrefix, string prefix="")
+        {
+            var res = new List<OptionVM>();
+            var subquery = query.Where(ExpressionHelper.ComparePropertyWithConst<T>(propParent.Name, propParent.PropertyType, parent, Expression.Equal));
+            foreach (var val in subquery)
+            {
+                // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
+                var value = propValue.GetValue(val, null).ToString();
+                var title = propTitle.GetValue(val, null).ToString();
+                res.Add(new OptionVM(value, title, parent?.ToString()));
+            }
+            return res;
+        }
+
+        public List<OptionVM> GetOptions(long siteid, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked)
+        {
+            //if (string.IsNullOrWhiteSpace(SelectValueName)) return null;
+            if (string.IsNullOrWhiteSpace(SelectTitleName)) throw new ArgumentNullException(SelectTitleName);
+            var propValue = typeof(T).GetProperty(SelectValueName ?? "Id");
+            var propTitle = typeof(T).GetProperty(SelectTitleName);
+            if (propValue == null) throw new Exception("Cannot find entitiy properties " + SelectValueName ?? "Id");
+            if (propTitle == null) throw new Exception("Cannot find entitiy properties " + SelectTitleName);
+
+            var query = SelectOnlyUnblocked ? GetUnblocked(siteid) : StartQuery(siteid);
+            query = query.SetDefaultOrder();
+
+            if (!string.IsNullOrWhiteSpace(SelectParentName))
+            {
+                var propParent = typeof(T).GetProperty(SelectParentName);
+                if (propParent == null) throw new Exception("Cannot find entitiy properties " + SelectParentName);
+                return GetTreeOptions(query, propValue, propTitle, propParent, null, SelectTreePrefix);
+            }
+
+            var res = new List<OptionVM>();
+            foreach (var val in query)
+            {
+                // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
+                var value = propValue.GetValue(val, null).ToString();
+                var title = propTitle.GetValue(val, null).ToString();
+                res.Add(new OptionVM(value, title, null));
+            }
+            //TranslateList()
+            return res;
+        }
+
         protected HtmlString LocalizeHtml(string key, params object[] args)
         {
             return Localizer2Garin.LocalizeHtml(key, args);
@@ -70,40 +144,19 @@ namespace AspNetCoreComponentLibrary
 
             if (form != null)
             {
-                // пример работы с сущностями https://stackoverflow.com/questions/42485128/entity-framework-core-what-is-the-fastest-way-to-check-if-a-generic-entity-is-a
-
                 foreach (var field in form.Fields)
                 {
                     var nameLC = field.PropertyName;
 
-                    {
-                        {
-                            Logger.LogTrace("..... Filter {name} type: {type} ", nameLC, field.Type.Name);
-                            try
-                            {
-                                switch (field.Type.Name)
-                                {
-                                    case "Boolean":
-                                        var value = field.GetValues<bool>();
-                                        Logger.LogTrace("..... ==> Boolean filter for {name} args: {boolargs}", nameLC, value);
-                                        if (value != null && value.Count == 1) // другие случаи означают все варианты
-                                        {
-                                            query = query.Where(ExpressionHelper.ComparePropertyWithConst<T, bool>(nameLC, value[0]));
-                                        }
-                                        break;
-                                    case "":
-                                        break;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.LogWarning("Couldn't apply filter {name} with arguments: {exception}", nameLC, e.ToString());
-                                // сделать бы перевод сообщения
-                                // эта ошибка может возникнуть только при ручном указании параметров
-                                //throw new Exception(string.Format(("Couldn't apply filter {name} with arguments: {args}"), attr.Title, string.Join(", ", filter[nameLC]) ));
-                            }
-                        }
-                    }
+                    Logger.LogTrace("..... Filter {name} type: {type} ", nameLC, field.Type.Name);
+
+                    var property = typeof(T).GetProperty(field.PropertyName);
+                    if (property == null || property.PropertyType != field.Type) continue;
+                    
+                    var values = field.GetValueAsObject();
+                    if (values == null || !values.Any()) continue;
+                    
+                    query = query.Where(ExpressionHelper.ComparePropertyWithConstArray<T>(nameLC, field.Type, values, field.Compare.GetCompareExpression()));
                 }
             }
             return query;
@@ -195,6 +248,5 @@ namespace AspNetCoreComponentLibrary
         {
             Logger.LogTrace("Repository ClearCache {0} for siteid={1}", this.GetType().FullName, siteid);
         }
-
     }
 }

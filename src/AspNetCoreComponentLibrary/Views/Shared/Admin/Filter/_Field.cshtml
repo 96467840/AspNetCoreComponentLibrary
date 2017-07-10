@@ -1,17 +1,18 @@
-﻿@model FilterFieldVM
+﻿@model IField
 
-@switch (Model.Attribute.HtmlType)
+@switch (Model.HtmlType)
 {
     case EnumHtmlType.CheckBox:
         @Html.Partial("Admin/Filter/_CheckBox", Model);
         break;
     case EnumHtmlType.Select:
+    case EnumHtmlType.Tree:
         @Html.Partial("Admin/Filter/_Select", Model);
         break;
     case EnumHtmlType.Text:
         @Html.Partial("Admin/Filter/_Text", Model);
         break;
     default:
-        @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM(Localizer.LocalizeHtml("common.filter.unsupported.type", Model.Attribute.HtmlType)) });
+        @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM(Localizer.LocalizeHtml("common.filter.unsupported.type", Model.HtmlType)) });
         break;
 }

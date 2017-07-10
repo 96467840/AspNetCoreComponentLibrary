@@ -29,9 +29,9 @@ namespace AspNetCoreComponentLibrary
         {
             var Logger = controller.LoggerFactory.CreateLogger(this.GetType().FullName);
 
-            if (Page == "404") return controller.NotFound(controller.Localize("common.404"));
+            if (Page == "404") return controller.NotFound(controller.Localizer2Garin.Localize("common.404"));
 
-            //var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
+            var LoggerMEF = controller.LoggerFactory.CreateLogger(Utils.MEFNameSpace);
             var vm = new PageVM(controller) { Input = this };
             try
             {
@@ -52,7 +52,7 @@ namespace AspNetCoreComponentLibrary
                 {
                     site.Name = "New name 2 " + DateTime.Now;
                     sites.Save(site);
-                    storage.Save();
+                    storage.Save(EnumDB.UserSites);
 
                     sites.AfterSave(site, false);
                 }
@@ -63,6 +63,11 @@ namespace AspNetCoreComponentLibrary
                 }
                 GC.Collect();
                 Logger.LogInformation("Memory used after full collection:   {0:N0}", GC.GetTotalMemory(true));
+
+                using (new BLog(LoggerMEF, "Load Languages", GetType().FullName))
+                {
+                    var tmp = controller.Languages.StartQuery(1).Where(i => i.Name.StartsWith("r")).ToList();
+                }
             }
             catch (Exception e)
             {

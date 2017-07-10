@@ -1,9 +1,15 @@
-﻿@model FilterFieldVM
-
+﻿@model IField
+@{ 
+    var options = Model.GetOptions();
+    if (options.Count <= 1)
+    {
+        return;
+    }
+}
 <div class="form-group">
-    <label for="filter-@Model.Property.Name">@Model.Property.Name</label>
-    <select name="filter.@Model.Property.Name" class="form-control" id="filter-@Model.Property.Name">
-        @foreach (var option in Model.SelectOptions)
+    <label for="filter-@Model.PropertyName">@Model.Title</label>
+    <select name="@Model.PropertyName" class="form-control" id="filter-@Model.PropertyName">
+        @foreach (var option in options)
         {
             <!option @option.Selected value="@option.Value">@option.Title</!option>
         }

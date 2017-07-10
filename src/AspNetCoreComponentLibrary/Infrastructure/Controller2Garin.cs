@@ -206,7 +206,7 @@ namespace AspNetCoreComponentLibrary
             return Utils.ContentResult("ClearCache Ok");
         }
 
-        [NonAction]
+        /*[NonAction]
         public HtmlString LocalizeHtml(string key, params object[] args)
         {
             return Localizer2Garin.LocalizeHtml(key, args);
@@ -216,7 +216,6 @@ namespace AspNetCoreComponentLibrary
         public string Localize(string key, params object[] args)
         {
             return Localizer2Garin.Localize(key, args);
-        }
-
+        }/**/
     }
 }

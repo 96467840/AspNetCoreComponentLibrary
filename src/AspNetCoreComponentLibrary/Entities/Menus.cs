@@ -20,23 +20,25 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectKeyName = "Id", SelectValueName = "Name")]
-        [Field(HtmlType = EnumHtmlType.Tree, SelectKeyName = "Id", SelectValueName = "Name")]
+        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectValueName = "Id", SelectTitleName = "MenuName", SelectParentName ="ParentId")]
+        [Field(HtmlType = EnumHtmlType.Tree, SelectValueName = "Id", SelectTitleName = "Name")]
         public long? ParentId { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text)]
         public string Page { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
+        [OrderBy(Priority = 20)]
         public string MenuName { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text, NeedTranslate = true)]
         public string Name { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Text)]
+        [OrderBy(Priority = 10)]
         public int Priority { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.CheckBox)]
+        [Filter(HtmlType = EnumHtmlType.Select/*, SelectValuesJson = "[{Value:'',TitleKey:'common.all'},{Value:'True',TitleKey:'common.yes'},{Value:'False',TitleKey:'common.no'}]"*/)]
         public bool IsBlocked { get; set; }
 
         [Field(HtmlType = EnumHtmlType.CheckBox)]
@@ -48,8 +50,9 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.CheckBox)]
         public bool ShowInBottom { get; set; }
 
+        [Filter(HtmlType = EnumHtmlType.Select)]
         [Field(HtmlType = EnumHtmlType.CheckBox)]
-        public bool ShowInMenu { get; set; }
+        public bool? ShowInMenu { get; set; }
 
         [Field(HtmlType = EnumHtmlType.TextArea, NeedTranslate = true)]
         public string ShortContent { get; set; }

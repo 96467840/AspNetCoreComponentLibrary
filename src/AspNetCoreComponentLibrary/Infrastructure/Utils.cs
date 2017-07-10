@@ -25,6 +25,7 @@ using System.Text.Unicode;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 
 namespace AspNetCoreComponentLibrary
 {
@@ -32,14 +33,53 @@ namespace AspNetCoreComponentLibrary
     {
         public static string MEFNameSpace = "Microsoft.EntityFrameworkCore.Our";
 
+        //https://stackoverflow.com/questions/374651/how-to-check-if-an-object-is-nullable
+        public static bool IsNullable<T>(this T obj)
+        {
+            if (obj == null) return true; // obvious
+            Type type = typeof(T);
+            // from stackoverflow
+            //if (!type.IsValueType) return true; // ref-type
+            if (!type.GetTypeInfo().IsValueType) return true; // ref-type
+            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+            return false; // value-type
+        }
+
+        public static IQueryable<T> SetDefaultOrder<T>(this IQueryable<T> query)
+        {
+            var t = typeof(T);
+
+            var isPriorityOrderBy = false;
+            int count = 0;
+            foreach (var f in t.GetProperties()
+                .Select(i => new { Attribute = (OrderByAttribute)i.GetCustomAttribute(typeof(OrderByAttribute)), Property = i, })
+                .Where(i => i.Attribute != null)
+                .OrderBy(i=>i.Attribute.Priority))
+            {
+                query = query.OrderBy(f.Property.Name, !f.Attribute.Desc, count == 0);
+                if (f.Property.Name == "Priority") isPriorityOrderBy = true;
+                count++;
+            }
+
+            if (!isPriorityOrderBy)
+                if (t.IsImplementsInterface(typeof(ISortable)))
+                {
+                    query = count==0 ? query.OrderBy(i => ((ISortable)i).Priority): ((IOrderedQueryable<T>)query).ThenBy(i => ((ISortable)i).Priority);
+                    count++;
+                }
+
+            return query;
+        }
+
         // see here http://stackoverflow.com/questions/1895761/test-for-equality-to-the-default-value
         // проверка на значение по умолчанию
         public static bool CheckDefault<K>(K item)
         {
             return EqualityComparer<K>.Default.Equals(item, default(K));
         }
+
         /// <summary>
-        /// 
+        /// Генерим ключи для локализации поля
         /// </summary>
         /// <param name="controllerPrefix"></param>
         /// <param name="attributePrefix"></param>
@@ -77,9 +117,8 @@ namespace AspNetCoreComponentLibrary
             foreach (var f in t.GetProperties()
                 .Select(i => new { Attribute = (FA)i.GetCustomAttribute(typeof(FA)), Property = i, }).Where(i => i.Attribute != null))
             {
-                var title = controller.Localizer2Garin.Localize(GenLocalizeKeysList(controller.LocalizerPrefix, f.Attribute.LocalizePrefix , f.Property.Name, "title"));
-
-                var placeholder = controller.Localizer2Garin.Localize(GenLocalizeKeysList(controller.LocalizerPrefix, f.Attribute.LocalizePrefix, f.Property.Name, "placeholder"));
+                // вызов конструктора женериков
+                // https://docs.microsoft.com/ru-ru/dotnet/framework/reflection-and-codedom/how-to-examine-and-instantiate-generic-types-with-reflection
 
                 IField field = null;
                 Type[] typeArgs = { f.Property.PropertyType };
@@ -87,33 +126,58 @@ namespace AspNetCoreComponentLibrary
                 switch (f.Attribute.HtmlType)
                 {
                     case EnumHtmlType.Image:
-                        break;
                     case EnumHtmlType.Images:
-                        break;
                     case EnumHtmlType.File:
-                        break;
                     case EnumHtmlType.Files:
                         break;
+
                     case EnumHtmlType.Select:
+                    case EnumHtmlType.Tree:
                         d1 = typeof(FieldSelect<>);
                         ff = d1.MakeGenericType(typeArgs);
-                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, title, placeholder, f.Attribute.HtmlType, f.Property.Name, f.Attribute.Priority, f.Attribute.Default });
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Attribute, f.Property.Name });
                         break;
+
                     default:
                         d1 = typeof(Field<>);
                         ff = d1.MakeGenericType(typeArgs);
-                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, title, placeholder, f.Attribute.HtmlType, f.Attribute.NeedTranslate, f.Property.Name, f.Attribute.Priority, f.Attribute.Default });
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Attribute, f.Property.Name });
                         break;
                 }
                 if (field != null)
                 {
-                    field.Priority = f.Attribute.Priority;
-
                     fields.Add(field);
                 }
             }
 
             return new Form(controller, fields);
+        }
+
+        /// <summary>
+        /// Форматируем значение поля в строку
+        /// </summary>
+        /// <param name="type">Тип значения. Он необходим когда source==null</param>
+        /// <param name="source">NB! Mожет быть null!</param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static string ToStringVM(this Type type, object source, string format=null)
+        {
+            var typeOfNullable = Nullable.GetUnderlyingType(type);
+            if (source == null)
+            {
+                if (typeOfNullable != null)
+                {
+                    return "null";
+                }
+                return null; // здесь без разницы null или "". на вьюхе все равно будет пустая строка.
+            }
+            if (source.GetType().Name == "DateTime")
+            {
+                // https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+                var _format = format ?? "yyyy-MM-dd HH:mm:ss";
+                return ((DateTime)source).ToString(_format);
+            }
+            return source.ToString();
         }
 
         /// <summary>
@@ -191,6 +255,8 @@ namespace AspNetCoreComponentLibrary
             services.AddScoped<ILocalizer2Garin, Localizer2Garin>();
 
             services.AddTransient<IControllerSettings, ControllerSettings>();
+
+            services.AddTransient<IRnd, Rnd>();
         }
 
         /*public static HtmlEncoder _enc;
@@ -226,6 +292,10 @@ namespace AspNetCoreComponentLibrary
         public static bool IsImplementsInterface(this Type T, Type I)
         {
             return I.GetTypeInfo().IsAssignableFrom(T);
+        }
+        public static bool IsImplementsInterface<I>(this Type T)
+        {
+            return typeof(I).GetTypeInfo().IsAssignableFrom(T);
         }
 
         public static string ToJson(this object obj)

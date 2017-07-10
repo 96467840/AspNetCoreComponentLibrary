@@ -314,9 +314,15 @@
 
 <!--Общие поля для всех сущностей-->
 <data name="common.field.Name.title" xml:space="preserve"><value>Название</value></data>
-<data name="common.field.IsBlocked.title" xml:space="preserve"><value>Заблокировать</value></data>
+<data name="common.field.IsBlocked.title" xml:space="preserve"><value>Заблокировано</value></data>
+
 <!--Общие значения полей -->
 <data name="common.field.any.regexpmessage" xml:space="preserve"><value>Поле содержит недопустимые символы или записано не по формату</value></data>
+
+<data name="common.field.any.bool_all" xml:space="preserve"><value>Все</value></data>
+<data name="common.field.any.bool_undefined" xml:space="preserve"><value>Не установлено</value></data>
+<data name="common.field.any.bool_true" xml:space="preserve"><value>Да</value></data>
+<data name="common.field.any.bool_false" xml:space="preserve"><value>Нет</value></data>
 
   <!-- 
     ===================================

@@ -26,8 +26,9 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.CheckBox)]
         public bool IsDefault { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Select, SelectValuesJson = "[{key='',name='common.all'},{key='true',name='common.yes'},{key='false',name='common.no'}]")]
+        [Filter(HtmlType = EnumHtmlType.Select, SelectValuesJson = "[{Value:'',TitleKey:'common.all'},{Value:'True',TitleKey:'common.yes'},{Value:'False',TitleKey:'common.no'}]")]
         [Field(HtmlType = EnumHtmlType.CheckBox)]
+        [OrderBy(Desc=true, Priority = 20)]
         public bool IsBlocked { get; set; }
 
         [Field(HtmlType = EnumHtmlType.Json)]

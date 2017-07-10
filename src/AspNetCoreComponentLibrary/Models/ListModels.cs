@@ -30,7 +30,7 @@ namespace AspNetCoreComponentLibrary
         {
             Input = input;
             string href;
-            var title = controller.Localize("common.breadcrumb.main");
+            var title = controller.Localizer2Garin.Localize("common.breadcrumb.main");
             if (title != "")
             {
                 href = controller.Url.RouteUrlWithCulture("Page", new { page = "index.html" });
@@ -38,7 +38,7 @@ namespace AspNetCoreComponentLibrary
             }
 
             href = controller.Url.RouteUrlWithCulture("Admin", new { controller = "sites" });
-            Breadcrumb.Items.Add(new MenuItem(href, controller.LocalizeHtml("common.breadcrumb.admin")));
+            Breadcrumb.Items.Add(new MenuItem(href, controller.Localizer2Garin.LocalizeHtml("common.breadcrumb.admin")));
 
             Breadcrumb.Items.Add(new MenuItem(null, GetH1()));
 
@@ -46,7 +46,7 @@ namespace AspNetCoreComponentLibrary
 
         public HtmlString GetH1()
         {
-            return Controller.LocalizeHtml(Controller.LocalizerPrefix + ".name");
+            return Controller.Localizer2Garin.LocalizeHtml(Controller.LocalizerPrefix + ".name");
         }
 
         public Type Type => typeof(T);

@@ -11,6 +11,7 @@ namespace AspNetCoreComponentLibrary
         int Next(int minValue, int maxValue);
         double NextDouble(double minValue, double maxValue);
         float NextFloat(float minValue, float maxValue);
+        string RandomString(int len);
     }
 
     public class Rnd : IRnd

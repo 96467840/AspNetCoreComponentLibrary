@@ -78,7 +78,7 @@ namespace AspNetCoreComponentLibrary
                         Sites.Save(site); // БД для тока что созданного сайта будет создана автоматически после сохранения сайта
                         Users.Save(user);
 
-                        Storage.Save();
+                        Storage.Save(EnumDB.UserSites);
 
                         Users.AfterSave(user, true);
                         Sites.AfterSave(site, true);

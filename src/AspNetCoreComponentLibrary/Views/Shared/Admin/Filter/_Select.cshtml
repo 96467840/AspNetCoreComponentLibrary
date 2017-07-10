@@ -11,7 +11,7 @@
     <select name="@Model.PropertyName" class="form-control" id="filter-@Model.PropertyName">
         @foreach (var option in options)
         {
-            <!option @option.Selected value="@option.Value">@option.Title</!option>
+            <!option @option.Selected value="@option.Value">@Html.Raw(option.Title)</!option>
         }
     </select>
 </div>

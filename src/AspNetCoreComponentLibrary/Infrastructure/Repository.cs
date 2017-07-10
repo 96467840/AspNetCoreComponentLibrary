@@ -72,18 +72,22 @@ namespace AspNetCoreComponentLibrary
         }
         #endregion
 
-        private List<OptionVM> GetTreeOptions(IQueryable<T> query, PropertyInfo propValue, PropertyInfo propTitle, PropertyInfo propParent, object parent, string SelectTreePrefix, string prefix="")
+        private void GetTreeOptions(List<OptionVM> res, IQueryable<T> query, PropertyInfo propValue, PropertyInfo propTitle, PropertyInfo propParent, object parent, string SelectTreePrefix, string prefix="")
         {
-            var res = new List<OptionVM>();
+            if (res == null) return; // на всякий пожарный
+            //var res = new List<OptionVM>();
             var subquery = query.Where(ExpressionHelper.ComparePropertyWithConst<T>(propParent.Name, propParent.PropertyType, parent, Expression.Equal));
             foreach (var val in subquery)
             {
                 // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
-                var value = propValue.GetValue(val, null).ToString();
-                var title = propTitle.GetValue(val, null).ToString();
-                res.Add(new OptionVM(value, title, parent?.ToString()));
+                var value = propValue.GetValue(val, null);//.ToString();
+                if (value == null) return; // на всякий пожарный. если такое случится то будет рекурсия.
+                var title = propTitle.GetValue(val, null);
+                var title_str = title == null ? "-" : title.ToString();
+                res.Add(new OptionVM(value.ToString(), prefix + title_str, parent?.ToString()));
+                GetTreeOptions(res, query, propValue, propTitle, propParent, value, SelectTreePrefix, prefix + string.Format(SelectTreePrefix, title_str));
             }
-            return res;
+            //return res;
         }
 
         public List<OptionVM> GetOptions(long siteid, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked)
@@ -98,20 +102,23 @@ namespace AspNetCoreComponentLibrary
             var query = SelectOnlyUnblocked ? GetUnblocked(siteid) : StartQuery(siteid);
             query = query.SetDefaultOrder();
 
+            var res = new List<OptionVM>();
+
             if (!string.IsNullOrWhiteSpace(SelectParentName))
             {
                 var propParent = typeof(T).GetProperty(SelectParentName);
                 if (propParent == null) throw new Exception("Cannot find entitiy properties " + SelectParentName);
-                return GetTreeOptions(query, propValue, propTitle, propParent, null, SelectTreePrefix);
+                GetTreeOptions(res, query, propValue, propTitle, propParent, null, SelectTreePrefix);
+                return res;
             }
 
-            var res = new List<OptionVM>();
             foreach (var val in query)
             {
                 // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
-                var value = propValue.GetValue(val, null).ToString();
-                var title = propTitle.GetValue(val, null).ToString();
-                res.Add(new OptionVM(value, title, null));
+                // может быть null!!!
+                var value = propValue.PropertyType.ToStringVM(propValue.GetValue(val, null));
+                var title = propTitle.GetValue(val, null);//.ToString();
+                res.Add(new OptionVM(value, title == null ? "-" : title.ToString(), null));
             }
             //TranslateList()
             return res;

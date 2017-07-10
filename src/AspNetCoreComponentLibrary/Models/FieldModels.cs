@@ -337,19 +337,19 @@ namespace AspNetCoreComponentLibrary
                 {
                     _options = new List<OptionVM>();
 
-                    title = "bool_all";// Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_all", true));
+                    title = /*"bool_all";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_all", true));
                     _options.Add(new OptionVM("", title, null));
 
                     if (typeOfNullable != null && (typeOfNullable.Name.EqualsIC("bool") || typeOfNullable.Name.EqualsIC("boolean")))
                     {
-                        title = "bool_undefined";// Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_undefined", true));
+                        title = /*"bool_undefined";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_undefined", true));
                         _options.Add(new OptionVM("null", title, null));
                     }
 
-                    title = "bool_true";// Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_true", true));
+                    title = /*"bool_true";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_true", true));
                     _options.Add(new OptionVM("True", title, null));
 
-                    title = "bool_false";// Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_false", true));
+                    title = /*"bool_false";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_false", true));
                     _options.Add(new OptionVM("False", title, null));
                 }
             }

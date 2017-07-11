@@ -53,11 +53,14 @@ namespace AspNetCoreComponentLibrary
                 if (routeValues.ContainsKey("path")) // етсь путь значит к нему
                 {
                     var p = (string)routeValues["path"];
-                    if (!p.EndsWith(".html"))
+                    if (p != null)
                     {
-                        if (p.EndsWith("/"))
-                            p = p.TrimEnd(new[] { '/' });
-                        routeValues["path"] = p + ".html";
+                        if (!p.EndsWith(".html"))
+                        {
+                            if (p.EndsWith("/"))
+                                p = p.TrimEnd(new[] { '/' });
+                            routeValues["path"] = p + ".html";
+                        }
                     }
                 }
                 else // к самой странице

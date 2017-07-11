@@ -25,7 +25,8 @@ namespace AspNetCoreComponentLibrary
                         // очень важный момент!
                         .AsNoTracking()
                         .ToList()
-                        .GroupBy(i => ((IWithSiteId)i).SiteId).ToDictionary(i => i.Key, i => i.ToDictionary(j => j.Id, j => j));
+                        .GroupBy(i => ((IWithSiteId)i).SiteId)
+                        .ToDictionary(i => i.Key, i => i.AsQueryable().SetDefaultOrder().ToDictionary(j => j.Id, j => j));
                 }
                 else
                 {
@@ -34,6 +35,7 @@ namespace AspNetCoreComponentLibrary
                             0, DbSet
                             // очень важный момент!
                             .AsNoTracking()
+                            .SetDefaultOrder()
                             .ToDictionary(i => i.Id, i => i)
                         }
                     };
@@ -101,12 +103,15 @@ namespace AspNetCoreComponentLibrary
         // вот за что не навижу ормы. если мы попытаемся вызвать Save с объектом из кеша, 
         // и у нас произойдет ошибка (причем именно при ошибке), то он сцуко связи втянет в кеш
         // чтобы это предотвратить объект надо клонировать или как-то убрать связи (убрать связи нельзя, так как генерируется код с этими связями)
-        public override void Save(T item)
+        // да епрст. при клонировании мы теряем всю инфу об автоматических полях, в частности автоинкремент
+        public override T Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
 
+            // нельзя клонировать при клонировании мы теряем всю инфу об автоматических полях, в частности автоинкремент
+            // теперь клонировать можно все внутри нашей функции
             var clone = item.CloneJson();
-            if (!BeforeSave(clone)) return;
+            if (!BeforeSave(clone)) return clone;
             var isnew = Utils.CheckDefault(clone.Id);
             if (!isnew)
             {
@@ -116,6 +121,9 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(clone);
             }
+            (StorageContext as DbContext).SaveChanges();
+            AfterSave(clone, isnew);
+            return clone;
         }
 
         public override void AfterSave(T item, bool isnew)
@@ -127,20 +135,23 @@ namespace AspNetCoreComponentLibrary
 
         public override void Remove(T item)
         {
-            RemoveFromCache(item.Id);
+            var id = item.Id;
             DbSet.Remove(item);
+            (StorageContext as DbContext).SaveChanges();
+            RemoveFromCache(id);
         }
 
-        protected override void SetBlock(K id, bool value)
+        /*protected override void SetBlock(K id, bool value)
         {
             if (typeof(T).IsImplementsInterface(typeof(IBlockable)))
             {
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
-                DbSet.Update(item);
+                //DbSet.Update(item);
+                Save(item);
             }
-        }
+        }*/
 
         /// <summary>
         /// Чистим кеш. Если указан конкретный сайт, то кеш для него будет ПЕРЕЗАГРУЖЕН заново.
@@ -159,6 +170,7 @@ namespace AspNetCoreComponentLibrary
                         // очень важный момент!
                         .AsNoTracking()
                         .Where(i => ((IWithSiteId)i).SiteId == siteid.Value)
+                        .SetDefaultOrder()
                         .ToDictionary(j => j.Id, j => j);
                     }
                     else
@@ -173,7 +185,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        protected void RemoveFromCache(K index)
+        public override void RemoveFromCache(K index)
         {
             CheckColl();
             try
@@ -189,7 +201,7 @@ namespace AspNetCoreComponentLibrary
         {
         }/**/
 
-        protected void AddToCache(K index)
+        public override void AddToCache(K index)
         {
             CheckColl();
 

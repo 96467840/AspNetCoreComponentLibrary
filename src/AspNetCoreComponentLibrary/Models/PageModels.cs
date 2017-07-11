@@ -52,9 +52,9 @@ namespace AspNetCoreComponentLibrary
                 {
                     site.Name = "New name 2 " + DateTime.Now;
                     sites.Save(site);
-                    storage.Save(EnumDB.UserSites);
+                    //storage.Save(EnumDB.UserSites);
 
-                    sites.AfterSave(site, false);
+                    //sites.AfterSave(site, false);
                 }
                 //vm.Sites = rep.StartQuery().Where(i => i.Id < 30).ToList();
                 //using (new BLog(LoggerMEF, "Load sites", GetType().FullName))

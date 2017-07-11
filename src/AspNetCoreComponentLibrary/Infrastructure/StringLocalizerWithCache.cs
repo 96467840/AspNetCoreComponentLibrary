@@ -11,18 +11,19 @@ namespace AspNetCoreComponentLibrary
     public class StringLocalizerWithCache //: IStringLocalizer
     {
         private static Dictionary<string, StringLocalizerWithCache> cache = new Dictionary<string, StringLocalizerWithCache>();
+
         private Dictionary<string, string> _cache;
         //public string this[string name] => Localize(name);
 
         public string this[string name, params object[] arguments] => Localize(name, arguments);
 
-        public static StringLocalizerWithCache Get(IStringLocalizer source, string culture)
+        public static StringLocalizerWithCache Get(IStringLocalizer source, string key)
         {
-            if (!cache.ContainsKey(culture))
+            if (!cache.ContainsKey(key))
             {
-                cache[culture] = new StringLocalizerWithCache(source);
+                cache[key] = new StringLocalizerWithCache(source);
             }
-            return cache[culture];
+            return cache[key];
         }
 
         private StringLocalizerWithCache(IStringLocalizer source)

@@ -20,7 +20,8 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         void ConnectToSiteDB(long siteid);
 
-        void Save(EnumDB db);
+        // тепеь каждая сущность сохраняет себя сама сразу
+        //void Save(EnumDB db);
 
         void UpdateDBs();
     }

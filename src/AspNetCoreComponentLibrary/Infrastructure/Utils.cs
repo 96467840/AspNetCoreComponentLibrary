@@ -310,7 +310,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         //public static IStringLocalizer LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
-        public static StringLocalizerWithCache LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
+        public static StringLocalizerWithCache LoadCulture(this IStringLocalizer localizer, string culture, bool fromLib, ILogger logger)
         {
             try
             {
@@ -325,7 +325,7 @@ namespace AspNetCoreComponentLibrary
                     logger.LogTrace("LoadCulture for {0} strings:\n{1}", localizer.GetType().FullName, str);
                 }
                 return l;*/
-                return StringLocalizerWithCache.Get(l, culture);
+                return StringLocalizerWithCache.Get(l, culture + "." + (fromLib ? "lib" : "contr"));
             }
             catch (Exception e)
             {
@@ -359,7 +359,7 @@ namespace AspNetCoreComponentLibrary
         }
 
         // проверяем урл возврата чтобы не было левых урлов тока наши домены и поддомены 
-        public static bool CheckBackUrl(ISiteRepository sites, string backurl)
+        public static bool CheckBackUrl(this ISiteRepository sites, string backurl)
         {
             // пустая строка или нул считается неправильной (чтобы не проверять дополнительно на верхнем уровне и пойти по альтернативной ветке)
             if (string.IsNullOrWhiteSpace(backurl)) return false;

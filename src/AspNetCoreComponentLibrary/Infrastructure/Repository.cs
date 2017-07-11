@@ -100,7 +100,8 @@ namespace AspNetCoreComponentLibrary
             if (propTitle == null) throw new Exception("Cannot find entitiy properties " + SelectTitleName);
 
             var query = SelectOnlyUnblocked ? GetUnblocked(siteid) : StartQuery(siteid);
-            query = query.SetDefaultOrder();
+            // установим сортировку по умолчанию на загрузку в кеш!
+            //query = query.SetDefaultOrder();
 
             var res = new List<OptionVM>();
             //return res;
@@ -124,14 +125,14 @@ namespace AspNetCoreComponentLibrary
             return res;
         }
 
-        protected HtmlString LocalizeHtml(string key, params object[] args)
+        /*protected HtmlString LocalizeHtml(string key, params object[] args)
         {
             return Localizer2Garin.LocalizeHtml(key, args);
         }
         protected string Localize(string key, params object[] args)
         {
             return Localizer2Garin.Localize(key, args);
-        }
+        }*/
 
         public virtual IQueryable<T> StartQuery(long siteid)
         {
@@ -180,11 +181,11 @@ namespace AspNetCoreComponentLibrary
             return query;
         }
 
-        public virtual void Save(T item)
+        public virtual T Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
 
-            if (!BeforeSave(item)) return;
+            if (!BeforeSave(item)) return item;
 
             var isnew = Utils.CheckDefault(item.Id);
 
@@ -196,6 +197,9 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(item);
             }
+            (StorageContext as DbContext).SaveChanges();
+            AfterSave(item, isnew);
+            return item;
         }
 
         public virtual bool BeforeSave(T item)
@@ -212,6 +216,7 @@ namespace AspNetCoreComponentLibrary
         public virtual void Remove(T item)
         {
             DbSet.Remove(item);
+            (StorageContext as DbContext).SaveChanges();
         }
 
         protected virtual void SetBlock(K id, bool value)
@@ -222,15 +227,16 @@ namespace AspNetCoreComponentLibrary
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
-                DbSet.Update(item);
+                //DbSet.Update(item);
+                Save(item);
             }
         }
 
         public void Block(K id) { SetBlock(id, true); }
         public void UnBlock(K id) { SetBlock(id, false); }
 
-        //public virtual void AddToCache(K id) { }
-        //public virtual void RemoveFromCache(K id) { }
+        public virtual void AddToCache(K id) { }
+        public virtual void RemoveFromCache(K id) { }
 
         public virtual T this[K index]
         {

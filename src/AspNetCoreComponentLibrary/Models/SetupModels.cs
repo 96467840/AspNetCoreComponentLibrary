@@ -53,7 +53,7 @@ namespace AspNetCoreComponentLibrary
 
             if (Sites.StartQuery(0).Any())
             {
-                return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
+                return new RedirectResult(Sites.CheckBackUrl(Back) ? Back : controller.Url.RouteUrl("Page"));
             }
 
             var vm = new SetupVM() { Input = this };
@@ -63,6 +63,7 @@ namespace AspNetCoreComponentLibrary
                 {
                     Logger.LogInformation("Input valid");
                     var Users = Storage.GetRepository<IUserRepository>(EnumDB.UserSites);
+                    var UserSites = Storage.GetRepository<IUserSiteRepository>(EnumDB.UserSites);
 
                     try
                     {
@@ -70,20 +71,23 @@ namespace AspNetCoreComponentLibrary
                         var site = new Sites() { Name = Site, Hosts = Host.ToLower(), IsVisible = true };
                         var user = new Users() { Email = Email.ToLower(), Password = Utils.CryptPassword(Password) };
 
-                        var us = new UserSites() { User = user, Site = site, IsAdmin = true };
+                        //var us = new UserSites() { User = user, Site = site, IsAdmin = true };
 
-                        site.UserSites.Add(us);
-                        user.UserSites.Add(us);
+                        //site.UserSites.Add(us);
+                        //user.UserSites.Add(us);
 
-                        Sites.Save(site); // БД для тока что созданного сайта будет создана автоматически после сохранения сайта
-                        Users.Save(user);
+                        site = Sites.Save(site); // БД для тока что созданного сайта будет создана автоматически после сохранения сайта
+                        user = Users.Save(user);
 
-                        Storage.Save(EnumDB.UserSites);
+                        var us = new UserSites() { UserId = user.Id, SiteId = site.Id, IsAdmin = true };
+                        UserSites.Save(us);
+                        Users.RemoveFromCache(user.Id);
+                        //Storage.Save(EnumDB.UserSites);
 
-                        Users.AfterSave(user, true);
-                        Sites.AfterSave(site, true);
+                        //Users.AfterSave(user, true);
+                        //Sites.AfterSave(site, true);
 
-                        return new RedirectResult(Utils.CheckBackUrl(Sites, Back) ? Back : controller.Url.RouteUrl("Page"));
+                        return new RedirectResult(Sites.CheckBackUrl(Back) ? Back : controller.Url.RouteUrl("Page"));
                     }
                     catch (DbUpdateException ex)
                     {

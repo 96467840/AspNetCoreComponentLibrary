@@ -50,7 +50,7 @@ namespace AspNetCoreComponentLibrary
             if (item == null) throw new ArgumentNullException();
             
             DbSet.Add(item);
-
+            (StorageContext as DbContext).SaveChanges();
         }/**/
 
         public virtual void Remove(T item)
@@ -58,18 +58,21 @@ namespace AspNetCoreComponentLibrary
             //var item = this[id];
             //if (item == null) return;
             DbSet.Remove(item);
+            (StorageContext as DbContext).SaveChanges();
         }
 
         public void Save(List<T> items)
         {
             if (items == null || !items.Any()) return;
             DbSet.AddRange(items);
+            (StorageContext as DbContext).SaveChanges();
         }
 
         public void Remove(List<T> items)
         {
             if (items == null || !items.Any()) return;
             DbSet.RemoveRange(items);
+            (StorageContext as DbContext).SaveChanges();
         }
     }
 }

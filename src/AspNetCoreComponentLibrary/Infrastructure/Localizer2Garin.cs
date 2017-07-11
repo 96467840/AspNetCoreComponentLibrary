@@ -57,18 +57,18 @@ namespace AspNetCoreComponentLibrary
                 // установка дефолтного локализатора из библиотеки
                 if (LibraryCultures.Contains(DefaultCulture))
                 {
-                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultCulture, Logger);
+                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultCulture, true, Logger);
                 }
                 else
                 {
-                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultLibraryCulture, Logger);
+                    LocalizerDefault = LocalizerOriginal.LoadCulture(DefaultLibraryCulture, true, Logger);
                 }
             }
 
             if (LocalizerControllerOriginal != null)
             {
                 Logger.LogTrace("------------LocalizerControllerDefault LoadCulture");
-                LocalizerControllerDefault = LocalizerControllerOriginal.LoadCulture(DefaultCulture, Logger);
+                LocalizerControllerDefault = LocalizerControllerOriginal.LoadCulture(DefaultCulture, false, Logger);
             }
         }
 
@@ -311,13 +311,13 @@ namespace AspNetCoreComponentLibrary
             if (LocalizerControllerOriginal != null)
             {
                 Logger.LogTrace("===================== LocalizerController LoadCulture");
-                LC = LocalizerControllerOriginal.LoadCulture(culture, Logger);
+                LC = LocalizerControllerOriginal.LoadCulture(culture, false, Logger);
             }
 
             if (LocalizerOriginal != null)
             {
                 Logger.LogTrace("===================== Localizer LoadCulture");
-                L = LocalizerOriginal.LoadCulture(culture, Logger);
+                L = LocalizerOriginal.LoadCulture(culture, true, Logger);
             }
             // один из локализаторов должен существовать
             if (L != null || LC != null)

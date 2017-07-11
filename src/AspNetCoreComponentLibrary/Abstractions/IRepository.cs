@@ -25,10 +25,12 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         T this[K index] { get; }
 
-        void Save(T item);
+        T Save(T item);
+
         // так как завершение транзакции выносим наружу, но этот метод оставим в интерфейсе чтобы вызывать его снаружи
-        void AfterSave(T item, bool isnew);
-        bool BeforeSave(T item);
+        // теперь все внутри Save
+        //void AfterSave(T item, bool isnew);
+        //bool BeforeSave(T item);
         void Block(K id);
         void UnBlock(K id);
         void Remove(T item);
@@ -40,7 +42,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 
         // в репозитории без кеширования ничего тут не делают
         // надо перенести логику этих функций в Remove и AfterSave. Функции оставим тока сделаем их приватными
-        //void RemoveFromCache(K id);
+        void RemoveFromCache(K id);
         //void AddToCache(K index); // всегда превытаскиваем сущность из БД
     }
 

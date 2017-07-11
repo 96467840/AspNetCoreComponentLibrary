@@ -31,8 +31,10 @@ namespace AspNetCoreComponentLibrary
 
         public override void Remove(T item)
         {
-            RemoveFromCache(item.Id);
+            var id = item.Id;
             DbSet.Remove(item);
+            (StorageContext as DbContext).SaveChanges();
+            RemoveFromCache(id);
         }
 
         public override void AfterSave(T item, bool isnew)
@@ -42,14 +44,14 @@ namespace AspNetCoreComponentLibrary
             AddToCache(item.Id);
         }/**/
 
-        public override void Save(T item)
+        public override T Save(T item)
         {
             if (item == null) throw new ArgumentNullException();
 
             var clone = item.CloneJson();
 
-            if (!BeforeSave(clone)) return;
-            var isnew = !Utils.CheckDefault(clone.Id);
+            if (!BeforeSave(item)) return item;
+            var isnew = Utils.CheckDefault(clone.Id);
 
             if (!isnew)
             {
@@ -59,6 +61,9 @@ namespace AspNetCoreComponentLibrary
             {
                 DbSet.Add(clone);
             }
+            (StorageContext as DbContext).SaveChanges();
+            AfterSave(clone, isnew);
+            return clone;
         }
 
         protected override void SetBlock(K id, bool value)
@@ -69,7 +74,8 @@ namespace AspNetCoreComponentLibrary
                 T item = (T)Activator.CreateInstance(typeof(T));
                 item.Id = id;
                 ((IBlockable)item).IsBlocked = value;
-                DbSet.Update(item);
+                //DbSet.Update(item);
+                Save(item);
             }
         }
 
@@ -90,7 +96,7 @@ namespace AspNetCoreComponentLibrary
             }
         }
 
-        private void RemoveFromCache(K index)
+        public override void RemoveFromCache(K index)
         {
             try
             {
@@ -103,7 +109,7 @@ namespace AspNetCoreComponentLibrary
         {
         }/**/
 
-        protected void AddToCache(K index)
+        public override void AddToCache(K index)
         {
             // item ни в коем случае нельзя помещать в кеш (трэкинг включен после сохранения)
             var newitem = GetSingleFromDB(index);

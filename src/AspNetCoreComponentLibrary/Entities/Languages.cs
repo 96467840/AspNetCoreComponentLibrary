@@ -36,17 +36,18 @@ namespace AspNetCoreComponentLibrary
 
         public string ExternalId { get; set; }
 
-        public string Localize(string key)
+        public string Localize(string key, params object[] args)
         {
-            if (Strings.ContainsKey(key)) return Strings[key];
+            if (Strings.ContainsKey(key)) return (args == null) ? Strings[key] : string.Format(Strings[key], args);
+
             return key;
         }
 
-        public string this[string key]
+        public string this[string key, params object[] args]
         {
             get
             {
-                return Localize(key);
+                return Localize(key, args);
             }
         }
 

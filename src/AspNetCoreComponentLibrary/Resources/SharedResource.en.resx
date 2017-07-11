@@ -276,7 +276,7 @@
 
 <data name="common.error.pwd.chars" xml:space="preserve"><value><![CDATA[Field contains invalid characters. Allowed to enter only english letters, digits and special characters: !@#$%^&*()-_=+'"?,.|:;/{}][№`~<>\]]></value></data>
 
-<data name="common.error.len" xml:space="preserve"><value>The string has a length of {len}. Maximum allowed: {maxlen}.</value></data>
+<data name="common.error.len" xml:space="preserve"><value>The string has a length of {0}. Maximum allowed: {1}.</value></data>
 
 <data name="common.error.len.lang" xml:space="preserve"><value>The string (language: {lang}) has a length of {len}. Maximum allowed: {maxlen}.</value></data>
 

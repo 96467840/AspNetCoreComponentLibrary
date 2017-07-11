@@ -10,8 +10,8 @@ namespace AspNetCoreComponentLibrary
     {
     }
 
-    //public class MenuRepositoryProto : RepositoryWithCache<long, Menus>//, IMenuRepository
-    public class MenuRepositoryProto : Repository<long, Menus>//, IMenuRepository
+    public class MenuRepositoryProto : RepositoryWithCache<long, Menus>//, IMenuRepository
+    //public class MenuRepositoryProto : Repository<long, Menus>//, IMenuRepository
     {
     }
 

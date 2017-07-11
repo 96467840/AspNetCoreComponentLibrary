@@ -24,6 +24,9 @@
 }
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 
+<div class="alert alert-info">
+    @Localizer.Localize("common.error.len", 100, 50)
+</div>
 @* -------------------------------------------------------------------------------------------- *@
 @section left
 {

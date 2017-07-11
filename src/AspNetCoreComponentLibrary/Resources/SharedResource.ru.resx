@@ -276,7 +276,7 @@
 
 <data name="common.error.pwd.chars" xml:space="preserve"><value><![CDATA[Поле содержит недопустимые символы. Разрешено вводить только английские буквы, цифры и спецсимволы: !@#$%^&*()-_=+'"?,.|:;/{}][№`~<>\]]></value></data>
 
-<data name="common.error.len" xml:space="preserve"><value>Строка имеет длину {len}. Максимально разрешено: {maxlen}.</value></data>
+<data name="common.error.len" xml:space="preserve"><value>Строка имеет длину {0}. Максимально разрешено: {1}.</value></data>
 
 <data name="common.error.len.lang" xml:space="preserve"><value>Строка (язык: {lang}) имеет длину {len}. Максимально разрешено: {maxlen}.</value></data>
 

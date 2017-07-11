@@ -20,7 +20,7 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectValueName = "Id", SelectTitleName = "MenuName", SelectParentName ="ParentId", SelectTreePrefix ="{0} &raquo; ")]
+        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectValueName = "Id", SelectTitleName = "MenuName", SelectParentName ="ParentId", SelectTreePrefix = "&nbsp;&raquo;&nbsp;")]
         [Field(HtmlType = EnumHtmlType.Tree, SelectValueName = "Id", SelectTitleName = "Name")]
         public long? ParentId { get; set; }
 

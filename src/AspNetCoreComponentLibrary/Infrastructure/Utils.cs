@@ -309,7 +309,8 @@ namespace AspNetCoreComponentLibrary
             return str;
         }
 
-        public static IStringLocalizer LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
+        //public static IStringLocalizer LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
+        public static StringLocalizerWithCache LoadCulture(this IStringLocalizer localizer, string culture, ILogger logger)
         {
             try
             {
@@ -318,12 +319,13 @@ namespace AspNetCoreComponentLibrary
                 // проверим культуру
                 // если такой кульутры нет, то в этом месте будет эксепшен (при вызове GetAllStrings). 
                 // причем как я понял это единственный способ узнать есть ли такая культура в ресурсах или нет
-                var str = string.Join("\n", l.GetAllStrings().Select(i => i.Name + "->" + i.Value).Take(2).ToList());
+                /*var str = string.Join("\n", l.GetAllStrings().Select(i => i.Name + "->" + i.Value).Take(2).ToList());
                 if (logger != null)
                 {
                     logger.LogTrace("LoadCulture for {0} strings:\n{1}", localizer.GetType().FullName, str);
                 }
-                return l;
+                return l;*/
+                return StringLocalizerWithCache.Get(l, culture);
             }
             catch (Exception e)
             {

@@ -103,7 +103,7 @@ namespace AspNetCoreComponentLibrary
             query = query.SetDefaultOrder();
 
             var res = new List<OptionVM>();
-
+            //return res;
             if (!string.IsNullOrWhiteSpace(SelectParentName))
             {
                 var propParent = typeof(T).GetProperty(SelectParentName);

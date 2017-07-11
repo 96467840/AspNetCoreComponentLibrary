@@ -21,12 +21,13 @@ namespace AspNetCoreComponentLibrary
         public CultureException(string message, System.Exception inner) : base(message, inner) { }
     }
 
+    /// <summary>
+    /// Класс локализатора. Один на каждый запрос (services.AddScoped<ILocalizer2Garin, Localizer2Garin>();)
+    /// </summary>
     public class Localizer2Garin: ILocalizer2Garin
     {
         private readonly ILoggerFactory LoggerFactory;
         private readonly IStringLocalizerFactory LocalizerFactory;
-        private IStringLocalizer Localizer;
-        public string DefaultCulture { get; set; }
         private readonly ILogger Logger;
 
 
@@ -41,10 +42,12 @@ namespace AspNetCoreComponentLibrary
             var type = typeof(SharedResource);
 
             LocalizerOriginal = LocalizerFactory.Create(type);
-            Localizer = LocalizerOriginal;
+            //Localizer = LocalizerOriginal;
+            //try { Localizer = StringLocalizerWithCache.Get(LocalizerOriginal, "k1"); } catch { }
 
             LocalizerControllerOriginal = localizer;
-            LocalizerController = LocalizerControllerOriginal;
+            //LocalizerController = LocalizerControllerOriginal;
+            //try { LocalizerController = StringLocalizerWithCache.Get(LocalizerControllerOriginal, "k2"); } catch { }
 
             if (string.IsNullOrWhiteSpace(DefaultCulture)) DefaultCulture = DefaultLibraryCulture;
 
@@ -71,40 +74,42 @@ namespace AspNetCoreComponentLibrary
 
         #region Localize
 
-        //public readonly IStringLocalizerFactory LocalizerFactory;
-
-        /// <summary>
-        /// Язык по умолчанию для админки и системных сообщений. Загружается из конфига.
-        /// </summary>
-        //protected string DefaultCulture { get; set; }
-
         // языки определенные в этой либе (в будущем переделать на рефлексию)
         private List<string> LibraryCultures = new List<string>() { "en", "ru" };
         private string DefaultLibraryCulture { get { return "en"; } }
 
         /// <summary>
+        /// Язык по умолчанию для админки и системных сообщений. Загружается из конфига.
+        /// </summary>
+        public string DefaultCulture { get; set; }
+
+        /// <summary>
         /// локализатор из сборки библиотеки
         /// </summary>
-        //public IStringLocalizer Localizer;
+        private StringLocalizerWithCache Localizer;
         private readonly IStringLocalizer LocalizerOriginal;
+        
         /// <summary>
         /// локализатор из сборки где определен контроллер
         /// </summary>
-        public IStringLocalizer LocalizerController;
+        public StringLocalizerWithCache LocalizerController;
         private readonly IStringLocalizer LocalizerControllerOriginal;
+        
         /// <summary>
         /// локализатор из сборки библиотеки (с культурой по умолчанию)
         /// </summary>
-        public readonly IStringLocalizer LocalizerDefault;
+        public readonly StringLocalizerWithCache LocalizerDefault;
+        
         /// <summary>
         /// локализатор из сборки где определен контроллер (с культурой по умолчанию)
         /// </summary>
-        public readonly IStringLocalizer LocalizerControllerDefault;
+        public readonly StringLocalizerWithCache LocalizerControllerDefault;
 
         /// <summary>
         /// Текущий язык. Может быть нулом, только если у сайта нет языков.
         /// </summary>
         public Languages Language { get; set; }
+        
         /// <summary>
         /// Язык с урла. Нулл если язык в урле не определен.
         /// </summary>
@@ -226,33 +231,36 @@ namespace AspNetCoreComponentLibrary
         {
             foreach(var k in keys)
             {
-                var res = _Localize(k);
-                if (res != k) return new HtmlString(string.Format(res, args));
+                var res = _Localize(k, args);
+                if (res != k) return new HtmlString(res);
             }
             return null;
         }
 
         public HtmlString LocalizeHtml(string key, params object[] args)
         {
-            return new HtmlString(string.Format(_Localize(key), args));
+            return new HtmlString(_Localize(key, args));
         }
 
         public string Localize(List<string> keys, params object[] args)
         {
             foreach (var k in keys)
             {
-                var res = _Localize(k);
-                if (res != k) return string.Format(res, args);
+                //var res = _Localize(k);
+                //if (res != k) return string.Format(res, args);
+                var res = _Localize(k, args);
+                if (res != k) return res;
             }
             return null;
         }
 
         public string Localize(string key, params object[] args)
         {
-            return string.Format(_Localize(key), args);
+            //return string.Format(_Localize(key), args);
+            return _Localize(key, args);
         }
 
-        private string _Localize(string key)
+        private string _Localize(string key, params object[] args)
         {
             //Logger.LogTrace("Controller2Garin::LocalizeHtml {0}", key);
             if (string.IsNullOrWhiteSpace(key)) return string.Empty;
@@ -261,30 +269,30 @@ namespace AspNetCoreComponentLibrary
 
             if (Language != null)
             {
-                res = Language[key];
+                res = Language[key, args];
                 //Logger.LogTrace("------------- Controller2Garin::Language {0}->[{1}]", key, res);
             }
 
             // пробуем загрузить строку из сборки с контролерами
             if (res == key && LocalizerController != null)
             {
-                res = LocalizerController[key];
+                res = LocalizerController[key, args];
                 //Logger.LogTrace("------------- Controller2Garin::LocalizerController {0}->[{1}]", key, res);
             }
             if (res == key && Localizer != null) // нет такой строки
             {
-                res = Localizer[key];
+                res = Localizer[key, args];
                 //Logger.LogTrace("------------- Controller2Garin::Localizer {0}->[{1}]", key, res);
             }
 
             if (res == key && LocalizerControllerDefault != null)
             {
-                res = LocalizerControllerDefault[key];
+                res = LocalizerControllerDefault[key, args];
                 //Logger.LogTrace("------------- Controller2Garin::LocalizerControllerDefault {0}->[{1}]", key, res);
             }
             if (res == key && LocalizerDefault != null)
             {
-                res = LocalizerDefault[key];
+                res = LocalizerDefault[key, args];
                 //Logger.LogTrace("------------- Controller2Garin::LocalizerDefault {0}->[{1}]", key, res);
             }
 
@@ -299,7 +307,7 @@ namespace AspNetCoreComponentLibrary
         /// <returns></returns>
         private bool TrySetCulture(string culture)
         {
-            IStringLocalizer LC = null, L = null;
+            StringLocalizerWithCache LC = null, L = null;
             if (LocalizerControllerOriginal != null)
             {
                 Logger.LogTrace("===================== LocalizerController LoadCulture");

@@ -9,6 +9,9 @@ namespace AspNetCoreComponentLibrary
 {
     public static class ExpressionHelper
     {
+        public static Expression NullString => Expression.Constant(null, typeof(string));
+        public static Expression NullObject => Expression.Constant(null, typeof(object));
+
         public static Expression<Func<T, bool>> ComparePropertyWithConst<T, PropertyT>(string propertyName, PropertyT value)
         {
             var param = Expression.Parameter(typeof(T), "x");
@@ -59,6 +62,39 @@ namespace AspNetCoreComponentLibrary
             var lambda = Expression.Lambda<Func<T, bool>>(body, param);
 
             return lambda;//.Compile();
+        }
+
+        public static Expression<Func<T, OptionVM>> SelectOptionVM<T>(PropertyInfo propValue, PropertyInfo propTitle, PropertyInfo propParent)
+        {
+            var param = Expression.Parameter(typeof(T), "x");
+
+            // id не может быть нулом!!!
+            var _idExpr = Expression.MakeMemberAccess(param, propValue);
+            //var idExpr = Expression.Call(_idExpr, propValue.PropertyType.GetMethod("ToString", new Type[] { }));
+            var idExprObj = Expression.Convert(_idExpr, typeof(object));
+
+            // а title у нас может быть не строкой?
+            var titleExpr = Expression.Convert(Expression.MakeMemberAccess(param, propTitle), typeof(string));
+
+            // а на первом уровне парент будет нулл.
+            // если так сделать будут не очень хорошие запросы в БД
+            /*Expression parentExpr = propParent == null ?
+                NullString :
+                Expression.Condition(
+                    Expression.Equal(Expression.MakeMemberAccess(param, propParent), Expression.Constant(null, propParent.PropertyType)),
+                    NullString,
+                    Expression.Call(Expression.MakeMemberAccess(param, propParent), propParent.PropertyType.GetMethod("ToString", new Type[] { }))
+                );*/
+
+            var parentExpr = propParent == null ?
+                NullObject :
+                Expression.Convert(Expression.MakeMemberAccess(param, propParent), typeof(object));
+
+            var ctor = typeof(OptionVM).GetConstructor(new Type[] { typeof(object), typeof(string), typeof(object) });
+            var body = Expression.New(ctor, idExprObj, titleExpr, parentExpr);
+
+            var lambda = Expression.Lambda<Func<T, OptionVM>>(body, param);
+            return lambda;
         }
 
         public static Func<Expression, Expression, Expression> GetCompareExpression(this EnumFilterCompare compare)

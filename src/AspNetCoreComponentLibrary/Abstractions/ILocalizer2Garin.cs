@@ -17,6 +17,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
         //IStringLocalizer Localizer { get; set; }
 
         string DefaultCulture { get; set; }
+        Languages Language { get; }
 
         HtmlString LocalizeHtml(string key, params object[] args);
         HtmlString LocalizeHtml(List<string> keys, params object[] args);

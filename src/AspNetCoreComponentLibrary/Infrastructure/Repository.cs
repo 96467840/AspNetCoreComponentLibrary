@@ -70,29 +70,29 @@ namespace AspNetCoreComponentLibrary
         {
             if (!NeedTranslate(lang, siteLanguages)) return;
         }
+        public void TranslateOptionsVM(long siteid, Languages lang, List<Languages> siteLanguages, List<OptionVM> items, string SelectTitleName) //ref T item
+        {
+            if (!NeedTranslate(lang, siteLanguages)) return;
+        }
         #endregion
 
-        private void GetTreeOptions(List<OptionVM> res, IQueryable<T> query, PropertyInfo propValue, PropertyInfo propTitle, PropertyInfo propParent, object parent, string SelectTreePrefix, string prefix="")
+        private void MakeTree(List<OptionVM> res, List<OptionVM> source, string parent, string SelectTreePrefix, string prefix = "", int deep = 0)
         {
-            if (res == null) return; // на всякий пожарный
-            //var res = new List<OptionVM>();
-            var subquery = query.Where(ExpressionHelper.ComparePropertyWithConst<T>(propParent.Name, propParent.PropertyType, parent, Expression.Equal));
-            foreach (var val in subquery)
+            //if (res == null) return; // на всякий пожарный
+            if (deep > 10) throw new Exception("Recursion");
+
+            foreach (var val in source.Where(i => i.Parent == parent))
             {
-                // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
-                var value = propValue.GetValue(val, null);//.ToString();
-                if (value == null) return; // на всякий пожарный. если такое случится то будет рекурсия.
-                var title = propTitle.GetValue(val, null);
-                var title_str = title == null ? "-" : title.ToString();
-                res.Add(new OptionVM(value.ToString(), prefix + title_str, parent?.ToString()));
-                GetTreeOptions(res, query, propValue, propTitle, propParent, value, SelectTreePrefix, prefix + string.Format(SelectTreePrefix, title_str));
+                if (val.Value == null) throw new Exception("Wrong data. Value cann't be null.");
+                var title_str = val.Title;
+                val.Title = prefix + val.Title;
+                res.Add(val);
+                MakeTree(res, source, val.Value, SelectTreePrefix, prefix + string.Format(SelectTreePrefix, title_str), deep + 1);
             }
-            //return res;
         }
 
-        public List<OptionVM> GetOptions(long siteid, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked)
+        public List<OptionVM> GetOptions(long siteid, Languages lang, List<Languages> siteLanguages, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked)
         {
-            //if (string.IsNullOrWhiteSpace(SelectValueName)) return null;
             if (string.IsNullOrWhiteSpace(SelectTitleName)) throw new ArgumentNullException(SelectTitleName);
             var propValue = typeof(T).GetProperty(SelectValueName ?? "Id");
             var propTitle = typeof(T).GetProperty(SelectTitleName);
@@ -104,24 +104,22 @@ namespace AspNetCoreComponentLibrary
             //query = query.SetDefaultOrder();
 
             var res = new List<OptionVM>();
-            //return res;
-            if (!string.IsNullOrWhiteSpace(SelectParentName))
+            var propParent = string.IsNullOrWhiteSpace(SelectParentName) ? null : typeof(T).GetProperty(SelectParentName);
+
+            foreach (var val in query.Select(ExpressionHelper.SelectOptionVM<T>(propValue, propTitle, propParent)))
             {
-                var propParent = typeof(T).GetProperty(SelectParentName);
-                if (propParent == null) throw new Exception("Cannot find entitiy properties " + SelectParentName);
-                GetTreeOptions(res, query, propValue, propTitle, propParent, null, SelectTreePrefix);
-                return res;
+                val.Title = string.IsNullOrWhiteSpace(val.Title) ? "-" : val.Title;
+                res.Add(val);
             }
 
-            foreach (var val in query)
+            TranslateOptionsVM(siteid, lang, siteLanguages, res, SelectTitleName);
+
+            if (propParent != null)
             {
-                // а вот тут что лучше использовать ToStringVM() или ToString(). По идее индекс всегда лонг или на крайний случай стринг, так что делаю ToString, к тому же лень прокинуть формат
-                // может быть null!!!
-                var value = propValue.PropertyType.ToStringVM(propValue.GetValue(val, null));
-                var title = propTitle.GetValue(val, null);//.ToString();
-                res.Add(new OptionVM(value, title == null ? "-" : title.ToString(), null));
+                var tree = new List<OptionVM>();
+                MakeTree(tree, res, null, SelectTreePrefix);
+                return tree;
             }
-            //TranslateList()
             return res;
         }
 

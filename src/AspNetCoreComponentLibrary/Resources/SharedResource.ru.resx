@@ -206,6 +206,8 @@
 
 <data name="common.all" xml:space="preserve"><value>Все</value></data>
 
+<data name="common.root" xml:space="preserve"><value>Верхний уровень</value></data>
+
 <data name="common.delete" xml:space="preserve"><value>Удалить</value></data>
 
 <data name="common.edit" xml:space="preserve"><value>Изменить</value></data>

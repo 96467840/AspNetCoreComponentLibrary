@@ -209,7 +209,7 @@ namespace AspNetCoreComponentLibrary
             //this.Default = Default;
 
             this.Default = ParseValuesFromStrings(Default);
-            
+
         }
 
         public virtual List<OptionVM> GetOptions()
@@ -232,8 +232,8 @@ namespace AspNetCoreComponentLibrary
                             Attribute.Compare, Attribute.Format);
         }
 
-        public Field(Controller2Garin controller, string title, string placeholder, EnumHtmlType htmlType, bool isRequired, bool needTranslate, bool isMultiple, 
-            string propertyName, int priority, List<string> Default, EnumFilterCompare compare = EnumFilterCompare.Equals, string format=null)
+        public Field(Controller2Garin controller, string title, string placeholder, EnumHtmlType htmlType, bool isRequired, bool needTranslate, bool isMultiple,
+            string propertyName, int priority, List<string> Default, EnumFilterCompare compare = EnumFilterCompare.Equals, string format = null)
         {
             _init(controller, title, placeholder, htmlType, isRequired, needTranslate, isMultiple,
              propertyName, priority, Default, compare, format);
@@ -353,6 +353,25 @@ namespace AspNetCoreComponentLibrary
                     _options.Add(new OptionVM("False", title, null));
                 }
             }
+            else if (SelectRepository != null)
+            {
+                var repository = Controller.Storage.GetOptionsRepository(SelectRepository, EnumDB.Content, true);
+                if (repository == null) throw new Exception("Cannot find repository: " + SelectRepository.Name);
+                _options = repository.GetOptions(Controller.Site.Id, Controller.Localizer2Garin.Language, Controller.SiteLanguages, SelectValueName, SelectTitleName, SelectParentName, SelectTreePrefix, SelectOnlyUnblocked);
+                // надо добавить "выбрать все" и "верхний уровень" а возьмем мы их с SelectValuesJson
+                if (!string.IsNullOrWhiteSpace(SelectValuesJson))
+                {
+                    var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+                    var options = JsonConvert.DeserializeObject<List<OptionVM>>(SelectValuesJson, deserializeSettings);
+                    if (options == null) throw new Exception("Cann't deserialize SelectValuesJson property");
+                    foreach (var opt in options)
+                    {
+                        if (!string.IsNullOrWhiteSpace(opt.TitleKey))
+                            opt.Title = Controller.Localizer2Garin.Localize(opt.TitleKey);
+                    }
+                    _options.InsertRange(0, options);
+                }
+            }
             else if (!string.IsNullOrWhiteSpace(SelectValuesJson))
             {
                 var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
@@ -365,17 +384,11 @@ namespace AspNetCoreComponentLibrary
 
                 }
             }
-            else if (SelectRepository != null)
-            {
-                var repository = Controller.Storage.GetOptionsRepository(SelectRepository, EnumDB.Content, true);
-                if (repository == null) throw new Exception("Cannot find repository: " + SelectRepository.Name);
-                _options = repository.GetOptions(Controller.Site.Id, SelectValueName, SelectTitleName, SelectParentName, SelectTreePrefix, SelectOnlyUnblocked);
-            }
             _fillSelected();
             return _options;
         }
     }
-    
+
     public class FieldFile : Field<string>
     {
         public FieldFile(Controller2Garin controller, FieldBaseAttribute Attribute, string PropertyName) : base(controller, Attribute, PropertyName)
@@ -391,6 +404,12 @@ namespace AspNetCoreComponentLibrary
     public class OptionVM
     {
         public string Value { get; set; }
+
+        /// <summary>
+        /// нужно тока для типа EnumHtmlType.Tree (нужно для оптимизации)
+        /// </summary>
+        //public Object ValueObj { get; set; }
+
         /// <summary>
         /// Ключ для локализации. Так как локализация нужна не всегда, то заполнить Title можно 2 способами
         /// </summary>
@@ -414,11 +433,29 @@ namespace AspNetCoreComponentLibrary
         // для сериализации
         public OptionVM() { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="title"></param>
+        /// <param name="parent"></param>
+        /// <param name="selected"></param>
         public OptionVM(string value, string title, string parent, bool selected = false)
         {
             Value = value; Title = title; Parent = parent; BSelected = selected;
         }
-    }
 
+        /// <summary>
+        /// Конструктор для внутреннего использования в Expression (см ExpressionHelper)
+        /// </summary>
+        /// <param name="valueObj"></param>
+        /// <param name="title"></param>
+        /// <param name="parent"></param>
+        public OptionVM(object valueObj, string title, object parent)
+        {
+            // здесь при ToStringVM null значения так и останутся null, а не "null", так и задумано!
+            Value = valueObj?.GetType().ToStringVM(valueObj); Title = title; Parent = parent?.GetType().ToStringVM(parent);
+        }
+    }
 
 }

@@ -1,7 +1,7 @@
 ﻿@model Form
 @{
-    //var filters = Model.Filters;
-    //if (!filters.Any()) { return; }
+//var filters = Model.Filters;
+//if (!filters.Any()) { return; }
 }
 
 @if (Model.Fields != null)
@@ -14,10 +14,13 @@
     }
 }@**@
 
-<form method="get" class="form-inline">
-    @foreach (var f in Model.Fields)
-    {
-        @Html.Partial("Admin/Filter/_Field", f)
-    }
-    <button type="submit" class="btn btn-default">@Localizer.LocalizeHtml("common.find")</button>
-</form>
+@if (Model?.Fields?.Any() == true)
+{
+    <form method="get" class="form-inline">
+        @foreach (var f in Model.Fields)
+        {
+            @Html.Partial("Admin/Filter/_Field", f)
+        }
+        <button type="submit" class="btn btn-default">@Localizer.LocalizeHtml("common.find")</button>
+    </form>
+}

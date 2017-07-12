@@ -206,6 +206,8 @@
 
 <data name="common.all" xml:space="preserve"><value>All</value></data>
 
+<data name="common.root" xml:space="preserve"><value>Root level</value></data>
+
 <data name="common.delete" xml:space="preserve"><value>Delete</value></data>
 
 <data name="common.edit" xml:space="preserve"><value>Edit</value></data>

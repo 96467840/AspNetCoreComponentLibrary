@@ -9,7 +9,7 @@ namespace AspNetCoreComponentLibrary.Abstractions
 {
     public interface IGetOptions
     {
-        List<OptionVM> GetOptions(long siteid, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked);
+        List<OptionVM> GetOptions(long siteid, Languages lang, List<Languages> siteLanguages, string SelectValueName, string SelectTitleName, string SelectParentName, string SelectTreePrefix, bool SelectOnlyUnblocked);
     }
 
     public interface IRepositorySetStorageContext

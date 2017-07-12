@@ -97,7 +97,7 @@ namespace AspNetCoreComponentLibrary
                 else
                 {
                     using (new BLog(controller.LoggerMEF, "ListIM::ToActionResult", GetType().FullName))
-                        vm.Items = controller.Repository.GetFiltered(controller.Site.Id, vm.Form).Select(i => (IBaseDM)i).ToList();
+                        vm.Items = controller.Repository.GetFiltered(controller.Site.Id, vm.Form).Take(30).Select(i => (IBaseDM)i).ToList();
                 }
             }
             catch (Exception e)

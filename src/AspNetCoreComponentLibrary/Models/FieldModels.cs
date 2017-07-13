@@ -371,6 +371,19 @@ namespace AspNetCoreComponentLibrary
                     }
                     _options.InsertRange(0, options);
                 }
+                else // попробуем автоматом определить что нужно
+                {
+                    if (!string.IsNullOrWhiteSpace(SelectParentName)) // для дерева автоматом добавить корень
+                    {
+                        var title = Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "select_root", true));
+                        _options.Insert(0, new OptionVM("null", title, null));
+                    }
+                    if (!IsMultiple)
+                    {
+                        var title = Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "select_all", true));
+                        _options.Insert(0, new OptionVM("", title, null));
+                    }
+                }
             }
             else if (!string.IsNullOrWhiteSpace(SelectValuesJson))
             {
@@ -453,8 +466,8 @@ namespace AspNetCoreComponentLibrary
         /// <param name="parent"></param>
         public OptionVM(object valueObj, string title, object parent)
         {
-            // здесь при ToStringVM null значения так и останутся null, а не "null", так и задумано!
-            Value = valueObj?.GetType().ToStringVM(valueObj); Title = title; Parent = parent?.GetType().ToStringVM(parent);
+            Value = valueObj == null ? "null" : valueObj.GetType().ToStringVM(valueObj); Title = title;
+            Parent = parent == null ? "null" : parent.GetType().ToStringVM(parent);
         }
     }
 

@@ -83,7 +83,7 @@ namespace AspNetCoreComponentLibrary
 
             foreach (var val in source.Where(i => i.Parent == parent))
             {
-                if (val.Value == null) throw new Exception("Wrong data. Value cann't be null.");
+                if (val.Value == "null") throw new Exception("Wrong data. Value cann't be null.");
                 var title_str = val.Title;
                 val.Title = prefix + val.Title;
                 res.Add(val);
@@ -117,7 +117,7 @@ namespace AspNetCoreComponentLibrary
             if (propParent != null)
             {
                 var tree = new List<OptionVM>();
-                MakeTree(tree, res, null, SelectTreePrefix);
+                MakeTree(tree, res, "null", SelectTreePrefix);
                 return tree;
             }
             return res;

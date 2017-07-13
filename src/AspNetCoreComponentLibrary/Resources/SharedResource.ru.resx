@@ -206,7 +206,7 @@
 
 <data name="common.all" xml:space="preserve"><value>Все</value></data>
 
-<data name="common.root" xml:space="preserve"><value>Верхний уровень</value></data>
+<!--<data name="common.root" xml:space="preserve"><value>Верхний уровень</value></data>-->
 
 <data name="common.delete" xml:space="preserve"><value>Удалить</value></data>
 
@@ -325,6 +325,9 @@
 <data name="common.field.any.bool_undefined" xml:space="preserve"><value>Не установлено</value></data>
 <data name="common.field.any.bool_true" xml:space="preserve"><value>Да</value></data>
 <data name="common.field.any.bool_false" xml:space="preserve"><value>Нет</value></data>
+
+<data name="common.field.any.select_all" xml:space="preserve"><value>Все</value></data>
+<data name="common.field.any.select_root" xml:space="preserve"><value>Верхний уровень</value></data>
 
   <!-- 
     ===================================

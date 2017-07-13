@@ -20,8 +20,10 @@ namespace AspNetCoreComponentLibrary
         [Field(HtmlType = EnumHtmlType.Hidden)]
         public long SiteId { get; set; }
 
-        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository), SelectValueName = "Id", SelectTitleName = "MenuName", SelectParentName ="ParentId", 
-            SelectTreePrefix = "&nbsp;&raquo;&nbsp;", SelectValuesJson = "[{Value:'',TitleKey:'common.all'},{Value:'null',TitleKey:'common.root'}]")]
+        [Filter(HtmlType = EnumHtmlType.Tree, SelectRepository = typeof(IMenuRepository),
+            SelectValueName = "Id", SelectTitleName = "MenuName", SelectParentName ="ParentId", 
+            SelectTreePrefix = "&nbsp;&raquo;&nbsp;"/*, SelectValuesJson = "[]"*/
+            /*, SelectValuesJson = "[{Value:'',TitleKey:'common.all'},{Value:'null',TitleKey:'common.root'}]"*/)]
         [Field(HtmlType = EnumHtmlType.Tree, SelectValueName = "Id", SelectTitleName = "Name")]
         public long? ParentId { get; set; }
 

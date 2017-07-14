@@ -39,6 +39,7 @@ namespace AspNetCoreComponentLibrary
 
         [Field(HtmlType = EnumHtmlType.Text)]
         [OrderBy(Priority = 10)]
+        [MassSave]
         public int Priority { get; set; }
 
         [Filter(HtmlType = EnumHtmlType.Select/*, SelectValuesJson = "[{Value:'',TitleKey:'common.all'},{Value:'True',TitleKey:'common.yes'},{Value:'False',TitleKey:'common.no'}]"*/)]

@@ -1,0 +1,28 @@
+﻿@model IBaseDM
+@{
+    var MassSave = Model.MassSave();
+    var Columns = Model.Columns();
+    //var cols_sm = Model.ColSM();
+}
+<tr>
+    <td>
+        1.
+        @if (MassSave.Any())
+        {
+            <input type="hidden" name="Id" value="@Model.IdStr()" />
+        }
+    </td>
+    @foreach (var f in Columns)
+    {
+        <td>@(f.Key.GetValue(Model, null))</td>
+    }
+    @foreach (var f in MassSave)
+    {
+        <td @f.Value.GetWidthAttribute()>
+            <input type="text" name="@f.Key.Name" value="@(f.Key.GetValue(Model, null))" />
+        </td>
+    }
+    <td>
+        <button class="btn btn-danger">@Localizer.Localize("common.delete")</button>
+    </td>
+</tr>

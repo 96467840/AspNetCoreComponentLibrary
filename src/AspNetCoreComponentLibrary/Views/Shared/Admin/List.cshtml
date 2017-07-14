@@ -9,18 +9,20 @@
 
 @if (Model.Error != null)
 {
-    @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM("<pre>" + Model.Error.ToString() + "</pre>") });
+    @*@await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM("<pre>" + Model.Error.ToString() + "</pre>") });*@
+    @await Component.InvokeAsync(nameof(AlertComponent), new { vm = new AlertVM("<pre>" + Model.Error.Message + "</pre>") });
 }
 @Html.Partial("Admin/Filter/_Filter", Model.Form)
 
-@if (Model.Items != null)
+@if (Model.Items?.Any() == true)
 {
-    foreach (var i in Model.Items)
-    {
-    <div>
-        @i.ToJson()
-    </div>
-    }
+    <table class="table table-striped">
+        @Html.Partial("Admin/List/_Header", Model)
+        @foreach (var i in Model.Items)
+        {
+            @Html.Partial("Admin/List/_Row", i)
+        }
+    </table>
 }
 <a href="@Url.RouteUrlWithCulture("Admin", new { controller="Menus", action="Edit" })">Menus admin</a>
 

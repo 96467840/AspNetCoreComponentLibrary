@@ -19,6 +19,7 @@ namespace AspNetCoreComponentLibrary
         Type Type { get; }
         //IEnumerable<FilterFieldVM> Filters{ get; }
         Form Form { get; }
+        string LocalizeFieldKey(string propertyName, string key, bool anyProperty = true);
     }
 
     public class ListVM<K, T, R> : AdminVM, IListVM where T : BaseDM<K>, IBaseDM where R : IRepositorySetStorageContext, IRepository<K, T> /*where K : struct*/
@@ -49,16 +50,12 @@ namespace AspNetCoreComponentLibrary
             return Controller.Localizer2Garin.LocalizeHtml(Controller.LocalizerPrefix + ".name");
         }
 
+        public string LocalizeFieldKey(string propertyName, string key, bool anyProperty = true)
+        {
+            return Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, null, propertyName, key, anyProperty));
+        }
+
         public Type Type => typeof(T);
-
-        //public Dictionary<string, List<string>> FilterValues => Input.Filter;
-
-        //public IEnumerable<FilterFieldVM> Filters => Type.GetProperties().Select(i => new FilterFieldVM(
-        //    (FilterAttribute)i.GetCustomAttribute(typeof(FilterAttribute)),
-        //    i,
-        //    FilterValues?.ContainsKey(i.Name) == true ? FilterValues[i.Name] : null,
-        //    Controller
-        //)).Where(i => i.Attribute != null);
 
         private Form _form;
         public Form Form

@@ -31,13 +31,9 @@ namespace AspNetCoreComponentLibrary
         string Check();
         List<object> GetDefaultAsObject();
         List<string> GetDefaultAsString();
-        //List<object> ValueObject { get; }
-        //string ValueForForm { get; }
-        //List<TT> GetValues<TT>();
         List<string> GetValueAsString();
         List<object> GetValueAsObject();
         Type Type { get; }
-        //string DebugValues { get; }
 
         List<OptionVM> GetOptions();
     }
@@ -58,18 +54,16 @@ namespace AspNetCoreComponentLibrary
 
         public string Format { get; set; }
 
+        /// <summary>
+        /// Второй ключ локализации "field" | "filter" или что-то еще. 
+        /// Первый ключ локализациии - префикс контролера (репозитория). Третий ключ - имя поля. Четверый - тип локализации (title, placeholder, regexpmessage)
+        /// Примеры languages.field.Lang.title, common.field.any.select_all (common - для всех контролеров, any - для всех полей)
+        /// See <see cref="Utils.GenLocalizeKeysList(string, string, string, string, bool)" /> 
+        /// </summary>
         protected string AttributeLocalizePrefix = "custom";
 
-        /// <summary>
-        /// Ключи локализации имени на форме
-        /// </summary>
-        //public List<string> NameKeys { get; set; }
         public string Title { get; set; }
 
-        /// <summary>
-        /// Локализация placeholder
-        /// </summary>
-        //public List<string> PlaceholderKeys { get; set; }
         public string Placeholder { get; set; }
 
         /// <summary>
@@ -78,7 +72,7 @@ namespace AspNetCoreComponentLibrary
         public string PropertyName { get; set; }
 
         /// <summary>
-        /// Значение по умолчанию
+        /// Значения по умолчанию
         /// </summary>
         public List<T> Default { get; set; }
 
@@ -91,8 +85,7 @@ namespace AspNetCoreComponentLibrary
         /// Список значений поля
         /// </summary>
         public List<T> Value { get; set; }
-        //public List<object> ValueObject => Value.Select(i=>(object)i).ToList();
-
+        
         /// <summary>
         /// Порядковый номер в форме.
         /// </summary>
@@ -113,7 +106,10 @@ namespace AspNetCoreComponentLibrary
         // каждый тип T надо приводить к строке по своему! помни про злоебучие даты
         public List<string> GetValueAsString() => Value?.Select(i => Type.ToStringVM(i, Format)).ToList() ?? new List<string>();
 
-        //public string DebugValues => string.Join(", ", GetValues<T>().Select(i => i.ToString()));
+        protected string LocalizeFieldKey(string key, bool anyProperty = true)
+        {
+            return Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, key, anyProperty));
+        }
 
         private List<T> ParseValuesFromStrings(List<string> Values)
         {
@@ -219,17 +215,12 @@ namespace AspNetCoreComponentLibrary
 
         public Field(Controller2Garin controller, FieldBaseAttribute Attribute, string propertyName)
         {
-            var title = controller.Localizer2Garin.Localize(
-                Utils.GenLocalizeKeysList(controller.LocalizerPrefix, Attribute.LocalizePrefix, propertyName, "title")
-            ) ?? propertyName;
-
-            var placeholder = controller.Localizer2Garin.Localize(
-                Utils.GenLocalizeKeysList(controller.LocalizerPrefix, Attribute.LocalizePrefix, propertyName, "placeholder")
-            ) ?? propertyName;
-            AttributeLocalizePrefix = Attribute.LocalizePrefix;
-            _init(controller, title, placeholder, Attribute.HtmlType, Attribute.IsRequired,
+            _init(controller, null, null, Attribute.HtmlType, Attribute.IsRequired,
                             Attribute.NeedTranslate, Attribute.IsMultiple, propertyName, Attribute.Priority, Attribute.Default == null ? null : new List<string>() { Attribute.Default },
                             Attribute.Compare, Attribute.Format);
+
+            Title = LocalizeFieldKey("title", false) ?? PropertyName;
+            Placeholder = LocalizeFieldKey("placeholder", false);
         }
 
         public Field(Controller2Garin controller, string title, string placeholder, EnumHtmlType htmlType, bool isRequired, bool needTranslate, bool isMultiple,
@@ -337,19 +328,19 @@ namespace AspNetCoreComponentLibrary
                 {
                     _options = new List<OptionVM>();
 
-                    title = /*"bool_all";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_all", true));
+                    title = LocalizeFieldKey("bool_all");
                     _options.Add(new OptionVM("", title, null));
 
                     if (typeOfNullable != null && (typeOfNullable.Name.EqualsIC("bool") || typeOfNullable.Name.EqualsIC("boolean")))
                     {
-                        title = /*"bool_undefined";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_undefined", true));
+                        title = LocalizeFieldKey("bool_undefined");
                         _options.Add(new OptionVM("null", title, null));
                     }
 
-                    title = /*"bool_true";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_true", true));
+                    title = LocalizeFieldKey("bool_true");
                     _options.Add(new OptionVM("True", title, null));
 
-                    title = /*"bool_false";//*/ Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "bool_false", true));
+                    title = LocalizeFieldKey("bool_false");
                     _options.Add(new OptionVM("False", title, null));
                 }
             }
@@ -375,12 +366,12 @@ namespace AspNetCoreComponentLibrary
                 {
                     if (!string.IsNullOrWhiteSpace(SelectParentName)) // для дерева автоматом добавить корень
                     {
-                        var title = Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "select_root", true));
+                        var title = LocalizeFieldKey("select_root");
                         _options.Insert(0, new OptionVM("null", title, null));
                     }
                     if (!IsMultiple)
                     {
-                        var title = Controller.Localizer2Garin.Localize(Utils.GenLocalizeKeysList(Controller.LocalizerPrefix, AttributeLocalizePrefix, PropertyName, "select_all", true));
+                        var title = LocalizeFieldKey("select_all");
                         _options.Insert(0, new OptionVM("", title, null));
                     }
                 }
@@ -417,11 +408,6 @@ namespace AspNetCoreComponentLibrary
     public class OptionVM
     {
         public string Value { get; set; }
-
-        /// <summary>
-        /// нужно тока для типа EnumHtmlType.Tree (нужно для оптимизации)
-        /// </summary>
-        //public Object ValueObj { get; set; }
 
         /// <summary>
         /// Ключ для локализации. Так как локализация нужна не всегда, то заполнить Title можно 2 способами

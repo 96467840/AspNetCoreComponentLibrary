@@ -1,0 +1,25 @@
+﻿@model IListVM
+
+@{
+    if (Model?.Items?.Any() != true) { return; }
+
+    var MassSave = Model.Items[0].MassSave();
+    var Columns = Model.Items[0].Columns();
+    //var cols_sm = Model.Items[0].ColSM();
+}
+<thead>
+    <tr>
+        <th>№</th>
+        @foreach (var f in Columns)
+        {
+            <th @f.Value.GetWidthAttribute()>@Model.LocalizeFieldKey(f.Key.Name, "title", false)</th>
+        }
+        @foreach (var f in MassSave)
+        {
+            <th @f.Value.GetWidthAttribute()>
+                @Model.LocalizeFieldKey(f.Key.Name, "title", false)
+            </th>
+        }
+        <th></th>
+    </tr>
+</thead>

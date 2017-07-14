@@ -7,48 +7,69 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreComponentLibrary
 {
+    // никаких пропертей тока методы, иначе могут быть глюки с БД (EF че-то пытается сделать с пропертями и у него это не очень получается)
     public interface IBaseDM
     {
-        bool IsBlockable { get; }
-
+        bool IsBlockable();
+        bool IsSortable();
+        string IdStr();
+        Dictionary<PropertyInfo, ListColumnBaseAttribute> MassSave();
+        Dictionary<PropertyInfo, ListColumnBaseAttribute> Columns();
+        //List<int> ColSM();
+        /**/
         //Form ToForm<FA>(Controller2Garin controller) where FA:FieldBaseAttribute;
     }
 
     public abstract class BaseDM<K> : IBaseDM
     {
         [OrderBy(Priority = int.MaxValue)]
+        [ListColumn(Width = "50")]
         public K Id { get; set; }
 
-        public bool IsBlockable
+        public bool IsBlockable()
         {
-            get
-            {
-                return GetType().IsImplementsInterface(typeof(IBlockable));
-            }
+            return GetType().IsImplementsInterface(typeof(IBlockable));
         }
 
-        /*public Form ToForm<FA>(Controller2Garin controller) where FA : FieldBaseAttribute
+        public bool IsSortable() { return GetType().IsImplementsInterface(typeof(ISortable)); }
+
+        Dictionary<PropertyInfo, ListColumnBaseAttribute> massSave;
+        public Dictionary<PropertyInfo, ListColumnBaseAttribute> MassSave()
         {
-            var fields = new List<IField>();
+            if (massSave == null)
+                massSave = GetType().GetPropertiesWithAttribute<MassSaveAttribute>().ToDictionary(i=>i.Key, i=> (ListColumnBaseAttribute)i.Value);
+            return massSave;
+        }
 
-            foreach (var f in this.GetType().GetProperties()
-                .Select(i => new { Attribute = (FA)i.GetCustomAttribute(typeof(FA)), Property = i, }).Where(i => i.Attribute != null))
+        Dictionary<PropertyInfo, ListColumnBaseAttribute> columns;
+        public Dictionary<PropertyInfo, ListColumnBaseAttribute> Columns()
+        {
+            if (columns == null)
+                columns = GetType().GetPropertiesWithAttribute<ListColumnAttribute>().ToDictionary(i => i.Key, i => (ListColumnBaseAttribute)i.Value);
+            return columns;
+        }
+
+        /*List<int> colSM;
+        public List<int> ColSM()
+        {
+            if (colSM == null)
             {
-                IField field = null;
-                switch (f.Attribute.HtmlType)
+                colSM = new List<int> { 0, 0, 2 };
+                if (IsBlockable())
                 {
-                    case EnumHtmlType.CheckBox:
-                        field = new Field<bool>(controller);
-                        break;
+                    colSM[2] = 3;
                 }
-                if (field != null) {
-                    field.Priority = f.Attribute.Priority;
 
-                    fields.Add(field);
+                if (MassSave().Any())
+                {
+                    colSM[1] = 1;
                 }
+                colSM[0] = 12 - colSM[1] - colSM[2];
             }
-
-            return new Form(controller, fields);
+            return colSM;
         }*/
+
+        public string IdStr() { return Id == null ? "null" : GetType().ToStringVM(Id); }
+
     }
 }

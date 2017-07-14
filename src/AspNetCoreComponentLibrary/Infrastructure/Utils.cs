@@ -51,20 +51,17 @@ namespace AspNetCoreComponentLibrary
 
             var isPriorityOrderBy = false;
             int count = 0;
-            foreach (var f in t.GetProperties()
-                .Select(i => new { Attribute = (OrderByAttribute)i.GetCustomAttribute(typeof(OrderByAttribute)), Property = i, })
-                .Where(i => i.Attribute != null)
-                .OrderBy(i=>i.Attribute.Priority))
+            foreach (var f in t.GetPropertiesWithAttribute<OrderByAttribute>().OrderBy(i => i.Value.Priority))
             {
-                query = query.OrderBy(f.Property.Name, !f.Attribute.Desc, count == 0);
-                if (f.Property.Name == "Priority") isPriorityOrderBy = true;
+                query = query.OrderBy(f.Key.Name, !f.Value.Desc, count == 0);
+                if (f.Key.Name == "Priority") isPriorityOrderBy = true;
                 count++;
             }
 
             if (!isPriorityOrderBy)
                 if (t.IsImplementsInterface(typeof(ISortable)))
                 {
-                    query = count==0 ? query.OrderBy(i => ((ISortable)i).Priority): ((IOrderedQueryable<T>)query).ThenBy(i => ((ISortable)i).Priority);
+                    query = count == 0 ? query.OrderBy(i => ((ISortable)i).Priority) : ((IOrderedQueryable<T>)query).ThenBy(i => ((ISortable)i).Priority);
                     count++;
                 }
 
@@ -110,20 +107,25 @@ namespace AspNetCoreComponentLibrary
             return keys;
         }
 
+        public static Dictionary<PropertyInfo, A> GetPropertiesWithAttribute<A>(this Type type) where A :Attribute
+        {
+            return type.GetProperties()
+                .Select(i => new { Attribute = (A)i.GetCustomAttribute(typeof(A)), Property = i, }).Where(i => i.Attribute != null).ToDictionary(i=>i.Property, i=>i.Attribute);
+        }
+
         public static Form GetForm<FA>(this Type t, Controller2Garin controller) where FA : FieldBaseAttribute
         {
             var fields = new List<IField>();
 
-            foreach (var f in t.GetProperties()
-                .Select(i => new { Attribute = (FA)i.GetCustomAttribute(typeof(FA)), Property = i, }).Where(i => i.Attribute != null))
+            foreach (var f in t.GetPropertiesWithAttribute<FA>())
             {
                 // вызов конструктора женериков
                 // https://docs.microsoft.com/ru-ru/dotnet/framework/reflection-and-codedom/how-to-examine-and-instantiate-generic-types-with-reflection
 
                 IField field = null;
-                Type[] typeArgs = { f.Property.PropertyType };
+                Type[] typeArgs = { f.Key.PropertyType };
                 Type d1, ff;
-                switch (f.Attribute.HtmlType)
+                switch (f.Value.HtmlType)
                 {
                     case EnumHtmlType.Image:
                     case EnumHtmlType.Images:
@@ -135,13 +137,13 @@ namespace AspNetCoreComponentLibrary
                     case EnumHtmlType.Tree:
                         d1 = typeof(FieldSelect<>);
                         ff = d1.MakeGenericType(typeArgs);
-                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Attribute, f.Property.Name });
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Value, f.Key.Name });
                         break;
 
                     default:
                         d1 = typeof(Field<>);
                         ff = d1.MakeGenericType(typeArgs);
-                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Attribute, f.Property.Name });
+                        field = (IField)Activator.CreateInstance(ff, new object[] { controller, f.Value, f.Key.Name });
                         break;
                 }
                 if (field != null)

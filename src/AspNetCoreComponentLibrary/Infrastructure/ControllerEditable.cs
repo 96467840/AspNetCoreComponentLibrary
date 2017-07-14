@@ -39,7 +39,7 @@ namespace AspNetCoreComponentLibrary
         private void SetRepository()
         {
             // а вот тут оптимизировать низя! не у всех свойств есть атрибуты
-            foreach (var t in this.GetType().GetProperties())
+            foreach (var t in GetType().GetProperties())
             {
                 var attr = t.GetCustomAttribute(typeof(RepositorySettingsAttribute));
                 if (attr != null)

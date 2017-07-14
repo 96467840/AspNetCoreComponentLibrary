@@ -23,14 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Shared\Admin\Filter\_CheckBox.cshtml" />
-    <Content Remove="Views\Shared\Admin\Filter\_Field.cshtml" />
-    <Content Remove="Views\Shared\Admin\Filter\_Select.cshtml" />
-    <Content Remove="Views\Shared\Admin\Filter\_Text.cshtml" />
-    <Content Remove="Views\Shared\Components\AlertComponent\Default.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Views\Shared\Admin\Edit.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\Filter\_CheckBox.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\Filter\_Field.cshtml" />
@@ -38,6 +30,8 @@
     <EmbeddedResource Include="Views\Shared\Admin\Filter\_Select.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\Filter\_Text.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\List.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\List\_Header.cshtml" />
+    <EmbeddedResource Include="Views\Shared\Admin\List\_Row.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\_Footer.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\_LeftMenu.cshtml" />
     <EmbeddedResource Include="Views\Shared\Admin\_Meta.cshtml" />

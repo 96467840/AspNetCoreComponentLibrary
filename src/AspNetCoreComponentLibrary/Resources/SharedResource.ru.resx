@@ -317,6 +317,9 @@
 <!--Общие поля для всех сущностей-->
 <data name="common.field.Name.title" xml:space="preserve"><value>Название</value></data>
 <data name="common.field.IsBlocked.title" xml:space="preserve"><value>Заблокировано</value></data>
+<data name="common.field.Id.title" xml:space="preserve"><value>Id</value></data>
+<data name="common.field.Priority.title" xml:space="preserve"><value>Приоритет</value></data>
+<data name="common.field.ParentId.title" xml:space="preserve"><value>Раздел</value></data>
 
 <!--Общие значения полей -->
 <data name="common.field.any.regexpmessage" xml:space="preserve"><value>Поле содержит недопустимые символы или записано не по формату</value></data>

@@ -85,6 +85,7 @@ namespace AspNetCoreComponentLibrary
             {
                 if (val.Value == "null") throw new Exception("Wrong data. Value cann't be null.");
                 var title_str = val.Title;
+                val.OriginalTitle = val.Title;
                 val.Title = prefix + val.Title;
                 res.Add(val);
                 MakeTree(res, source, val.Value, SelectTreePrefix, prefix + string.Format(SelectTreePrefix, title_str), deep + 1);
